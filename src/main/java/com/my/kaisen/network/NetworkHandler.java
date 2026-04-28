@@ -20,5 +20,12 @@ public class NetworkHandler {
                 AbilityPayload.STREAM_CODEC,
                 AbilityServerHandler::handle
         );
+
+        // Register our PlayAnimationPayload to be sent from Server to Client
+        registrar.playToClient(
+                PlayAnimationPayload.TYPE,
+                PlayAnimationPayload.STREAM_CODEC,
+                (payload, ctx) -> com.my.kaisen.client.ClientAnimationHandler.handleAnimation(payload, ctx)
+        );
     }
 }

@@ -1,0 +1,139 @@
+package com.my.kaisen.network;
+
+import com.my.kaisen.MyKaisen;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
+
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
+@EventBusSubscriber(modid = MyKaisen.MODID, bus = EventBusSubscriber.Bus.GAME)
+public class CombatTickHandler {
+
+    // Thread-safe maps for tracking dash and beatdown states
+    public static final Map<UUID, Integer> activeDashes = new ConcurrentHashMap<>();
+    public static final Map<UUID, BeatdownState> activeBeatdowns = new ConcurrentHashMap<>();
+
+    // Record to hold the state of an ongoing beatdown
+    public record BeatdownState(LivingEntity targetEntity, int ticksRemaining) {}
+
+    @SubscribeEvent
+    public static void onPlayerTick(PlayerTickEvent.Post event) {
+        // Ensure we are only running on the server side
+        if (event.getEntity().level().isClientSide()) return;
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+
+        UUID playerId = player.getUUID();
+
+        // -----------------------------------------------------
+        // 1. Dash Collision Logic
+        // -----------------------------------------------------
+        if (activeDashes.containsKey(playerId)) {
+            int dashTimer = activeDashes.get(playerId);
+            
+            if (dashTimer > 0) {
+                // Decrement timer
+                activeDashes.put(playerId, dashTimer - 1);
+
+                // Create an AABB roughly 1.5 blocks in front of the player
+                Vec3 look = player.getLookAngle();
+                Vec3 frontCenter = player.position().add(look.scale(1.5));
+                
+                // 2x2x2 box centered 1.5 blocks in front
+                AABB hitBox = new AABB(
+                        frontCenter.x - 1.0, frontCenter.y - 1.0, frontCenter.z - 1.0,
+                        frontCenter.x + 1.0, frontCenter.y + 1.0, frontCenter.z + 1.0
+                );
+
+                // Detect living entities inside the box (excluding the player themselves)
+                List<LivingEntity> hitEntities = player.level().getEntitiesOfClass(
+                        LivingEntity.class,
+                        hitBox,
+                        e -> e != player && e.isAlive()
+                );
+
+                if (!hitEntities.isEmpty()) {
+                    LivingEntity target = hitEntities.get(0);
+                    
+                    // Stop the player's dash momentum immediately
+                    player.setDeltaMovement(Vec3.ZERO);
+                    player.hurtMarked = true;
+                    
+                    // Remove from dashes map
+                    activeDashes.remove(playerId);
+                    
+                    // Add to beatdowns map with 60 ticks duration
+                    activeBeatdowns.put(playerId, new BeatdownState(target, 60));
+                    
+                    // Send animation payload to clients tracking the attacker (and the attacker themselves)
+                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                            player, 
+                            new PlayAnimationPayload("cursed_strikes", player.getId())
+                    );
+                }
+            } else {
+                // Timer ran out, remove the dash
+                activeDashes.remove(playerId);
+            }
+        }
+
+        // -----------------------------------------------------
+        // 2. Beatdown Logic
+        // -----------------------------------------------------
+        if (activeBeatdowns.containsKey(playerId)) {
+            BeatdownState state = activeBeatdowns.get(playerId);
+            int ticks = state.ticksRemaining();
+            LivingEntity target = state.targetEntity();
+
+            // Safety check: if target is dead or removed, stop the sequence
+            if (target == null || !target.isAlive() || target.isRemoved()) {
+                activeBeatdowns.remove(playerId);
+                return;
+            }
+
+            // Apply Slowness (amplifier 255) for 2 ticks to keep both locked in place
+            // We use 2 ticks so it clears instantly if the sequence stops
+            player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 2, 255, false, false, false));
+            target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 2, 255, false, false, false));
+
+            // Force player to look at the target (Server-side rotation to guide hitboxes/packets)
+            Vec3 diff = target.position().subtract(player.position());
+            double yaw = Math.toDegrees(Math.atan2(diff.z, diff.x)) - 90.0;
+            player.setYRot((float) yaw);
+            player.setYHeadRot((float) yaw);
+            player.setYBodyRot((float) yaw);
+
+            // Apply exactly 12 hits over 60 ticks => hit every 5 ticks
+            if (ticks % 5 == 0) {
+                target.hurt(target.damageSources().generic(), 7.0f / 12.0f);
+            }
+
+            // Final hit knockback
+            if (ticks == 1) {
+                // Push target backward relative to the player's look vector
+                Vec3 lookVec = player.getLookAngle();
+                // 1.5 scale + slight upward Y vector gives a good ~5 block knockback arc
+                Vec3 push = new Vec3(lookVec.x * 1.5, 0.4, lookVec.z * 1.5);
+                target.setDeltaMovement(push);
+                target.hurtMarked = true;
+            }
+
+            // Update or remove sequence
+            if (ticks <= 1) {
+                activeBeatdowns.remove(playerId);
+            } else {
+                activeBeatdowns.put(playerId, new BeatdownState(target, ticks - 1));
+            }
+        }
+    }
+}

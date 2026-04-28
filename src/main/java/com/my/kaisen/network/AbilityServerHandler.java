@@ -21,23 +21,25 @@ public class AbilityServerHandler {
     }
 
     private static void executeCursedStrikesDash(ServerPlayer player) {
-        // Get the direction the player is looking
+        // 1. Apply Cooldown (Placeholder)
+        // TODO: Apply a 10-second (200 tick) cooldown to the player using standard capabilities or item cooldowns
+
+        // 2. Propel player forward roughly 3 blocks
         Vec3 lookVec = player.getLookAngle();
-        
-        // Multiply vector for a dash effect
         double dashMultiplier = 2.0;
         
-        // Create a new motion vector based on looking direction
         Vec3 dashMotion = new Vec3(
                 lookVec.x * dashMultiplier,
-                0.2, // Small vertical hop to overcome ground friction briefly
+                0.2, // Small hop
                 lookVec.z * dashMultiplier
         );
 
         player.setDeltaMovement(dashMotion);
         
-        // CRITICAL: Tells the server to forcefully update the client with this new movement vector immediately.
-        // Without this, the client will rubberband back to its original position because it didn't expect the server to move it.
+        // CRITICAL: Tells the server to forcefully update the client with this new movement vector immediately
         player.hurtMarked = true; 
+
+        // 3. Register player in active dashes with a 10-tick timer
+        CombatTickHandler.activeDashes.put(player.getUUID(), 10);
     }
 }
