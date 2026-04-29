@@ -65,7 +65,23 @@ public class CombatTickHandler {
                 if (!hitEntities.isEmpty()) {
                     LivingEntity target = hitEntities.get(0);
                     
-                    // Stop the player's dash momentum immediately
+                    // Calculate the vector between player and target
+                    Vec3 diff = target.position().subtract(player.position());
+                    
+                    // Normalize vector to find ideal position exactly 1.5 blocks away from the target
+                    Vec3 normDiff = diff.normalize();
+                    Vec3 idealPos = target.position().subtract(normDiff.scale(1.5));
+                    
+                    // Calculate precise Yaw and Pitch to look directly at target's eye level
+                    double yaw = Math.toDegrees(Math.atan2(diff.z, diff.x)) - 90.0;
+                    double dy = (target.position().y + target.getEyeHeight()) - (player.position().y + player.getEyeHeight());
+                    double horizontalDist = Math.sqrt(diff.x * diff.x + diff.z * diff.z);
+                    double pitch = -Math.toDegrees(Math.atan2(dy, horizontalDist));
+                    
+                    // Forcefully teleport the player to the ideal position and snap their camera
+                    player.teleportTo((net.minecraft.server.level.ServerLevel) player.level(), idealPos.x, idealPos.y, idealPos.z, (float) yaw, (float) pitch);
+                    
+                    // Stop momentum
                     player.setDeltaMovement(Vec3.ZERO);
                     player.hurtMarked = true;
                     
@@ -109,12 +125,7 @@ public class CombatTickHandler {
             player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 2, 255, false, false, false));
             target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 2, 255, false, false, false));
 
-            // Force player to look at the target (Server-side rotation to guide hitboxes/packets)
-            Vec3 diff = target.position().subtract(player.position());
-            double yaw = Math.toDegrees(Math.atan2(diff.z, diff.x)) - 90.0;
-            player.setYRot((float) yaw);
-            player.setYHeadRot((float) yaw);
-            player.setYBodyRot((float) yaw);
+
 
             // Apply exactly 12 hits over 60 ticks => hit every 5 ticks
             if (ticks % 5 == 0) {
