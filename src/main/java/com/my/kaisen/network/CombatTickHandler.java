@@ -23,6 +23,7 @@ public class CombatTickHandler {
     // Thread-safe maps for tracking dash and beatdown states
     public static final Map<UUID, Integer> activeDashes = new ConcurrentHashMap<>();
     public static final Map<UUID, BeatdownState> activeBeatdowns = new ConcurrentHashMap<>();
+    public static final Map<UUID, Integer> dropkickStates = new ConcurrentHashMap<>();
 
     // Record to hold the state of an ongoing beatdown
     public record BeatdownState(LivingEntity targetEntity, int ticksRemaining) {}
@@ -147,6 +148,62 @@ public class CombatTickHandler {
                 activeBeatdowns.remove(playerId);
             } else {
                 activeBeatdowns.put(playerId, new BeatdownState(target, ticks - 1));
+            }
+        }
+
+        // -----------------------------------------------------
+        // 3. Dropkick Logic
+        // -----------------------------------------------------
+        if (dropkickStates.containsKey(playerId)) {
+            int ticks = dropkickStates.get(playerId) + 1;
+            
+            // Failsafe
+            if (ticks > 100) {
+                dropkickStates.remove(playerId);
+                return;
+            }
+            
+            dropkickStates.put(playerId, ticks);
+            
+            // Apex of the jump
+            if (ticks == 10) {
+                Vec3 look = player.getLookAngle();
+                Vec3 diveMotion = new Vec3(look.x * 1.5, -1.5, look.z * 1.5);
+                player.setDeltaMovement(diveMotion);
+                player.hurtMarked = true;
+                
+                player.level().playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.DROPKICK.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
+            }
+            
+            // Impact
+            if (ticks > 10 && player.onGround()) {
+                // Play impact sound
+                player.level().playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.BLOW_AOE.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
+                
+                // Spawn explosion particles (visual only)
+                ((net.minecraft.server.level.ServerLevel) player.level()).sendParticles(
+                        net.minecraft.core.particles.ParticleTypes.EXPLOSION_EMITTER,
+                        player.getX(), player.getY(), player.getZ(),
+                        1, 0.0, 0.0, 0.0, 0.0
+                );
+                
+                // Deal damage in AABB
+                AABB aoeBox = new AABB(
+                        player.getX() - 2.0, player.getY() - 1.5, player.getZ() - 2.0,
+                        player.getX() + 2.0, player.getY() + 1.5, player.getZ() + 2.0
+                );
+                
+                List<LivingEntity> hitEntities = player.level().getEntitiesOfClass(
+                        LivingEntity.class,
+                        aoeBox,
+                        e -> e != player && e.isAlive()
+                );
+                
+                for (LivingEntity target : hitEntities) {
+                    target.hurt(target.damageSources().generic(), 5.0f);
+                }
+                
+                dropkickStates.remove(playerId);
             }
         }
     }

@@ -10,5 +10,23 @@
     "sounds": [
       "mykaisen:cursed_strikes_sfx"
     ]
+  },
+  "spin_mid_air": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:spin_mid_air"
+    ]
+  },
+  "dropkick": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:dropkick"
+    ]
+  },
+  "blow_aoe": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:blow_aoe"
+    ]
   }
 }
