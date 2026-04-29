@@ -1,13 +1,8 @@
 {
-  "itemGroup.mykaisen": "Example Mod Tab",
-  "block.mykaisen.example_block": "Example Block",
-  "item.mykaisen.example_item": "Example Item",
-
+  "itemGroup.mykaisen": "My Kaisen Tab",
   "mykaisen.configuration.title": "My Kaisen Configs",
   "mykaisen.configuration.section.mykaisen.common.toml": "My Kaisen Configs",
   "mykaisen.configuration.section.mykaisen.common.toml.title": "My Kaisen Configs",
-  "mykaisen.configuration.items": "Item List",
-  "mykaisen.configuration.logDirtBlock": "Log Dirt Block",
-  "mykaisen.configuration.magicNumberIntroduction": "Magic Number Text",
-  "mykaisen.configuration.magicNumber": "Magic Number"
+  "subtitles.mykaisen.dash": "Cursed Energy Dash",
+  "subtitles.mykaisen.cursed_strikes": "Flurry of strikes"
 }
