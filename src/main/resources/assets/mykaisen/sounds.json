@@ -1,0 +1,14 @@
+{
+  "dash": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:dash_sfx"
+    ]
+  },
+  "cursed_strikes": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:cursed_strikes_sfx"
+    ]
+  }
+}

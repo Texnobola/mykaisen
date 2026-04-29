@@ -36,6 +36,9 @@ public class AbilityServerHandler {
 
         player.setDeltaMovement(dashMotion);
         
+        // Play Dash SFX
+        player.level().playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.DASH.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
+        
         // CRITICAL: Tells the server to forcefully update the client with this new movement vector immediately
         player.hurtMarked = true; 
 

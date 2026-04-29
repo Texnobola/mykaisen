@@ -48,8 +48,16 @@ public class ClientAnimationHandler {
                         var animationData = PlayerAnimationAccess.getPlayerAssociatedData(clientPlayer).get(ANIMATION_LAYER_ID);
                         
                         // Cast and set the animation
-                        if (animationData instanceof ModifierLayer<?> layer) {
-                            ((ModifierLayer<IAnimation>) layer).setAnimation(new KeyframeAnimationPlayer((dev.kosmx.playerAnim.core.data.KeyframeAnimation) animation));
+                        if (animationData instanceof ModifierLayer<?> rawLayer) {
+                            ModifierLayer<IAnimation> layer = (ModifierLayer<IAnimation>) rawLayer;
+                            
+                            dev.kosmx.playerAnim.api.layered.modifier.FirstPersonModifier fpModifier = new dev.kosmx.playerAnim.api.layered.modifier.FirstPersonModifier();
+                            fpModifier.setCurrentFirstPersonConfig(dev.kosmx.playerAnim.api.layered.modifier.FirstPersonModifier.FirstPersonConfigEnum.ENABLE_BOTH_ARMS);
+                            fpModifier.setCurrentFirstPersonMode(dev.kosmx.playerAnim.api.firstPerson.FirstPersonMode.THIRD_PERSON_MODEL);
+                            
+                            layer.addModifierLast(fpModifier); // Note: addModifierLast is the standard KosmX method for this, overriding addModifierBefore which usually takes 2 args. If it errors, we will fix.
+                            
+                            layer.setAnimation(new KeyframeAnimationPlayer((dev.kosmx.playerAnim.core.data.KeyframeAnimation) animation));
                         }
                     }
                 }

@@ -80,6 +80,9 @@ public class CombatTickHandler {
                             player, 
                             new PlayAnimationPayload("cursed_strikes", player.getId())
                     );
+                    
+                    // Play Beatdown SFX
+                    player.level().playSound(null, target.blockPosition(), com.my.kaisen.registry.ModSounds.CURSED_STRIKES.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
                 }
             } else {
                 // Timer ran out, remove the dash
