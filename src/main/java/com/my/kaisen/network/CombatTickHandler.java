@@ -415,9 +415,18 @@ public class CombatTickHandler {
     }
     
     private static void executeBlackFlash(ServerPlayer player, DivergentFistState state) {
-        // TODO: trigger the Photon VFX (Black Flash Sparks) and camera shake
-        
         LivingEntity target = state.target;
+        
+        // Trigger Black Flash Photon VFX at the target's center-of-mass on all nearby clients
+        net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                player,
+                new SpawnVfxPayload("black_flash", target.getX(), target.getY(0.5), target.getZ())
+        );
+        // Heavy short camera shake on the attacker only (not all nearby players)
+        net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(
+                player, new CameraShakePayload(5.0f, 8)
+        );
+        
         boolean isBackHit = player.getLookAngle().normalize().dot(target.getLookAngle().normalize()) > 0.5;
         
         if (isBackHit && state.chainCount < 3) {
@@ -426,8 +435,8 @@ public class CombatTickHandler {
                     net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
             target.hurt(target.damageSources().generic(), 10.0f);
             
-            // TODO: apply ModEffects.STUN
-            // target.addEffect(new MobEffectInstance(ModEffects.STUN.get(), 20, 0));
+            // Freeze the target in place for the next chain hit (20 ticks = 1 second)
+            target.addEffect(new MobEffectInstance(com.my.kaisen.registry.ModEffects.STUN, 20, 0, false, false, false));
             
             target.setDeltaMovement(Vec3.ZERO);
             target.hurtMarked = true;

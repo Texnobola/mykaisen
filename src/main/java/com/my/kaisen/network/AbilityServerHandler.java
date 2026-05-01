@@ -134,7 +134,9 @@ public class AbilityServerHandler {
                 player.level().playSound(null, player.blockPosition(),
                         com.my.kaisen.registry.ModSounds.CHARGING_DIVERGENT_FIST_2.get(),
                         net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
-                // TODO: send the "black_flash" animation payload
+                net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                        player, new PlayAnimationPayload("black_flash", player.getId())
+                );
             }
             return;
         }
@@ -160,7 +162,9 @@ public class AbilityServerHandler {
             player.level().playSound(null, player.blockPosition(),
                     com.my.kaisen.registry.ModSounds.CHARGING_DIVERGENT_FIST.get(),
                     net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
-            // TODO: send the "divergent_fist" animation payload
+            net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                    player, new PlayAnimationPayload("divergent_fist", player.getId())
+            );
         }
     }
 }

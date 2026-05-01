@@ -27,5 +27,19 @@ public class NetworkHandler {
                 PlayAnimationPayload.STREAM_CODEC,
                 (payload, ctx) -> com.my.kaisen.client.ClientAnimationHandler.handleAnimation(payload, ctx)
         );
+
+        // Register SpawnVfxPayload to be sent from Server to Client (Photon VFX trigger)
+        registrar.playToClient(
+                SpawnVfxPayload.TYPE,
+                SpawnVfxPayload.STREAM_CODEC,
+                (payload, ctx) -> com.my.kaisen.client.ClientVfxHandler.handleSpawnVfx(payload, ctx)
+        );
+
+        // Register CameraShakePayload to be sent from Server to the attacking Client only
+        registrar.playToClient(
+                CameraShakePayload.TYPE,
+                CameraShakePayload.STREAM_CODEC,
+                (payload, ctx) -> com.my.kaisen.client.ClientShakeHandler.handleShake(payload, ctx)
+        );
     }
 }
