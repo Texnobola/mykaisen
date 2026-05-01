@@ -4,5 +4,7 @@
   "mykaisen.configuration.section.mykaisen.common.toml": "My Kaisen Configs",
   "mykaisen.configuration.section.mykaisen.common.toml.title": "My Kaisen Configs",
   "subtitles.mykaisen.dash": "Cursed Energy Dash",
-  "subtitles.mykaisen.cursed_strikes": "Flurry of strikes"
+  "subtitles.mykaisen.cursed_strikes": "Flurry of strikes",
+  "effect.mykaisen.stun": "Stun",
+  "effect.mykaisen.lock_in": "Lock In"
 }

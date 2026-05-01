@@ -14,19 +14,79 @@
   "spin_mid_air": {
     "category": "player",
     "sounds": [
-      "mykaisen:spin_mid_air"
+      "mykaisen:spin_mid-air"
     ]
   },
   "dropkick": {
     "category": "player",
     "sounds": [
-      "mykaisen:dropkick"
+      "mykaisen:dropkick_sfx"
     ]
   },
   "blow_aoe": {
     "category": "player",
     "sounds": [
-      "mykaisen:blow_aoe"
+      "mykaisen:blow_sound_aoe"
+    ]
+  },
+  "ground_breaking": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:ground_breaking"
+    ]
+  },
+  "swing_back": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:swing_back"
+    ]
+  },
+  "swing_back_air": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:swing_back_air"
+    ]
+  },
+  "each_blow_impact": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:each_blow_impact"
+    ]
+  },
+  "charging_divergent_fist": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:charging_divergent_fist"
+    ]
+  },
+  "charging_divergent_fist_2": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:chraging_divergent_fist2"
+    ]
+  },
+  "body_hit_df": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:body_hit_df"
+    ]
+  },
+  "divergent_fist_hit": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:divergent_fist_hit"
+    ]
+  },
+  "black_flash": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:black_flash"
+    ]
+  },
+  "black_flash_final": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:black_flash_final"
     ]
   }
 }

@@ -18,5 +18,10 @@ public class InputEvents {
             // Send payload for Cursed Strikes (Ability ID 1)
             PacketDistributor.sendToServer(new AbilityPayload(1));
         }
+        
+        if (KeyBindings.ABILITY_2_KEY.consumeClick()) {
+            // Send payload for Crushing Blow (Ability ID 2)
+            PacketDistributor.sendToServer(new AbilityPayload(2));
+        }
     }
 }

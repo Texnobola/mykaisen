@@ -31,6 +31,7 @@ public class MyKaisen {
         CREATIVE_MODE_TABS.register(modEventBus);
         
         com.my.kaisen.registry.ModSounds.register(modEventBus);
+        com.my.kaisen.registry.ModEffects.register(modEventBus);
 
         NeoForge.EVENT_BUS.register(this);
 

@@ -13,6 +13,7 @@ import org.lwjgl.glfw.GLFW;
 public class KeyBindings {
     public static final String KEY_CATEGORY_MY_KAISEN = "key.category.mykaisen";
     public static final String KEY_ABILITY_1 = "key.mykaisen.ability1";
+    public static final String KEY_ABILITY_2 = "key.mykaisen.ability2";
 
     public static final KeyMapping ABILITY_1_KEY = new KeyMapping(
             KEY_ABILITY_1,
@@ -21,8 +22,16 @@ public class KeyBindings {
             KEY_CATEGORY_MY_KAISEN
     );
 
+    public static final KeyMapping ABILITY_2_KEY = new KeyMapping(
+            KEY_ABILITY_2,
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_X,
+            KEY_CATEGORY_MY_KAISEN
+    );
+
     @SubscribeEvent
     public static void registerBindings(RegisterKeyMappingsEvent event) {
         event.register(ABILITY_1_KEY);
+        event.register(ABILITY_2_KEY);
     }
 }
