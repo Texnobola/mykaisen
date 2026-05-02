@@ -41,7 +41,29 @@ public class NetworkHandler {
                             player.getPersistentData().putInt("mykaisen_character", payload.characterId());
 
                             // Confirm choice via chat
-                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("You have chosen the Vessel path."));
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("You have chosen the Sorcerer path."));
+                        }
+                    });
+                }
+        );
+
+        // Register ToggleBattleModePayload to be sent from Client to Server
+        registrar.playToServer(
+                ToggleBattleModePayload.TYPE,
+                ToggleBattleModePayload.STREAM_CODEC,
+                (payload, ctx) -> {
+                    ctx.enqueueWork(() -> {
+                        if (ctx.player() instanceof net.minecraft.server.level.ServerPlayer player) {
+                            boolean currentMode = player.getPersistentData().getBoolean("mykaisen_battle_mode");
+                            // Default to true if not set, then toggle
+                            boolean newMode = !currentMode;
+                            if (!player.getPersistentData().contains("mykaisen_battle_mode")) {
+                                newMode = false; // If it was never set, assume we were in battle mode (default) and go to play mode? 
+                                // Actually let's assume default is BATTLE MODE (true). So toggle makes it FALSE.
+                            }
+                            player.getPersistentData().putBoolean("mykaisen_battle_mode", newMode);
+                            String modeName = newMode ? "BATTLE" : "PLAYING";
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("Mode switched to: " + modeName));
                         }
                     });
                 }

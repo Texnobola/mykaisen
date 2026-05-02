@@ -16,7 +16,7 @@ public class CharacterSelectScreen extends Screen {
     protected void init() {
         int buttonWidth = 100;
         int buttonHeight = 20;
-        this.addRenderableWidget(Button.builder(Component.literal("Vessel"), (button) -> {
+        this.addRenderableWidget(Button.builder(Component.literal("Sorcerer"), (button) -> {
             PacketDistributor.sendToServer(new SelectCharacterPayload(1));
             this.onClose();
         }).bounds(this.width / 2 - buttonWidth / 2, this.height / 2 - buttonHeight / 2, buttonWidth, buttonHeight).build());

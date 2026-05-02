@@ -24,6 +24,22 @@ public class ServerEvents {
     }
 
     @SubscribeEvent
+    public static void onPlayerClone(net.neoforged.neoforge.event.entity.player.PlayerEvent.Clone event) {
+        net.minecraft.nbt.CompoundTag oldData = event.getOriginal().getPersistentData();
+        net.minecraft.nbt.CompoundTag newData = event.getEntity().getPersistentData();
+
+        if (oldData.contains("mykaisen_character")) {
+            newData.putInt("mykaisen_character", oldData.getInt("mykaisen_character"));
+        }
+        if (oldData.contains("mykaisen_battle_mode")) {
+            newData.putBoolean("mykaisen_battle_mode", oldData.getBoolean("mykaisen_battle_mode"));
+        }
+        if (oldData.contains("mykaisen_first_join")) {
+            newData.putBoolean("mykaisen_first_join", oldData.getBoolean("mykaisen_first_join"));
+        }
+    }
+
+    @SubscribeEvent
     public static void onPlayerTick(PlayerTickEvent.Post event) {
         if (event.getEntity() instanceof ServerPlayer player) {
             if (player.getPersistentData().getInt("mykaisen_character") == 1) {
@@ -34,6 +50,7 @@ public class ServerEvents {
                 player.addEffect(new MobEffectInstance(MobEffects.JUMP, 20, 0, false, false, false)); // Jump Boost 1
                 player.addEffect(new MobEffectInstance(MobEffects.HEALTH_BOOST, 20, 9, false, false, false)); // Health Boost 10
                 player.addEffect(new MobEffectInstance(MobEffects.SATURATION, 20, 0, false, false, false)); // Saturation infinite
+                player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 20, 2, false, false, false)); // Durability 3 (Resistance 3)
             }
         }
     }
@@ -46,6 +63,14 @@ public class ServerEvents {
     @SubscribeEvent
     public static void onLivingDamage(net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
+            // Prevent self-damage from abilities for Sorcerers
+            if (player.getPersistentData().getInt("mykaisen_character") == 1) {
+                if (event.getSource().getEntity() == player) {
+                    event.setCanceled(true);
+                    return;
+                }
+            }
+
             // Auto-dodge for Vessel (15% chance)
             if (player.getPersistentData().getInt("mykaisen_character") == 1) {
                 if (new Random().nextFloat() < 0.15f) {

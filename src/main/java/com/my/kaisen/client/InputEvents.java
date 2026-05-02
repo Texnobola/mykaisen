@@ -33,5 +33,10 @@ public class InputEvents {
             // Send payload for Manji Kick (Ability ID 4)
             PacketDistributor.sendToServer(new AbilityPayload(4));
         }
+
+        if (KeyBindings.SWITCH_MODE_KEY.consumeClick()) {
+            // Send payload to toggle battle mode
+            PacketDistributor.sendToServer(new com.my.kaisen.network.ToggleBattleModePayload());
+        }
     }
 }

@@ -13,7 +13,14 @@ public class AbilityServerHandler {
                 int abilityId = payload.abilityId();
                 
                 if (player.getPersistentData().getInt("mykaisen_character") != 1) {
-                    player.sendSystemMessage(net.minecraft.network.chat.Component.literal("You must choose the Vessel path to use these abilities."));
+                    player.sendSystemMessage(net.minecraft.network.chat.Component.literal("You must choose the Sorcerer path to use these abilities."));
+                    return;
+                }
+
+                // Battle Mode check (Defaults to true if not set)
+                boolean battleMode = !player.getPersistentData().contains("mykaisen_battle_mode") || player.getPersistentData().getBoolean("mykaisen_battle_mode");
+                if (!battleMode) {
+                    player.sendSystemMessage(net.minecraft.network.chat.Component.literal("Special attacks are disabled in Play Mode. Press G to switch to Battle Mode."));
                     return;
                 }
                 
