@@ -20,14 +20,13 @@ public class MyKaisen {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
-    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
     public MyKaisen(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
 
         BLOCKS.register(modEventBus);
-        ITEMS.register(modEventBus);
+        com.my.kaisen.registry.ModItems.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
         
         com.my.kaisen.registry.ModSounds.register(modEventBus);

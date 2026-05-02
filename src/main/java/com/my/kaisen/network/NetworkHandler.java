@@ -21,6 +21,32 @@ public class NetworkHandler {
                 AbilityServerHandler::handle
         );
 
+        // Register SelectCharacterPayload to be sent from Client to Server
+        registrar.playToServer(
+                SelectCharacterPayload.TYPE,
+                SelectCharacterPayload.STREAM_CODEC,
+                (payload, ctx) -> {
+                    ctx.enqueueWork(() -> {
+                        if (ctx.player() instanceof net.minecraft.server.level.ServerPlayer player) {
+                            // Find the CharacterChooserItem in inventory and consume it
+                            for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+                                net.minecraft.world.item.ItemStack stack = player.getInventory().getItem(i);
+                                if (stack.getItem() instanceof com.my.kaisen.item.CharacterChooserItem) {
+                                    stack.shrink(1);
+                                    break;
+                                }
+                            }
+
+                            // Save chosen character ID to persistent data
+                            player.getPersistentData().putInt("mykaisen_character", payload.characterId());
+
+                            // Confirm choice via chat
+                            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("You have chosen the Vessel path."));
+                        }
+                    });
+                }
+        );
+
         // Register our PlayAnimationPayload to be sent from Server to Client
         registrar.playToClient(
                 PlayAnimationPayload.TYPE,

@@ -10,6 +10,15 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 public class ServerEvents {
 
     @SubscribeEvent
+    public static void onPlayerJoin(net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent event) {
+        net.minecraft.world.entity.player.Player player = event.getEntity();
+        if (!player.getPersistentData().getBoolean("mykaisen_first_join")) {
+            player.getPersistentData().putBoolean("mykaisen_first_join", true);
+            player.getInventory().add(new net.minecraft.world.item.ItemStack(com.my.kaisen.registry.ModItems.CHARACTER_CHOOSER.get()));
+        }
+    }
+
+    @SubscribeEvent
     public static void onRegisterCommands(RegisterCommandsEvent event) {
         ToggleCooldownsCommand.register(event.getDispatcher());
     }
