@@ -7,6 +7,7 @@
   "key.mykaisen.ability1": "Ability 1 (Cursed Strikes)",
   "key.mykaisen.ability2": "Ability 2 (Crushing Blow)",
   "key.mykaisen.ability3": "Ability 3 (Divergent Fist)",
+  "key.mykaisen.ability4": "Ability 4 (Manji Kick)",
   "subtitles.mykaisen.dash": "Cursed Energy Dash",
   "subtitles.mykaisen.cursed_strikes": "Flurry of strikes",
   "subtitles.mykaisen.spin_mid_air": "Spinning mid-air",
@@ -23,5 +24,8 @@
   "subtitles.mykaisen.black_flash": "Black Flash!",
   "subtitles.mykaisen.black_flash_final": "Black Flash Finisher",
   "effect.mykaisen.stun": "Stun",
-  "effect.mykaisen.lock_in": "Lock In"
+  "effect.mykaisen.lock_in": "Lock In",
+  "subtitles.mykaisen.startup_sound_mk": "Manji Stance",
+  "subtitles.mykaisen.swing_mk": "Manji Dash",
+  "subtitles.mykaisen.slam_mk": "Manji Kick Impact"
 }

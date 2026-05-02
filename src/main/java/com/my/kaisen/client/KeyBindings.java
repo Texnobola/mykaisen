@@ -15,6 +15,7 @@ public class KeyBindings {
     public static final String KEY_ABILITY_1 = "key.mykaisen.ability1";
     public static final String KEY_ABILITY_2 = "key.mykaisen.ability2";
     public static final String KEY_ABILITY_3 = "key.mykaisen.ability3";
+    public static final String KEY_ABILITY_4 = "key.mykaisen.ability4";
 
     public static final KeyMapping ABILITY_1_KEY = new KeyMapping(
             KEY_ABILITY_1,
@@ -37,10 +38,18 @@ public class KeyBindings {
             KEY_CATEGORY_MY_KAISEN
     );
 
+    public static final KeyMapping ABILITY_4_KEY = new KeyMapping(
+            KEY_ABILITY_4,
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_V,
+            KEY_CATEGORY_MY_KAISEN
+    );
+
     @SubscribeEvent
     public static void registerBindings(RegisterKeyMappingsEvent event) {
         event.register(ABILITY_1_KEY);
         event.register(ABILITY_2_KEY);
         event.register(ABILITY_3_KEY);
+        event.register(ABILITY_4_KEY);
     }
 }

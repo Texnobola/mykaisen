@@ -21,6 +21,9 @@ public class AbilityServerHandler {
                 } else if (abilityId == 3) {
                     // Ability 3: Divergent Fist / Black Flash
                     executeDivergentFist(player);
+                } else if (abilityId == 4) {
+                    // Ability 4: Manji Kick (Universal Counter)
+                    CombatTickHandler.executeManjiKick(player);
                 }
             }
         });

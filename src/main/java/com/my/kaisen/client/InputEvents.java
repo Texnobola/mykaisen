@@ -28,5 +28,10 @@ public class InputEvents {
             // Send payload for Divergent Fist (Ability ID 3)
             PacketDistributor.sendToServer(new AbilityPayload(3));
         }
+
+        if (KeyBindings.ABILITY_4_KEY.consumeClick()) {
+            // Send payload for Manji Kick (Ability ID 4)
+            PacketDistributor.sendToServer(new AbilityPayload(4));
+        }
     }
 }

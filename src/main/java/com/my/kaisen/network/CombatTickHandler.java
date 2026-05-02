@@ -512,4 +512,18 @@ public class CombatTickHandler {
             target.hurtMarked = true;
         }
     }
+    public static void executeManjiKick(ServerPlayer player) {
+        UUID playerId = player.getUUID();
+        
+        if (cooldownsEnabled && abilityCooldowns.containsKey(playerId)) return;
+        
+        if (cooldownsEnabled) {
+            abilityCooldowns.put(playerId, 400); // 20s cooldown
+        }
+        
+        activeManjiKicks.put(playerId, 20); // 1 second stance duration
+        
+        player.level().playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.manji_stance.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
+        net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new PlayAnimationPayload("manji_stance", player.getId()));
+    }
 }
