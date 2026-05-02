@@ -216,6 +216,8 @@ public class CombatTickHandler {
             // Apply exactly 12 hits over 60 ticks => hit every 5 ticks
             if (ticks % 5 == 0) {
                 target.hurt(target.damageSources().generic(), 7.0f / 12.0f);
+                net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 
+                        new SpawnCursedStrikesVfxPayload(target.getX(), target.getY() + target.getBbHeight() / 2, target.getZ()));
             }
 
             // Final hit knockback
@@ -313,6 +315,10 @@ public class CombatTickHandler {
                     player.level().playSound(null, target.blockPosition(), com.my.kaisen.registry.ModSounds.GROUND_BREAKING.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
                     createCrater((net.minecraft.server.level.ServerLevel) player.level(), target.position(), 10, 15);
                     target.hurt(target.damageSources().generic(), 4.0f);
+                    
+                    net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 
+                            new SpawnCrushingBlowVfxPayload(target.getX(), target.getY(), target.getZ()));
+                            
                     target.setDeltaMovement(new Vec3(0, 0.8, 0));
                     target.hurtMarked = true;
                 }
@@ -356,6 +362,10 @@ public class CombatTickHandler {
                 if (player.onGround() && ticks > 5) {
                     player.level().playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.GROUND_BREAKING.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
                     createCrater((net.minecraft.server.level.ServerLevel) player.level(), player.position(), 15, 25); // Massive crater
+                    
+                    net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 
+                            new SpawnCrushingBlowVfxPayload(player.getX(), player.getY(), player.getZ()));
+                            
                     
                     AABB aoeBox = new AABB(
                             player.getX() - 3.0, player.getY() - 2.0, player.getZ() - 3.0,

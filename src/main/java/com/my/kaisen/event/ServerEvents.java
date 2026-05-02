@@ -21,6 +21,10 @@ public class ServerEvents {
                 event.setCanceled(true); // Negate all damage
                 com.my.kaisen.network.CombatTickHandler.activeManjiKicks.remove(player.getUUID());
 
+                if (com.my.kaisen.network.CombatTickHandler.cooldownsEnabled) {
+                    com.my.kaisen.network.CombatTickHandler.abilityCooldowns.put(player.getUUID(), 400); // 20-second cooldown
+                }
+
                 net.minecraft.world.entity.Entity attacker = event.getSource().getEntity();
                 if (attacker instanceof net.minecraft.world.entity.LivingEntity target) {
                     double distance = player.distanceTo(target);

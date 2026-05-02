@@ -8,6 +8,7 @@ import team.lodestar.lodestone.registry.common.particle.LodestoneParticleTypes;
 import team.lodestar.lodestone.systems.particle.builder.WorldParticleBuilder;
 import team.lodestar.lodestone.systems.particle.data.color.ColorParticleData;
 import team.lodestar.lodestone.systems.particle.data.GenericParticleData;
+import team.lodestar.lodestone.systems.particle.data.spin.SpinParticleData;
 
 import java.awt.Color;
 import java.util.Random;
@@ -32,22 +33,39 @@ public class ClientVfxHandler {
     }
 
     /**
-     * Spawns an explosive burst of Lodestone particles (Black and Crimson).
+     * Spawns an explosive burst of Lodestone particles (Black and Crimson) with lightning streaks.
      */
     public static void spawnBlackFlash(Level level, double x, double y, double z) {
-        for (int i = 0; i < 40; i++) {
-            // Calculate random outward velocity
-            double vx = (RANDOM.nextDouble() - 0.5) * 0.5;
-            double vy = (RANDOM.nextDouble() - 0.5) * 0.5;
-            double vz = (RANDOM.nextDouble() - 0.5) * 0.5;
+        // Core Glow
+        for (int i = 0; i < 15; i++) {
+            double vx = (RANDOM.nextDouble() - 0.5) * 0.3;
+            double vy = (RANDOM.nextDouble() - 0.5) * 0.3;
+            double vz = (RANDOM.nextDouble() - 0.5) * 0.3;
 
             WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
                     .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
                     .setScaleData(GenericParticleData.create(1.5f, 0.0f).build())
-                    .setColorData(ColorParticleData.create(Color.BLACK, new Color(180, 0, 0)).build())
-                    .setLifetime(15 + RANDOM.nextInt(10))
+                    .setColorData(ColorParticleData.create(new Color(100, 0, 0), Color.BLACK).build())
+                    .setLifetime(10 + RANDOM.nextInt(10))
                     .setRandomOffset(0.2)
                     .addMotion(vx, vy, vz)
+                    .spawn(level, x, y, z);
+        }
+
+        // Lightning Streaks
+        for (int i = 0; i < 12; i++) {
+            double vx = (RANDOM.nextDouble() - 0.5) * 2.0;
+            double vy = (RANDOM.nextDouble() - 0.5) * 2.0;
+            double vz = (RANDOM.nextDouble() - 0.5) * 2.0;
+
+            WorldParticleBuilder.create(LodestoneParticleTypes.SPARK_PARTICLE)
+                    .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
+                    .setScaleData(GenericParticleData.create(3.0f, 0.0f).build())
+                    .setColorData(ColorParticleData.create(Color.BLACK, new Color(255, 0, 0)).build())
+                    .setSpinData(SpinParticleData.create((float) (RANDOM.nextDouble() * Math.PI * 2)).build())
+                    .setLifetime(15 + RANDOM.nextInt(10))
+                    .setRandomOffset(0.1)
+                    .setRandomMotion(vx, vy, vz)
                     .spawn(level, x, y, z);
         }
     }
@@ -84,7 +102,84 @@ public class ClientVfxHandler {
                     .spawn(level, x, y, z);
         }
     }
+    /**
+     * Receiver for the SpawnCursedStrikesVfxPayload.
+     */
+    public static void handleCursedStrikesVfx(com.my.kaisen.network.SpawnCursedStrikesVfxPayload payload, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            Level level = Minecraft.getInstance().level;
+            if (level != null) {
+                spawnCursedStrikesVfx(level, payload.x(), payload.y(), payload.z());
+            }
+        });
+    }
 
+    /**
+     * Spawns a rapid, tight burst of white and light-blue particles.
+     */
+    public static void spawnCursedStrikesVfx(Level level, double x, double y, double z) {
+        for (int i = 0; i < 8; i++) {
+            double vx = (RANDOM.nextDouble() - 0.5) * 0.4;
+            double vy = (RANDOM.nextDouble() - 0.5) * 0.4;
+            double vz = (RANDOM.nextDouble() - 0.5) * 0.4;
+
+            WorldParticleBuilder.create(LodestoneParticleTypes.SPARK_PARTICLE)
+                    .setTransparencyData(GenericParticleData.create(0.8f, 0.0f).build())
+                    .setScaleData(GenericParticleData.create(1.0f, 0.0f).build())
+                    .setColorData(ColorParticleData.create(Color.WHITE, new Color(173, 216, 230)).build())
+                    .setLifetime(5 + RANDOM.nextInt(3))
+                    .setRandomOffset(0.1)
+                    .addMotion(vx, vy, vz)
+                    .spawn(level, x, y, z);
+        }
+    }
+
+    /**
+     * Receiver for the SpawnCrushingBlowVfxPayload.
+     */
+    public static void handleCrushingBlowVfx(com.my.kaisen.network.SpawnCrushingBlowVfxPayload payload, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            Level level = Minecraft.getInstance().level;
+            if (level != null) {
+                spawnCrushingBlowVfx(level, payload.x(), payload.y(), payload.z());
+            }
+        });
+    }
+
+    /**
+     * Spawns a large horizontal ring of smoke/dust and a vertical pillar of red cursed energy.
+     */
+    public static void spawnCrushingBlowVfx(Level level, double x, double y, double z) {
+        // Horizontal Ring
+        for (int i = 0; i < 40; i++) {
+            double angle = RANDOM.nextDouble() * Math.PI * 2;
+            double speed = 0.5 + RANDOM.nextDouble() * 0.5;
+            double vx = Math.cos(angle) * speed;
+            double vz = Math.sin(angle) * speed;
+
+            WorldParticleBuilder.create(LodestoneParticleTypes.SMOKE_PARTICLE)
+                    .setTransparencyData(GenericParticleData.create(0.6f, 0.0f).build())
+                    .setScaleData(GenericParticleData.create(2.5f, 4.0f).build())
+                    .setColorData(ColorParticleData.create(new Color(100, 100, 100), new Color(50, 50, 50)).build())
+                    .setLifetime(20 + RANDOM.nextInt(10))
+                    .addMotion(vx, 0.0, vz)
+                    .spawn(level, x, y, z);
+        }
+
+        // Vertical Pillar
+        for (int i = 0; i < 30; i++) {
+            double vy = 0.5 + RANDOM.nextDouble() * 1.5;
+
+            WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
+                    .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
+                    .setScaleData(GenericParticleData.create(2.0f, 0.0f).build())
+                    .setColorData(ColorParticleData.create(new Color(255, 0, 0), new Color(139, 0, 0)).build())
+                    .setLifetime(15 + RANDOM.nextInt(15))
+                    .setRandomOffset(0.5)
+                    .addMotion(0.0, vy, 0.0)
+                    .spawn(level, x, y, z);
+        }
+    }
     /**
      * Receiver for the CameraShakePayload using Lodestone's ScreenShake API.
      */

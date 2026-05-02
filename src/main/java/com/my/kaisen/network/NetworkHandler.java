@@ -42,6 +42,20 @@ public class NetworkHandler {
                 (payload, ctx) -> com.my.kaisen.client.ClientVfxHandler.handleDivergentAuraVfx(payload, ctx)
         );
 
+        // Register SpawnCursedStrikesVfxPayload to be sent from Server to Client (Lodestone VFX trigger)
+        registrar.playToClient(
+                SpawnCursedStrikesVfxPayload.TYPE,
+                SpawnCursedStrikesVfxPayload.STREAM_CODEC,
+                (payload, ctx) -> com.my.kaisen.client.ClientVfxHandler.handleCursedStrikesVfx(payload, ctx)
+        );
+
+        // Register SpawnCrushingBlowVfxPayload to be sent from Server to Client (Lodestone VFX trigger)
+        registrar.playToClient(
+                SpawnCrushingBlowVfxPayload.TYPE,
+                SpawnCrushingBlowVfxPayload.STREAM_CODEC,
+                (payload, ctx) -> com.my.kaisen.client.ClientVfxHandler.handleCrushingBlowVfx(payload, ctx)
+        );
+
         // Register CameraShakePayload to be sent from Server to the attacking Client only
         registrar.playToClient(
                 CameraShakePayload.TYPE,
