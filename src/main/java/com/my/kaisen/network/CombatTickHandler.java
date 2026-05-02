@@ -21,6 +21,18 @@ public class CombatTickHandler {
 
     public static boolean cooldownsEnabled = true;
     public static final Map<UUID, Integer> abilityCooldowns = new ConcurrentHashMap<>();
+    public static final Map<UUID, Float> awakeningMeter = new ConcurrentHashMap<>();
+
+    public static void addAwakening(ServerPlayer player, float amount) {
+        UUID uuid = player.getUUID();
+        float current = awakeningMeter.getOrDefault(uuid, 0.0f);
+        float next = Math.min(100.0f, current + amount);
+        awakeningMeter.put(uuid, next);
+        
+        if (next >= 100.0f && current < 100.0f) {
+            player.sendSystemMessage(net.minecraft.network.chat.Component.literal("Your Awakening meter is FULL! Press G to Awaken."));
+        }
+    }
 
     // Thread-safe maps for tracking dash and beatdown states
     public static final Map<UUID, Integer> activeDashes = new ConcurrentHashMap<>();
@@ -45,6 +57,21 @@ public class CombatTickHandler {
         public DivergentFistState(LivingEntity target) {
             this.target = target;
         }
+    }
+
+    public static final Map<UUID, CleaveRushState> activeCleaveRushes = new ConcurrentHashMap<>();
+
+    public static class CleaveRushState {
+        public int ticks = 0;
+        public LivingEntity target = null;
+        public boolean hasGrabbed = false;
+    }
+
+    public static final Map<UUID, RushState> activeRushes = new ConcurrentHashMap<>();
+
+    public static class RushState {
+        public int ticks = 0;
+        public LivingEntity target = null;
     }
     
     private static void createCrater(net.minecraft.server.level.ServerLevel level, Vec3 pos, int minBlocks, int maxBlocks) {
@@ -216,6 +243,7 @@ public class CombatTickHandler {
             // Apply exactly 12 hits over 60 ticks => hit every 5 ticks
             if (ticks % 5 == 0) {
                 target.hurt(target.damageSources().generic(), 7.0f / 12.0f);
+                addAwakening(player, 1.5f); // Reward each hit in the beatdown
                 net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 
                         new SpawnCursedStrikesVfxPayload(target.getX(), target.getY() + target.getBbHeight() / 2, target.getZ()));
             }
@@ -288,6 +316,7 @@ public class CombatTickHandler {
                 
                 for (LivingEntity target : hitEntities) {
                     target.hurt(target.damageSources().generic(), 5.0f);
+                    addAwakening(player, 5.0f);
                 }
                 
                 dropkickStates.remove(playerId);
@@ -311,10 +340,12 @@ public class CombatTickHandler {
                     player.level().playSound(null, target.blockPosition(), com.my.kaisen.registry.ModSounds.EACH_BLOW_IMPACT.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
                     createCrater((net.minecraft.server.level.ServerLevel) player.level(), target.position(), 4, 10);
                     target.hurt(target.damageSources().generic(), 3.0f);
+                    addAwakening(player, 5.0f);
                 } else if (ticks == 28) {
                     player.level().playSound(null, target.blockPosition(), com.my.kaisen.registry.ModSounds.GROUND_BREAKING.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
                     createCrater((net.minecraft.server.level.ServerLevel) player.level(), target.position(), 10, 15);
                     target.hurt(target.damageSources().generic(), 4.0f);
+                    addAwakening(player, 10.0f);
                     
                     net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 
                             new SpawnCrushingBlowVfxPayload(target.getX(), target.getY(), target.getZ()));
@@ -380,6 +411,7 @@ public class CombatTickHandler {
                     
                     for (LivingEntity t : hitEntities) {
                         t.hurt(t.damageSources().generic(), 6.0f);
+                        addAwakening(player, 10.0f);
                         // Launch them outwards and up
                         Vec3 diff = t.position().subtract(player.position());
                         if (diff.lengthSqr() == 0) diff = new Vec3(1, 0, 0); // fallback
@@ -397,6 +429,16 @@ public class CombatTickHandler {
         // 5. Divergent Fist & Black Flash
         // -----------------------------------------------------
         tickDivergentFists(player);
+
+        // -----------------------------------------------------
+        // 6. Cleave Rush
+        // -----------------------------------------------------
+        tickCleaveRush(player);
+
+        // -----------------------------------------------------
+        // 7. Rush (Awakened Ability 3)
+        // -----------------------------------------------------
+        tickRush(player);
     }
     
     private static void tickDivergentFists(ServerPlayer player) {
@@ -428,6 +470,7 @@ public class CombatTickHandler {
                             com.my.kaisen.registry.ModSounds.DIVERGENT_FIST_HIT.get(),
                             net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
                     target.hurt(target.damageSources().magic(), 10.0f);
+                    addAwakening(player, 10.0f);
                     
                     Vec3 lookVec = player.getLookAngle();
                     Vec3 push = new Vec3(lookVec.x * 1.8, 0.3, lookVec.z * 1.8);
@@ -505,6 +548,7 @@ public class CombatTickHandler {
                     com.my.kaisen.registry.ModSounds.BLACK_FLASH_FINAL.get(),
                     net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
             target.hurt(target.damageSources().generic(), damage);
+            addAwakening(player, 25.0f); // Massive gain for Black Flash Final
             
             Vec3 lookVec = player.getLookAngle();
             Vec3 push = new Vec3(lookVec.x * 4.5, 0.6, lookVec.z * 4.5);
@@ -522,4 +566,250 @@ public class CombatTickHandler {
         player.level().playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.manji_stance.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
         net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new PlayAnimationPayload("manji_stance", player.getId()));
     }
+
+    private static void tickCleaveRush(ServerPlayer player) {
+        UUID playerId = player.getUUID();
+        if (!activeCleaveRushes.containsKey(playerId)) return;
+
+        CleaveRushState state = activeCleaveRushes.get(playerId);
+
+        // --------------------------------------------------------
+        // Phase 1: Gap-closer dash – search for a grab target
+        // --------------------------------------------------------
+        if (!state.hasGrabbed) {
+            state.ticks++;
+
+            // Propel the player forward continuously
+            player.setDeltaMovement(player.getLookAngle().scale(1.8D));
+            player.hurtMarked = true;
+
+            // AABB 2 blocks ahead of the player
+            Vec3 look = player.getLookAngle();
+            Vec3 front = player.position().add(look.scale(2.0));
+            AABB grabBox = new AABB(
+                    front.x - 0.8, front.y - 1.0, front.z - 0.8,
+                    front.x + 0.8, front.y + 1.0, front.z + 0.8
+            );
+
+            List<LivingEntity> nearby = player.level().getEntitiesOfClass(
+                    LivingEntity.class, grabBox, e -> e != player && e.isAlive()
+            );
+
+            if (!nearby.isEmpty()) {
+                state.target = nearby.get(0);
+                state.hasGrabbed = true;
+                state.ticks = 0;
+                player.setDeltaMovement(Vec3.ZERO);
+                player.hurtMarked = true;
+                player.level().playSound(null, player.blockPosition(),
+                        net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_STRONG,
+                        net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 0.8F);
+            } else if (state.ticks > 15) {
+                // Missed – clean up
+                activeCleaveRushes.remove(playerId);
+            }
+            return;
+        }
+
+        // --------------------------------------------------------
+        // Phase 2 & 3: Grab is active
+        // --------------------------------------------------------
+        LivingEntity target = state.target;
+        if (target == null || !target.isAlive() || target.isRemoved()) {
+            activeCleaveRushes.remove(playerId);
+            return;
+        }
+
+        state.ticks++;
+
+        // Lock player in place
+        player.setDeltaMovement(Vec3.ZERO);
+        player.hurtMarked = true;
+
+        // Pin target 1.5 blocks in front of the player's face
+        Vec3 pinPos = player.getEyePosition().add(player.getLookAngle().scale(1.5));
+        target.teleportTo(pinPos.x, pinPos.y - target.getEyeHeight() * 0.5, pinPos.z);
+        target.setDeltaMovement(Vec3.ZERO);
+        target.hurtMarked = true;
+
+        // Hits every 2 ticks from tick 0..20
+        if (state.ticks <= 20 && state.ticks % 2 == 0) {
+            target.hurt(target.damageSources().playerAttack(player), 3.0F);
+            net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                    player, new SpawnCleaveRushVfxPayload(target.getX(), target.getY(0.5), target.getZ(), false)
+            );
+        }
+
+        // Final blow at tick 25
+        if (state.ticks == 25) {
+            target.hurt(target.damageSources().playerAttack(player), 20.0F);
+
+            Vec3 lookVec = player.getLookAngle();
+            Vec3 finalPush = new Vec3(lookVec.x * 3.0, 0.8, lookVec.z * 3.0);
+            target.setDeltaMovement(finalPush);
+            target.hurtMarked = true;
+
+            net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                    player, new SpawnCleaveRushVfxPayload(target.getX(), target.getY(0.5), target.getZ(), true)
+            );
+            net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                    player, new CameraShakePayload(0.5f, 20)
+            );
+            player.level().playSound(null, target.blockPosition(),
+                    net.minecraft.sounds.SoundEvents.GENERIC_EXPLODE.value(),
+                    net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.4F);
+
+            activeCleaveRushes.remove(playerId);
+        }
+    }
+
+    private static void tickRush(ServerPlayer player) {
+        UUID playerId = player.getUUID();
+        if (!activeRushes.containsKey(playerId)) return;
+
+        RushState state = activeRushes.get(playerId);
+        state.ticks++;
+
+        // Failsafe
+        if (state.ticks > 60) {
+            activeRushes.remove(playerId);
+            return;
+        }
+
+        // ----------------------------------------------------------------
+        // Phase 1 – Forward dash (ticks 1-10)
+        // ----------------------------------------------------------------
+        if (state.ticks <= 10) {
+            player.setDeltaMovement(player.getLookAngle().scale(1.5D));
+            player.hurtMarked = true;
+
+            // Kick off the full Rush animation on the very first tick
+            if (state.ticks == 1) {
+                net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                        player, new PlayAnimationPayload("rush", player.getId())
+                );
+            }
+
+            // AABB check 2 blocks ahead to find a target
+            Vec3 look = player.getLookAngle();
+            Vec3 front = player.position().add(look.scale(2.0));
+            AABB grabBox = new AABB(
+                    front.x - 0.8, front.y - 1.0, front.z - 0.8,
+                    front.x + 0.8, front.y + 1.0, front.z + 0.8
+            );
+
+            List<LivingEntity> nearby = player.level().getEntitiesOfClass(
+                    LivingEntity.class, grabBox, e -> e != player && e.isAlive()
+            );
+
+            if (!nearby.isEmpty()) {
+                state.target = nearby.get(0);
+                state.ticks = 11; // Skip straight to Phase 2
+                player.setDeltaMovement(Vec3.ZERO);
+                player.hurtMarked = true;
+                player.level().playSound(null, player.blockPosition(),
+                        net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_STRONG,
+                        net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 0.9F);
+            } else if (state.ticks == 10) {
+                // Dash expired with no target – cancel
+                activeRushes.remove(playerId);
+            }
+            return;
+        }
+
+        // All subsequent phases require a valid target
+        LivingEntity target = state.target;
+        if (target == null || !target.isAlive() || target.isRemoved()) {
+            activeRushes.remove(playerId);
+            return;
+        }
+
+        // ----------------------------------------------------------------
+        // Phase 2 – Upward kick (ticks 11-20)
+        // ----------------------------------------------------------------
+        if (state.ticks >= 11 && state.ticks <= 20) {
+            player.setDeltaMovement(0, 1.2, 0);
+            target.setDeltaMovement(0, 1.2, 0);
+            player.hurtMarked = true;
+            target.hurtMarked = true;
+            target.fallDistance = 0; // Prevent fall damage accumulation
+
+            if (state.ticks == 11) {
+                target.hurt(target.damageSources().playerAttack(player), 15.0F);
+                player.level().playSound(null, target.blockPosition(),
+                        net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_KNOCKBACK,
+                        net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 0.7F);
+                net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                        player, new PlayAnimationPayload("rush_kick_up", player.getId())
+                );
+            }
+            return;
+        }
+
+        // ----------------------------------------------------------------
+        // Phase 3 – Downward slam (ticks 21-30)
+        // ----------------------------------------------------------------
+        if (state.ticks >= 21 && state.ticks <= 30) {
+            player.setDeltaMovement(0, -2.5, 0);
+            target.setDeltaMovement(0, -2.5, 0);
+            player.hurtMarked = true;
+            target.hurtMarked = true;
+
+            if (state.ticks == 21) {
+                player.level().playSound(null, player.blockPosition(),
+                        net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_SWEEP,
+                        net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 0.5F);
+                net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                        player, new PlayAnimationPayload("rush_slam_down", player.getId())
+                );
+            }
+            return;
+        }
+
+        // ----------------------------------------------------------------
+        // Phase 4 – Impact (wait for target to land)
+        // ----------------------------------------------------------------
+        if (state.ticks > 30) {
+            // Prevent indefinite hang: stop player movement while waiting
+            player.setDeltaMovement(Vec3.ZERO);
+            player.hurtMarked = true;
+
+            if (target.onGround()) {
+                // Final impact damage
+                target.hurt(target.damageSources().playerAttack(player), 5.0F);
+
+                // Crater + VFX
+                if (player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+                    createCrater(serverLevel, target.position(), 8, 14);
+
+                    // Dust shockwave – server-side vanilla particles as fallback
+                    serverLevel.sendParticles(
+                            net.minecraft.core.particles.ParticleTypes.EXPLOSION_EMITTER,
+                            target.getX(), target.getY(), target.getZ(), 3, 0.5, 0.0, 0.5, 0.0
+                    );
+                    serverLevel.sendParticles(
+                            net.minecraft.core.particles.ParticleTypes.CLOUD,
+                            target.getX(), target.getY(), target.getZ(), 30, 1.5, 0.2, 1.5, 0.05
+                    );
+                }
+
+                // Lodestone VFX payload for blood/dust effect
+                net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                        player, new SpawnCleaveRushVfxPayload(target.getX(), target.getY(0.5), target.getZ(), true)
+                );
+
+                // Heavy screen shake
+                net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                        player, new CameraShakePayload(0.7f, 25)
+                );
+
+                player.level().playSound(null, target.blockPosition(),
+                        net.minecraft.sounds.SoundEvents.GENERIC_EXPLODE.value(),
+                        net.minecraft.sounds.SoundSource.PLAYERS, 1.5F, 0.8F);
+
+                activeRushes.remove(playerId);
+            }
+        }
+    }
 }
+

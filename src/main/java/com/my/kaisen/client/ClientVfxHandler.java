@@ -193,4 +193,149 @@ public class ClientVfxHandler {
             );
         });
     }
+    /**
+     * Receiver for the SpawnAwakeningVfxPayload.
+     */
+    public static void handleAwakeningVfx(final com.my.kaisen.network.SpawnAwakeningVfxPayload payload, final IPayloadContext context) {
+        context.enqueueWork(() -> {
+            Level level = Minecraft.getInstance().level;
+            if (level != null) {
+                spawnAwakeningVfx(level, payload.x(), payload.y(), payload.z());
+            }
+        });
+    }
+
+    /**
+     * Spawns a massive shockwave of dark red and black cursed energy.
+     */
+    public static void spawnAwakeningVfx(Level level, double x, double y, double z) {
+        // Massive shockwave of dark red and black
+        for (int i = 0; i < 60; i++) {
+            double vx = (RANDOM.nextDouble() - 0.5) * 1.5;
+            double vy = (RANDOM.nextDouble() - 0.5) * 0.5;
+            double vz = (RANDOM.nextDouble() - 0.5) * 1.5;
+            
+            Color color = i % 2 == 0 ? new Color(139, 0, 0) : Color.BLACK;
+            
+            WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
+                    .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
+                    .setScaleData(GenericParticleData.create(4.0f, 0.0f).build())
+                    .setColorData(ColorParticleData.create(color, Color.BLACK).build())
+                    .setLifetime(30 + RANDOM.nextInt(20))
+                    .addMotion(vx, vy, vz)
+                    .spawn(level, x, y, z);
+        }
+    }
+    /**
+     * Receiver for the SpawnDismantleVfxPayload.
+     */
+    public static void handleDismantleVfx(final com.my.kaisen.network.SpawnDismantleVfxPayload payload, final IPayloadContext context) {
+        context.enqueueWork(() -> {
+            Level level = Minecraft.getInstance().level;
+            if (level != null) {
+                spawnDismantle(level, payload.x(), payload.y(), payload.z(), payload.yRot());
+            }
+        });
+    }
+
+    /**
+     * Spawns a wide, thin horizontal slash of white/light-blue cursed energy.
+     */
+    public static void spawnDismantle(Level level, double x, double y, double z, float yRot) {
+        // yRot is the yaw. We want the line to be perpendicular to the look direction.
+        // Convert to radians and add 90 degrees (pi/2) to get the perpendicular vector.
+        double angle = Math.toRadians(yRot + 90.0f);
+        double perpX = Math.cos(angle);
+        double perpZ = Math.sin(angle);
+
+        // Spawn a tight line of sparks extending left and right from the center point
+        int sparkCount = 15;
+        double slashWidth = 2.5; // Total width of the slash
+        
+        for (int i = 0; i < sparkCount; i++) {
+            // Calculate offset along the perpendicular vector (-0.5 to 0.5)
+            double offset = (i / (double)(sparkCount - 1)) - 0.5;
+            
+            double px = x + (perpX * offset * slashWidth);
+            double pz = z + (perpZ * offset * slashWidth);
+
+            // Asymmetric scaling: wide horizontally, thin vertically
+            // We use a slight random rotation to make it look energetic but mostly flat
+            WorldParticleBuilder.create(LodestoneParticleTypes.SPARK_PARTICLE)
+                    .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
+                    .setScaleData(GenericParticleData.create(0.8f, 0.1f).build()) // Asymmetric-like effect by scaling down quickly
+                    .setColorData(ColorParticleData.create(Color.WHITE, new Color(173, 216, 230)).build())
+                    .setLifetime(4 + RANDOM.nextInt(3)) // Very short lifetime
+                    .spawn(level, px, y, pz);
+        }
+    }
+    /**
+     * Receiver for the SpawnCleaveRushVfxPayload.
+     */
+    public static void handleCleaveRushVfx(final com.my.kaisen.network.SpawnCleaveRushVfxPayload payload, final IPayloadContext context) {
+        context.enqueueWork(() -> {
+            Level level = Minecraft.getInstance().level;
+            if (level != null) {
+                spawnCleaveRushVfx(level, payload.x(), payload.y(), payload.z(), payload.isFinalHit());
+            }
+        });
+    }
+
+    /**
+     * Cleave Rush VFX:
+     * - Regular hits: tight crimson/white slash sparks.
+     * - Final hit: massive dark-red & black explosion of wisps.
+     */
+    public static void spawnCleaveRushVfx(Level level, double x, double y, double z, boolean isFinalHit) {
+        if (!isFinalHit) {
+            // Regular hit – fast crimson slash sparks
+            for (int i = 0; i < 8; i++) {
+                double vx = (RANDOM.nextDouble() - 0.5) * 0.6;
+                double vy = (RANDOM.nextDouble()) * 0.4;
+                double vz = (RANDOM.nextDouble() - 0.5) * 0.6;
+
+                WorldParticleBuilder.create(LodestoneParticleTypes.SPARK_PARTICLE)
+                        .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
+                        .setScaleData(GenericParticleData.create(1.2f, 0.0f).build())
+                        .setColorData(ColorParticleData.create(new Color(220, 20, 60), Color.WHITE).build())
+                        .setLifetime(5 + RANDOM.nextInt(3))
+                        .addMotion(vx, vy, vz)
+                        .spawn(level, x, y, z);
+            }
+        } else {
+            // Final hit – explosive shockwave of dark-red wisps
+            for (int i = 0; i < 50; i++) {
+                double vx = (RANDOM.nextDouble() - 0.5) * 2.0;
+                double vy = (RANDOM.nextDouble()) * 1.5;
+                double vz = (RANDOM.nextDouble() - 0.5) * 2.0;
+
+                Color color = i % 3 == 0 ? new Color(139, 0, 0) : (i % 3 == 1 ? Color.BLACK : Color.WHITE);
+
+                WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
+                        .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
+                        .setScaleData(GenericParticleData.create(3.5f, 0.0f).build())
+                        .setColorData(ColorParticleData.create(color, Color.BLACK).build())
+                        .setLifetime(20 + RANDOM.nextInt(15))
+                        .addMotion(vx, vy, vz)
+                        .spawn(level, x, y, z);
+            }
+
+            // Extra crimson sparks for impact
+            for (int i = 0; i < 20; i++) {
+                double vx = (RANDOM.nextDouble() - 0.5) * 3.0;
+                double vy = (RANDOM.nextDouble()) * 2.0;
+                double vz = (RANDOM.nextDouble() - 0.5) * 3.0;
+
+                WorldParticleBuilder.create(LodestoneParticleTypes.SPARK_PARTICLE)
+                        .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
+                        .setScaleData(GenericParticleData.create(2.0f, 0.0f).build())
+                        .setColorData(ColorParticleData.create(new Color(220, 20, 60), Color.BLACK).build())
+                        .setSpinData(SpinParticleData.create(RANDOM.nextFloat() * 6.28f, RANDOM.nextFloat() * 0.4f).build())
+                        .setLifetime(10 + RANDOM.nextInt(10))
+                        .addMotion(vx, vy, vz)
+                        .spawn(level, x, y, z);
+            }
+        }
+    }
 }
+

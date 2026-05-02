@@ -20,22 +20,122 @@ public class AbilityServerHandler {
                 // Battle Mode check (Defaults to true if not set)
                 boolean battleMode = !player.getPersistentData().contains("mykaisen_battle_mode") || player.getPersistentData().getBoolean("mykaisen_battle_mode");
                 if (!battleMode) {
-                    player.sendSystemMessage(net.minecraft.network.chat.Component.literal("Special attacks are disabled in Play Mode. Press G to switch to Battle Mode."));
+                    player.sendSystemMessage(net.minecraft.network.chat.Component.literal("Special attacks are disabled in Play Mode. Press H to switch to Battle Mode."));
                     return;
                 }
                 
+                boolean isAwakened = player.getPersistentData().getBoolean("is_awakened");
+
                 if (abilityId == 1) {
-                    // Ability 1: Cursed Strikes (Forward Dash)
-                    executeCursedStrikesDash(player);
+                    if (!isAwakened) {
+                        // Ability 1: Cursed Strikes (Forward Dash)
+                        executeCursedStrikesDash(player);
+                    } else {
+                        // Dismantle: Fast hitscan attack
+                        if (CombatTickHandler.cooldownsEnabled && CombatTickHandler.abilityCooldowns.containsKey(player.getUUID())) return;
+
+                        // Animation — grounded vs airborne variant
+                        String dismantleAnim = player.onGround() ? "dismantle" : "dismantle_air";
+                        net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                                player, new PlayAnimationPayload(dismantleAnim, player.getId())
+                        );
+
+                        net.minecraft.world.phys.Vec3 eyePos = player.getEyePosition();
+                        net.minecraft.world.phys.Vec3 look = player.getLookAngle();
+                        net.minecraft.world.phys.Vec3 endPos = eyePos.add(look.scale(15.0));
+                        net.minecraft.world.phys.AABB searchBox = player.getBoundingBox().expandTowards(look.scale(15.0)).inflate(1.0);
+
+                        net.minecraft.world.phys.EntityHitResult hitResult = net.minecraft.world.entity.projectile.ProjectileUtil.getEntityHitResult(
+                                player.level(), player, eyePos, endPos, searchBox, e -> e instanceof net.minecraft.world.entity.LivingEntity && e.isAlive() && e != player
+                        );
+
+                        if (hitResult != null && hitResult.getEntity() instanceof net.minecraft.world.entity.LivingEntity target) {
+                            target.hurt(player.damageSources().playerAttack(player), 6.0F);
+                            
+                            // Backward knockback
+                            net.minecraft.world.phys.Vec3 push = look.scale(0.5).add(0, 0.2, 0);
+                            target.setDeltaMovement(target.getDeltaMovement().add(push));
+                            target.hurtMarked = true;
+
+                            net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                                    player, new SpawnDismantleVfxPayload(target.getX(), target.getY(0.5), target.getZ(), player.getYRot())
+                            );
+                        } else {
+                            // Miss VFX at max range
+                            net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                                    player, new SpawnDismantleVfxPayload(endPos.x, endPos.y, endPos.z, player.getYRot())
+                            );
+                        }
+
+                        player.level().playSound(null, player.blockPosition(), net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_SWEEP, net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.5F);
+
+                        if (CombatTickHandler.cooldownsEnabled) {
+                            CombatTickHandler.abilityCooldowns.put(player.getUUID(), 60); // 3 seconds
+                        }
+                    }
                 } else if (abilityId == 2) {
-                    // Ability 2: Crushing Blow
-                    executeCrushingBlow(player);
+                    if (!isAwakened) {
+                        // Ability 2: Crushing Blow
+                        executeCrushingBlow(player);
+                    } else {
+                        // TODO: Open (Fuga)
+                    }
                 } else if (abilityId == 3) {
-                    // Ability 3: Divergent Fist / Black Flash
-                    executeDivergentFist(player);
+                    if (!isAwakened) {
+                        // Ability 3: Divergent Fist / Black Flash
+                        executeDivergentFist(player);
+                    } else {
+                        // Rush: 3-stage combo (Dash → Kick Up → Slam Down)
+                        if (CombatTickHandler.cooldownsEnabled && CombatTickHandler.abilityCooldowns.containsKey(player.getUUID())) return;
+                        if (CombatTickHandler.activeRushes.containsKey(player.getUUID())) return;
+
+                        CombatTickHandler.activeRushes.put(player.getUUID(), new CombatTickHandler.RushState());
+
+                        if (CombatTickHandler.cooldownsEnabled) {
+                            CombatTickHandler.abilityCooldowns.put(player.getUUID(), 300); // 15 seconds
+                        }
+
+                        player.level().playSound(null, player.blockPosition(),
+                                net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_SWEEP,
+                                net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 0.6F);
+                    }
                 } else if (abilityId == 4) {
-                    // Ability 4: Manji Kick (Universal Counter)
-                    CombatTickHandler.executeManjiKick(player);
+                    if (!isAwakened) {
+                        // Ability 4: Manji Kick (Universal Counter)
+                        CombatTickHandler.executeManjiKick(player);
+                    } else {
+                        // TODO: Malevolent Shrine
+                    }
+                }
+            }
+        });
+    }
+
+    public static void handleAwaken(final AwakenPayload payload, final IPayloadContext context) {
+        context.enqueueWork(() -> {
+            if (context.player() instanceof ServerPlayer player) {
+                float meter = CombatTickHandler.awakeningMeter.getOrDefault(player.getUUID(), 0.0f);
+                if (meter >= 100.0f) {
+                    CombatTickHandler.awakeningMeter.put(player.getUUID(), 0.0f);
+                    player.getPersistentData().putBoolean("is_awakened", true);
+                    
+                    // Heal the player
+                    player.heal(45.0f);
+                    
+                    // Buffs for 60 seconds
+                    player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SPEED, 1200, 2));
+                    player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.DAMAGE_RESISTANCE, 1200, 2));
+                    
+                    // Visual/Sound
+                    player.level().playSound(null, player.blockPosition(), net.minecraft.sounds.SoundEvents.WITHER_SPAWN, net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 0.5F);
+                    
+                    // VFX Burst
+                    net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 
+                            new SpawnAwakeningVfxPayload(player.getX(), player.getY() + 1.0, player.getZ()));
+                    
+                    player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§4You have AWAKENED! Your moveset has changed."));
+                } else {
+                    player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cYour Awakening meter is not full (" + (int)meter + "/100)."));
                 }
             }
         });

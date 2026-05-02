@@ -8,25 +8,39 @@ import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public class CharacterSelectScreen extends Screen {
+    private static final net.minecraft.resources.ResourceLocation BOOK_TEXTURE = net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(com.my.kaisen.MyKaisen.MODID, "textures/gui/cursed_book.png");
+    private final int imageWidth = 192;
+    private final int imageHeight = 192;
+
     public CharacterSelectScreen() {
         super(Component.literal("Character Selection"));
     }
 
     @Override
     protected void init() {
-        int buttonWidth = 100;
-        int buttonHeight = 20;
-        this.addRenderableWidget(Button.builder(Component.literal("Sorcerer"), (button) -> {
+        int x = (this.width - imageWidth) / 2;
+        int y = (this.height - imageHeight) / 2;
+
+        // "Vessel" button on the right-hand page
+        this.addRenderableWidget(Button.builder(Component.literal("Vessel"), (button) -> {
             PacketDistributor.sendToServer(new SelectCharacterPayload(1));
             this.onClose();
-        }).bounds(this.width / 2 - buttonWidth / 2, this.height / 2 - buttonHeight / 2, buttonWidth, buttonHeight).build());
+        }).bounds(x + 115, y + 50, 60, 20).build());
     }
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        // Draw a semi-transparent background
         this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
-        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 40, 0xFFFFFF);
+        
+        int x = (this.width - imageWidth) / 2;
+        int y = (this.height - imageHeight) / 2;
+
+        // Draw the book texture
+        guiGraphics.blit(BOOK_TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
+
+        // Draw title on the left page
+        guiGraphics.drawString(this.font, "Choose Your Path", x + 20, y + 20, 0x000000, false);
+
         super.render(guiGraphics, mouseX, mouseY, partialTick);
     }
 

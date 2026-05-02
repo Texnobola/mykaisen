@@ -38,5 +38,10 @@ public class InputEvents {
             // Send payload to toggle battle mode
             PacketDistributor.sendToServer(new com.my.kaisen.network.ToggleBattleModePayload());
         }
+
+        if (KeyBindings.AWAKEN_KEY.consumeClick()) {
+            // Send payload to trigger Awakening
+            PacketDistributor.sendToServer(new com.my.kaisen.network.AwakenPayload());
+        }
     }
 }

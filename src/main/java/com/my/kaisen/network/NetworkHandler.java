@@ -69,6 +69,13 @@ public class NetworkHandler {
                 }
         );
 
+        // Register AwakenPayload to be sent from Client to Server
+        registrar.playToServer(
+                AwakenPayload.TYPE,
+                AwakenPayload.STREAM_CODEC,
+                AbilityServerHandler::handleAwaken
+        );
+
         // Register our PlayAnimationPayload to be sent from Server to Client
         registrar.playToClient(
                 PlayAnimationPayload.TYPE,
@@ -109,6 +116,27 @@ public class NetworkHandler {
                 CameraShakePayload.TYPE,
                 CameraShakePayload.STREAM_CODEC,
                 (payload, ctx) -> com.my.kaisen.client.ClientVfxHandler.handleCameraShake(payload, ctx)
+        );
+
+        // Register SpawnAwakeningVfxPayload to be sent from Server to Client
+        registrar.playToClient(
+                SpawnAwakeningVfxPayload.TYPE,
+                SpawnAwakeningVfxPayload.STREAM_CODEC,
+                (payload, ctx) -> com.my.kaisen.client.ClientVfxHandler.handleAwakeningVfx(payload, ctx)
+        );
+
+        // Register SpawnDismantleVfxPayload to be sent from Server to Client
+        registrar.playToClient(
+                SpawnDismantleVfxPayload.TYPE,
+                SpawnDismantleVfxPayload.STREAM_CODEC,
+                (payload, ctx) -> com.my.kaisen.client.ClientVfxHandler.handleDismantleVfx(payload, ctx)
+        );
+
+        // Register SpawnCleaveRushVfxPayload to be sent from Server to Client
+        registrar.playToClient(
+                SpawnCleaveRushVfxPayload.TYPE,
+                SpawnCleaveRushVfxPayload.STREAM_CODEC,
+                (payload, ctx) -> com.my.kaisen.client.ClientVfxHandler.handleCleaveRushVfx(payload, ctx)
         );
     }
 }
