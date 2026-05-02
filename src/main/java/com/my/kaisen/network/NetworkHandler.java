@@ -138,5 +138,19 @@ public class NetworkHandler {
                 SpawnCleaveRushVfxPayload.STREAM_CODEC,
                 (payload, ctx) -> com.my.kaisen.client.ClientVfxHandler.handleCleaveRushVfx(payload, ctx)
         );
+
+        // Register SyncAwakeningPayload to be sent from Server to Client
+        registrar.playToClient(
+                SyncAwakeningPayload.TYPE,
+                SyncAwakeningPayload.STREAM_CODEC,
+                (payload, ctx) -> {
+                    ctx.enqueueWork(() -> {
+                        net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
+                        if (mc.level != null && mc.level.getEntity(payload.playerId()) instanceof net.minecraft.world.entity.player.Player target) {
+                            target.getPersistentData().putBoolean("is_awakened", payload.isAwakened());
+                        }
+                    });
+                }
+        );
     }
 }

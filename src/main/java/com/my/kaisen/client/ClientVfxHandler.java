@@ -226,6 +226,46 @@ public class ClientVfxHandler {
                     .spawn(level, x, y, z);
         }
     }
+
+    /**
+     * Spawns a continuous, aggressive 'Menacing Red Aura' around a position.
+     */
+    public static void spawnMenacingAura(Level level, double x, double y, double z, double width, double height) {
+        // Crimson Wisp
+        if (RANDOM.nextFloat() < 0.4f) {
+            double angle = RANDOM.nextDouble() * Math.PI * 2;
+            double r = RANDOM.nextDouble() * width;
+            double px = x + Math.cos(angle) * r;
+            double pz = z + Math.sin(angle) * r;
+            double py = y + RANDOM.nextDouble() * height;
+
+            WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
+                    .setTransparencyData(GenericParticleData.create(0.6f, 0.0f).build())
+                    .setScaleData(GenericParticleData.create(1.2f, 0.0f).build())
+                    .setColorData(ColorParticleData.create(new Color(220, 20, 60), Color.BLACK).build())
+                    .setLifetime(15 + RANDOM.nextInt(10))
+                    .addMotion(0, 0.08, 0)
+                    .spawn(level, px, py, pz);
+        }
+
+        // Black Smoke
+        if (RANDOM.nextFloat() < 0.3f) {
+            double angle = RANDOM.nextDouble() * Math.PI * 2;
+            double r = RANDOM.nextDouble() * width;
+            double px = x + Math.cos(angle) * r;
+            double pz = z + Math.sin(angle) * r;
+            double py = y + RANDOM.nextDouble() * height;
+
+            WorldParticleBuilder.create(LodestoneParticleTypes.SMOKE_PARTICLE)
+                    .setTransparencyData(GenericParticleData.create(0.4f, 0.0f).build())
+                    .setScaleData(GenericParticleData.create(0.8f, 1.5f).build())
+                    .setColorData(ColorParticleData.create(Color.BLACK, new Color(50, 0, 0)).build())
+                    .setLifetime(20 + RANDOM.nextInt(15))
+                    .addMotion(0, 0.04, 0)
+                    .spawn(level, px, py, pz);
+        }
+    }
+
     /**
      * Receiver for the SpawnDismantleVfxPayload.
      */

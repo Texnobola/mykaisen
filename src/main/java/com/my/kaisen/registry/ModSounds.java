@@ -65,6 +65,12 @@ public class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> manji_kick = SOUND_EVENTS.register("slam_mk",
             () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MyKaisen.MODID, "slam_mk")));
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> universal_awekekning_sound = SOUND_EVENTS.register("universal_awekekning_sound",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MyKaisen.MODID, "universal_awekekning_sound")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> sukuna_awekening = SOUND_EVENTS.register("sukuna_awekening",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MyKaisen.MODID, "sukuna_awekening")));
+
     public static void register(IEventBus eventBus) {
         SOUND_EVENTS.register(eventBus);
     }

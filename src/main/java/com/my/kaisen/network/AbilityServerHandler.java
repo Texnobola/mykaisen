@@ -119,6 +119,10 @@ public class AbilityServerHandler {
                     CombatTickHandler.awakeningMeter.put(player.getUUID(), 0.0f);
                     player.getPersistentData().putBoolean("is_awakened", true);
                     
+                    // Sync to client
+                    net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 
+                            new SyncAwakeningPayload(player.getId(), true));
+
                     // Heal the player
                     player.heal(45.0f);
                     
@@ -126,8 +130,19 @@ public class AbilityServerHandler {
                     player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SPEED, 1200, 2));
                     player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.DAMAGE_RESISTANCE, 1200, 2));
                     
-                    // Visual/Sound
-                    player.level().playSound(null, player.blockPosition(), net.minecraft.sounds.SoundEvents.WITHER_SPAWN, net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 0.5F);
+                    // Cinematic Sequence
+                    // 1. Send animation payload
+                    net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 
+                            new PlayAnimationPayload("KingofCursesAwekeningAnimation", player.getId()));
+
+                    // 2. Play global sound
+                    player.level().playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.universal_awekekning_sound.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0f, 1.0f);
+
+                    // 3. Play voice line specifically to the player (or globally)
+                    player.level().playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.sukuna_awekening.get(), net.minecraft.sounds.SoundSource.VOICE, 1.0f, 1.0f);
+
+                    // 4. Halt movement for 25 ticks
+                    CombatTickHandler.awakeningSequences.put(player.getUUID(), 25);
                     
                     // VFX Burst
                     net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 

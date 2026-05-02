@@ -67,7 +67,8 @@ public class CombatTickHandler {
         public boolean hasGrabbed = false;
     }
 
-    public static final Map<UUID, RushState> activeRushes = new ConcurrentHashMap<>();
+    public static final Map<UUID, Integer> activeRushes = new ConcurrentHashMap<>();
+    public static final Map<UUID, Integer> awakeningSequences = new ConcurrentHashMap<>();
 
     public static class RushState {
         public int ticks = 0;
@@ -126,6 +127,17 @@ public class CombatTickHandler {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
 
         UUID playerId = player.getUUID();
+
+        if (awakeningSequences.containsKey(playerId)) {
+            int ticks = awakeningSequences.get(playerId);
+            player.setDeltaMovement(Vec3.ZERO);
+            player.hurtMarked = true;
+            if (ticks <= 1) {
+                awakeningSequences.remove(playerId);
+            } else {
+                awakeningSequences.put(playerId, ticks - 1);
+            }
+        }
 
         // -----------------------------------------------------
         // 0. Cooldown Logic & Timers
