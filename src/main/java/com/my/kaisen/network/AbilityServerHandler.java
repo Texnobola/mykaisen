@@ -12,6 +12,11 @@ public class AbilityServerHandler {
             if (context.player() instanceof ServerPlayer player) {
                 int abilityId = payload.abilityId();
                 
+                if (player.getPersistentData().getInt("mykaisen_character") != 1) {
+                    player.sendSystemMessage(net.minecraft.network.chat.Component.literal("You must choose the Vessel path to use these abilities."));
+                    return;
+                }
+                
                 if (abilityId == 1) {
                     // Ability 1: Cursed Strikes (Forward Dash)
                     executeCursedStrikesDash(player);

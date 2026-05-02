@@ -5,6 +5,11 @@ import com.my.kaisen.command.ToggleCooldownsCommand;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.server.level.ServerPlayer;
+import java.util.Random;
 
 @EventBusSubscriber(modid = MyKaisen.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class ServerEvents {
@@ -19,13 +24,37 @@ public class ServerEvents {
     }
 
     @SubscribeEvent
+    public static void onPlayerTick(PlayerTickEvent.Post event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            if (player.getPersistentData().getInt("mykaisen_character") == 1) {
+                // Vessel Passives
+                player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 20, 1, false, false, false));
+                player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 20, 3, false, false, false)); // Strength 4
+                player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20, 1, false, false, false)); // Speed 2
+                player.addEffect(new MobEffectInstance(MobEffects.JUMP, 20, 0, false, false, false)); // Jump Boost 1
+                player.addEffect(new MobEffectInstance(MobEffects.HEALTH_BOOST, 20, 9, false, false, false)); // Health Boost 10
+                player.addEffect(new MobEffectInstance(MobEffects.SATURATION, 20, 0, false, false, false)); // Saturation infinite
+            }
+        }
+    }
+
+    @SubscribeEvent
     public static void onRegisterCommands(RegisterCommandsEvent event) {
         ToggleCooldownsCommand.register(event.getDispatcher());
     }
 
     @SubscribeEvent
     public static void onLivingDamage(net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent event) {
-        if (event.getEntity() instanceof net.minecraft.server.level.ServerPlayer player) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            // Auto-dodge for Vessel (15% chance)
+            if (player.getPersistentData().getInt("mykaisen_character") == 1) {
+                if (new Random().nextFloat() < 0.15f) {
+                    event.setCanceled(true);
+                    player.level().playSound(null, player.blockPosition(), net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_NODAMAGE, net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.5F);
+                    return;
+                }
+            }
+
             if (com.my.kaisen.network.CombatTickHandler.activeManjiKicks.containsKey(player.getUUID())) {
                 event.setCanceled(true); // Negate all damage
                 com.my.kaisen.network.CombatTickHandler.activeManjiKicks.remove(player.getUUID());
