@@ -56,6 +56,15 @@ public class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> BLACK_FLASH_FINAL = SOUND_EVENTS.register("black_flash_final",
             () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MyKaisen.MODID, "black_flash_final")));
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> manji_stance = SOUND_EVENTS.register("startup_sound_mk",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MyKaisen.MODID, "startup_sound_mk")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> manji_dash = SOUND_EVENTS.register("swing_mk",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MyKaisen.MODID, "swing_mk")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> manji_kick = SOUND_EVENTS.register("slam_mk",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MyKaisen.MODID, "slam_mk")));
+
     public static void register(IEventBus eventBus) {
         SOUND_EVENTS.register(eventBus);
     }

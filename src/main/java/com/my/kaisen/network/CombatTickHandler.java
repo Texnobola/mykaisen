@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
 @EventBusSubscriber(modid = MyKaisen.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class CombatTickHandler {
 
@@ -27,6 +26,7 @@ public class CombatTickHandler {
     public static final Map<UUID, Integer> activeDashes = new ConcurrentHashMap<>();
     public static final Map<UUID, BeatdownState> activeBeatdowns = new ConcurrentHashMap<>();
     public static final Map<UUID, Integer> dropkickStates = new ConcurrentHashMap<>();
+    public static final Map<UUID, Integer> activeManjiKicks = new ConcurrentHashMap<>();
     
     public static final Map<UUID, CrushingBlowState> activeCrushingBlows = new ConcurrentHashMap<>();
     public static final Map<UUID, Integer> crushingBlowMisses = new ConcurrentHashMap<>();
@@ -101,7 +101,7 @@ public class CombatTickHandler {
         UUID playerId = player.getUUID();
 
         // -----------------------------------------------------
-        // 0. Cooldown Logic
+        // 0. Cooldown Logic & Timers
         // -----------------------------------------------------
         if (cooldownsEnabled && abilityCooldowns.containsKey(playerId)) {
             int currentCooldown = abilityCooldowns.get(playerId);
@@ -109,6 +109,15 @@ public class CombatTickHandler {
                 abilityCooldowns.put(playerId, currentCooldown - 1);
             } else {
                 abilityCooldowns.remove(playerId);
+            }
+        }
+
+        if (activeManjiKicks.containsKey(playerId)) {
+            int currentTicks = activeManjiKicks.get(playerId);
+            if (currentTicks > 0) {
+                activeManjiKicks.put(playerId, currentTicks - 1);
+            } else {
+                activeManjiKicks.remove(playerId);
             }
         }
 
