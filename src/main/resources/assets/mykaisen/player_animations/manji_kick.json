@@ -30,7 +30,7 @@
 				}
 			}
 		},
-		"manji_counter_melee.json": {
+		"manji_kick": {
 			"animation_length": 0.75,
 			"bones": {
 				"body": {

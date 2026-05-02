@@ -54,15 +54,15 @@ public class ClientVfxHandler {
 
         // Lightning Streaks
         for (int i = 0; i < 20; i++) {
-            double vx = (RANDOM.nextDouble() - 0.5) * 3.0;
-            double vy = (RANDOM.nextDouble() - 0.5) * 3.0;
-            double vz = (RANDOM.nextDouble() - 0.5) * 3.0;
+            double vx = (RANDOM.nextDouble() - 0.5) * 6.0; // Increased velocity
+            double vy = (RANDOM.nextDouble() - 0.5) * 6.0;
+            double vz = (RANDOM.nextDouble() - 0.5) * 6.0;
 
             WorldParticleBuilder.create(LodestoneParticleTypes.SPARK_PARTICLE)
-                    .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(2.5f, 0.0f).build())
+                    .setTransparencyData(GenericParticleData.create(1.0f, 1.0f, 0.0f).build()) // Opaque then sharp fade
+                    .setScaleData(GenericParticleData.create(3.0f, 0.0f).build())
                     .setColorData(ColorParticleData.create(new Color(255, 0, 0), Color.BLACK).build())
-                    .setSpinData(SpinParticleData.create(RANDOM.nextFloat() * 6.28f).build())
+                    .setSpinData(SpinParticleData.create(RANDOM.nextFloat() * 6.28f, RANDOM.nextFloat() * 0.5f).build())
                     .setLifetime(10 + RANDOM.nextInt(5))
                     .setRandomOffset(0.1)
                     .addMotion(vx, vy, vz)

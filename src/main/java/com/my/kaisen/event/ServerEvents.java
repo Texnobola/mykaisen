@@ -25,16 +25,16 @@ public class ServerEvents {
                 if (attacker instanceof net.minecraft.world.entity.LivingEntity target) {
                     double distance = player.distanceTo(target);
 
-                    net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
-                            player, new com.my.kaisen.network.PlayAnimationPayload("manji_kick", player.getId())
-                    );
-
                     if (distance > 3.0D) {
                         player.level().playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.manji_dash.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
-                        net.minecraft.world.phys.Vec3 dir = target.position().subtract(player.position()).normalize().scale(1.5D);
+                        net.minecraft.world.phys.Vec3 dir = target.position().subtract(player.position()).normalize().scale(4.5D).add(0, 0.2, 0);
                         player.setDeltaMovement(dir);
                         player.hurtMarked = true;
                     }
+
+                    net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                            player, new com.my.kaisen.network.PlayAnimationPayload("manji_kick", player.getId())
+                    );
 
                     target.hurt(player.damageSources().playerAttack(player), 8.5F);
                     
