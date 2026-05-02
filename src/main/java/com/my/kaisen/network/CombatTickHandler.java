@@ -20,6 +20,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @EventBusSubscriber(modid = MyKaisen.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class CombatTickHandler {
 
+    public static boolean cooldownsEnabled = true;
+    public static final Map<UUID, Integer> abilityCooldowns = new ConcurrentHashMap<>();
+
     // Thread-safe maps for tracking dash and beatdown states
     public static final Map<UUID, Integer> activeDashes = new ConcurrentHashMap<>();
     public static final Map<UUID, BeatdownState> activeBeatdowns = new ConcurrentHashMap<>();
@@ -96,6 +99,18 @@ public class CombatTickHandler {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
 
         UUID playerId = player.getUUID();
+
+        // -----------------------------------------------------
+        // 0. Cooldown Logic
+        // -----------------------------------------------------
+        if (cooldownsEnabled && abilityCooldowns.containsKey(playerId)) {
+            int currentCooldown = abilityCooldowns.get(playerId);
+            if (currentCooldown > 0) {
+                abilityCooldowns.put(playerId, currentCooldown - 1);
+            } else {
+                abilityCooldowns.remove(playerId);
+            }
+        }
 
         // -----------------------------------------------------
         // 1. Dash Collision Logic
@@ -388,20 +403,23 @@ public class CombatTickHandler {
                     player.level().playSound(null, target.blockPosition(),
                             com.my.kaisen.registry.ModSounds.BODY_HIT_DF.get(),
                             net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
-                    target.hurt(target.damageSources().generic(), 4.0f);
+                    target.hurt(target.damageSources().generic(), 6.0f);
                 } else if (state.ticks == 25) {
                     player.level().playSound(null, target.blockPosition(),
                             com.my.kaisen.registry.ModSounds.DIVERGENT_FIST_HIT.get(),
                             net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
-                    target.hurt(target.damageSources().magic(), 6.0f);
+                    target.hurt(target.damageSources().magic(), 10.0f);
                     
                     Vec3 lookVec = player.getLookAngle();
-                    Vec3 push = new Vec3(lookVec.x * 1.2, 0.2, lookVec.z * 1.2);
+                    Vec3 push = new Vec3(lookVec.x * 1.8, 0.3, lookVec.z * 1.8);
                     target.setDeltaMovement(push);
                     target.hurtMarked = true;
                     
-                    // TODO: trigger the Photon VFX (Divergent Fist Aura)
-                    
+                    // Trigger Divergent Fist Aura Lodestone VFX at the target's center-of-mass on all nearby clients
+                    net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                            player,
+                            new SpawnDivergentAuraPayload(target.getX(), target.getY(0.5), target.getZ())
+                    );
                     activeDivergentFists.remove(playerId);
                 }
             } else {
@@ -417,15 +435,31 @@ public class CombatTickHandler {
     private static void executeBlackFlash(ServerPlayer player, DivergentFistState state) {
         LivingEntity target = state.target;
         
-        // Trigger Black Flash Photon VFX at the target's center-of-mass on all nearby clients
+        // Trigger Black Flash Lodestone VFX at the target's center-of-mass on all nearby clients
         net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
                 player,
-                new SpawnVfxPayload("black_flash", target.getX(), target.getY(0.5), target.getZ())
+                new SpawnBlackFlashPayload(target.getX(), target.getY(0.5), target.getZ())
         );
-        // Heavy short camera shake on the attacker only (not all nearby players)
-        net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(
-                player, new CameraShakePayload(5.0f, 8)
+        // Heavy short camera shake for all nearby players observing the Black Flash
+        net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                player, new CameraShakePayload(0.4f, 15)
         );
+
+        // Spawn Black Flash Sparks (Black and Red particles)
+        net.minecraft.server.level.ServerLevel serverLevel = (net.minecraft.server.level.ServerLevel) player.level();
+        net.minecraft.world.phys.Vec3 particlePos = target.position().add(0, target.getBbHeight() * 0.5, 0);
+        
+        // Black Sparks
+        serverLevel.sendParticles(new net.minecraft.core.particles.DustParticleOptions(new org.joml.Vector3f(0.0f, 0.0f, 0.0f), 1.5f), 
+                particlePos.x, particlePos.y, particlePos.z, 40, 0.3, 0.3, 0.3, 0.2);
+        // Red Sparks
+        serverLevel.sendParticles(new net.minecraft.core.particles.DustParticleOptions(new org.joml.Vector3f(0.8f, 0.0f, 0.0f), 1.0f), 
+                particlePos.x, particlePos.y, particlePos.z, 30, 0.4, 0.4, 0.4, 0.3);
+        // High energy impact sparks
+        serverLevel.sendParticles(net.minecraft.core.particles.ParticleTypes.ELECTRIC_SPARK, 
+                particlePos.x, particlePos.y, particlePos.z, 20, 0.2, 0.2, 0.2, 0.5);
+        serverLevel.sendParticles(net.minecraft.core.particles.ParticleTypes.ENCHANTED_HIT, 
+                particlePos.x, particlePos.y, particlePos.z, 15, 0.3, 0.3, 0.3, 0.4);
         
         boolean isBackHit = player.getLookAngle().normalize().dot(target.getLookAngle().normalize()) > 0.5;
         
@@ -433,7 +467,7 @@ public class CombatTickHandler {
             player.level().playSound(null, target.blockPosition(),
                     com.my.kaisen.registry.ModSounds.BLACK_FLASH.get(),
                     net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
-            target.hurt(target.damageSources().generic(), 10.0f);
+            target.hurt(target.damageSources().generic(), 12.0f);
             
             // Freeze the target in place for the next chain hit (20 ticks = 1 second)
             target.addEffect(new MobEffectInstance(com.my.kaisen.registry.ModEffects.STUN, 20, 0, false, false, false));
@@ -447,14 +481,14 @@ public class CombatTickHandler {
             
             activeDivergentFists.put(player.getUUID(), state);
         } else {
-            float damage = (state.chainCount == 3) ? 25.0f : 15.0f;
+            float damage = (state.chainCount == 3) ? 35.0f : 20.0f;
             player.level().playSound(null, target.blockPosition(),
                     com.my.kaisen.registry.ModSounds.BLACK_FLASH_FINAL.get(),
                     net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
             target.hurt(target.damageSources().generic(), damage);
             
             Vec3 lookVec = player.getLookAngle();
-            Vec3 push = new Vec3(lookVec.x * 2.5, 0.4, lookVec.z * 2.5);
+            Vec3 push = new Vec3(lookVec.x * 4.5, 0.6, lookVec.z * 4.5);
             target.setDeltaMovement(push);
             target.hurtMarked = true;
         }

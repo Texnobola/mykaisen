@@ -27,8 +27,13 @@ public class AbilityServerHandler {
     }
 
     private static void executeCursedStrikesDash(ServerPlayer player) {
-        // 1. Apply Cooldown (Placeholder)
-        // TODO: Apply a 10-second (200 tick) cooldown to the player using standard capabilities or item cooldowns
+        java.util.UUID playerId = player.getUUID();
+        // Combo chaining must happen before this if applicable
+        if (CombatTickHandler.cooldownsEnabled && CombatTickHandler.abilityCooldowns.containsKey(playerId)) return;
+
+        if (CombatTickHandler.cooldownsEnabled) {
+            CombatTickHandler.abilityCooldowns.put(playerId, 160); // 8 seconds
+        }
 
         if (player.onGround()) {
             // Grounded logic: Propel player forward roughly 3 blocks
@@ -68,6 +73,9 @@ public class AbilityServerHandler {
     }
 
     private static void executeCrushingBlow(ServerPlayer player) {
+        java.util.UUID playerId = player.getUUID();
+        if (CombatTickHandler.cooldownsEnabled && CombatTickHandler.abilityCooldowns.containsKey(playerId)) return;
+
         if (player.onGround()) {
             // Grounded logic
             Vec3 lookVec = player.getLookAngle();
@@ -91,6 +99,10 @@ public class AbilityServerHandler {
                 
                 CombatTickHandler.activeCrushingBlows.put(player.getUUID(), new CombatTickHandler.CrushingBlowState(target, 0));
                 
+                if (CombatTickHandler.cooldownsEnabled) {
+                    CombatTickHandler.abilityCooldowns.put(playerId, 200); // 10 seconds
+                }
+
                 player.level().playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.SWING_BACK.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
                 net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new PlayAnimationPayload("crushing_blow", player.getId()));
             } else {
@@ -119,6 +131,10 @@ public class AbilityServerHandler {
             net.minecraft.world.entity.LivingEntity target = null;
             if (hitResult != null && hitResult.getEntity() instanceof net.minecraft.world.entity.LivingEntity hitTarget) {
                 target = hitTarget;
+                
+                if (CombatTickHandler.cooldownsEnabled) {
+                    CombatTickHandler.abilityCooldowns.put(playerId, 200); // 10 seconds
+                }
             }
             
             CombatTickHandler.airCrushingBlows.put(player.getUUID(), new CombatTickHandler.AirCrushingState(target, 0));
@@ -141,6 +157,9 @@ public class AbilityServerHandler {
             return;
         }
         
+        java.util.UUID playerId = player.getUUID();
+        if (CombatTickHandler.cooldownsEnabled && CombatTickHandler.abilityCooldowns.containsKey(playerId)) return;
+
         Vec3 lookVec = player.getLookAngle();
         Vec3 frontCenter = player.position().add(lookVec.scale(1.5));
         net.minecraft.world.phys.AABB hitBox = new net.minecraft.world.phys.AABB(
@@ -159,6 +178,10 @@ public class AbilityServerHandler {
             CombatTickHandler.DivergentFistState newState = new CombatTickHandler.DivergentFistState(target);
             CombatTickHandler.activeDivergentFists.put(player.getUUID(), newState);
             
+            if (CombatTickHandler.cooldownsEnabled) {
+                CombatTickHandler.abilityCooldowns.put(playerId, 100); // 5 seconds
+            }
+
             player.level().playSound(null, player.blockPosition(),
                     com.my.kaisen.registry.ModSounds.CHARGING_DIVERGENT_FIST.get(),
                     net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);

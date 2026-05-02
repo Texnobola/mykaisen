@@ -28,18 +28,25 @@ public class NetworkHandler {
                 (payload, ctx) -> com.my.kaisen.client.ClientAnimationHandler.handleAnimation(payload, ctx)
         );
 
-        // Register SpawnVfxPayload to be sent from Server to Client (Photon VFX trigger)
+        // Register SpawnBlackFlashPayload to be sent from Server to Client (Lodestone VFX trigger)
         registrar.playToClient(
-                SpawnVfxPayload.TYPE,
-                SpawnVfxPayload.STREAM_CODEC,
-                (payload, ctx) -> com.my.kaisen.client.ClientVfxHandler.handleSpawnVfx(payload, ctx)
+                SpawnBlackFlashPayload.TYPE,
+                SpawnBlackFlashPayload.STREAM_CODEC,
+                (payload, ctx) -> com.my.kaisen.client.ClientVfxHandler.handleBlackFlashVfx(payload, ctx)
+        );
+
+        // Register SpawnDivergentAuraPayload to be sent from Server to Client (Lodestone VFX trigger)
+        registrar.playToClient(
+                SpawnDivergentAuraPayload.TYPE,
+                SpawnDivergentAuraPayload.STREAM_CODEC,
+                (payload, ctx) -> com.my.kaisen.client.ClientVfxHandler.handleDivergentAuraVfx(payload, ctx)
         );
 
         // Register CameraShakePayload to be sent from Server to the attacking Client only
         registrar.playToClient(
                 CameraShakePayload.TYPE,
                 CameraShakePayload.STREAM_CODEC,
-                (payload, ctx) -> com.my.kaisen.client.ClientShakeHandler.handleShake(payload, ctx)
+                (payload, ctx) -> com.my.kaisen.client.ClientVfxHandler.handleCameraShake(payload, ctx)
         );
     }
 }

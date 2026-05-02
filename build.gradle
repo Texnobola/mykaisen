@@ -133,7 +133,7 @@ dependencies {
     implementation "software.bernie.geckolib:geckolib-neoforge-1.21.1:4.7.6"
     implementation "curse.maven:playeranimator-658587:7389814"
     implementation "curse.maven:kleiders-custom-renderer-api-682065:5675429"
-    implementation "curse.maven:photon-871522:7658228"
+    implementation "curse.maven:lodestone-616457:7264731"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

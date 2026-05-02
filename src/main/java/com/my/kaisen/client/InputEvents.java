@@ -23,5 +23,10 @@ public class InputEvents {
             // Send payload for Crushing Blow (Ability ID 2)
             PacketDistributor.sendToServer(new AbilityPayload(2));
         }
+
+        if (KeyBindings.ABILITY_3_KEY.consumeClick()) {
+            // Send payload for Divergent Fist (Ability ID 3)
+            PacketDistributor.sendToServer(new AbilityPayload(3));
+        }
     }
 }
