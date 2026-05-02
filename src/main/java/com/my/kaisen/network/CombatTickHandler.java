@@ -67,7 +67,7 @@ public class CombatTickHandler {
         public boolean hasGrabbed = false;
     }
 
-    public static final Map<UUID, Integer> activeRushes = new ConcurrentHashMap<>();
+    public static final Map<UUID, RushState> activeRushes = new ConcurrentHashMap<>();
     public static final Map<UUID, Integer> awakeningSequences = new ConcurrentHashMap<>();
 
     public static class RushState {

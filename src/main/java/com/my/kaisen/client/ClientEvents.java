@@ -19,12 +19,17 @@ public class ClientEvents {
     public static class ModBusEvents {
         @SubscribeEvent
         public static void onAddLayers(EntityRenderersEvent.AddLayers event) {
-            for (String skin : event.getSkins()) {
+            for (net.minecraft.world.entity.player.PlayerModelPart part : net.minecraft.world.entity.player.PlayerModelPart.values()) {
+                // This is not the right way to iterate skins in 1.21.1
+            }
+            
+            // Correct way for 1.21.1 to get skins
+            event.getSkins().forEach(skin -> {
                 PlayerRenderer renderer = event.getSkin(skin);
                 if (renderer != null) {
                     renderer.addLayer(new SukunaTattooLayer<>(renderer));
                 }
-            }
+            });
         }
     }
 
