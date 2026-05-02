@@ -517,10 +517,6 @@ public class CombatTickHandler {
         
         if (cooldownsEnabled && abilityCooldowns.containsKey(playerId)) return;
         
-        if (cooldownsEnabled) {
-            abilityCooldowns.put(playerId, 400); // 20s cooldown
-        }
-        
         activeManjiKicks.put(playerId, 20); // 1 second stance duration
         
         player.level().playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.manji_stance.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);

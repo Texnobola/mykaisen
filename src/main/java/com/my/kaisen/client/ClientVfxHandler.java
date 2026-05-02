@@ -53,19 +53,19 @@ public class ClientVfxHandler {
         }
 
         // Lightning Streaks
-        for (int i = 0; i < 12; i++) {
-            double vx = (RANDOM.nextDouble() - 0.5) * 2.0;
-            double vy = (RANDOM.nextDouble() - 0.5) * 2.0;
-            double vz = (RANDOM.nextDouble() - 0.5) * 2.0;
+        for (int i = 0; i < 20; i++) {
+            double vx = (RANDOM.nextDouble() - 0.5) * 3.0;
+            double vy = (RANDOM.nextDouble() - 0.5) * 3.0;
+            double vz = (RANDOM.nextDouble() - 0.5) * 3.0;
 
             WorldParticleBuilder.create(LodestoneParticleTypes.SPARK_PARTICLE)
                     .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(3.0f, 0.0f).build())
-                    .setColorData(ColorParticleData.create(Color.BLACK, new Color(255, 0, 0)).build())
-                    .setSpinData(SpinParticleData.create((float) (RANDOM.nextDouble() * Math.PI * 2)).build())
-                    .setLifetime(15 + RANDOM.nextInt(10))
+                    .setScaleData(GenericParticleData.create(2.5f, 0.0f).build())
+                    .setColorData(ColorParticleData.create(new Color(255, 0, 0), Color.BLACK).build())
+                    .setSpinData(SpinParticleData.create(RANDOM.nextFloat() * 6.28f).build())
+                    .setLifetime(10 + RANDOM.nextInt(5))
                     .setRandomOffset(0.1)
-                    .setRandomMotion(vx, vy, vz)
+                    .addMotion(vx, vy, vz)
                     .spawn(level, x, y, z);
         }
     }
