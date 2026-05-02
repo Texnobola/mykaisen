@@ -279,33 +279,30 @@ public class ClientVfxHandler {
     }
 
     /**
-     * Spawns a wide, thin horizontal slash of white/light-blue cursed energy.
+     * Spawns a wide, razor-thin horizontal slash of white/light-blue cursed energy.
      */
     public static void spawnDismantle(Level level, double x, double y, double z, float yRot) {
         // yRot is the yaw. We want the line to be perpendicular to the look direction.
-        // Convert to radians and add 90 degrees (pi/2) to get the perpendicular vector.
         double angle = Math.toRadians(yRot + 90.0f);
         double perpX = Math.cos(angle);
         double perpZ = Math.sin(angle);
 
-        // Spawn a tight line of sparks extending left and right from the center point
-        int sparkCount = 15;
-        double slashWidth = 2.5; // Total width of the slash
+        // Spawn a tight line of razor-thin sparks
+        int sparkCount = 10;
+        double slashWidth = 5.0; // Wider slash
         
         for (int i = 0; i < sparkCount; i++) {
-            // Calculate offset along the perpendicular vector (-0.5 to 0.5)
             double offset = (i / (double)(sparkCount - 1)) - 0.5;
             
             double px = x + (perpX * offset * slashWidth);
             double pz = z + (perpZ * offset * slashWidth);
 
-            // Asymmetric scaling: wide horizontally, thin vertically
-            // We use a slight random rotation to make it look energetic but mostly flat
             WorldParticleBuilder.create(LodestoneParticleTypes.SPARK_PARTICLE)
                     .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(0.8f, 0.1f).build()) // Asymmetric-like effect by scaling down quickly
+                    // Razor-thin and wide: X scale = 4.0, Y scale = 0.1
+                    .setScaleData(GenericParticleData.create(4.0f, 0.1f, 0.0f).build())
                     .setColorData(ColorParticleData.create(Color.WHITE, new Color(173, 216, 230)).build())
-                    .setLifetime(4 + RANDOM.nextInt(3)) // Very short lifetime
+                    .setLifetime(3 + RANDOM.nextInt(3)) // 3-5 ticks
                     .spawn(level, px, y, pz);
         }
     }
