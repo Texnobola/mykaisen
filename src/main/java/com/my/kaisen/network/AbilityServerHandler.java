@@ -328,4 +328,14 @@ public class AbilityServerHandler {
             );
         }
     }
+
+    public static void handleM1(final TriggerM1Payload payload, final IPayloadContext context) {
+        context.enqueueWork(() -> {
+            if (context.player() instanceof ServerPlayer player) {
+                // Instantly start the 5-shot barrage
+                M1ComboHandler.comboShots.put(player.getUUID(), 5);
+                M1ComboHandler.comboTicks.put(player.getUUID(), 0);
+            }
+        });
+    }
 }

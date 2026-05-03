@@ -152,5 +152,12 @@ public class NetworkHandler {
                     });
                 }
         );
+        
+        // Register TriggerM1Payload to be sent from Client to Server
+        registrar.playToServer(
+                TriggerM1Payload.TYPE,
+                TriggerM1Payload.STREAM_CODEC,
+                AbilityServerHandler::handleM1
+        );
     }
 }

@@ -56,4 +56,27 @@ public class ClientEvents {
             }
         }
     }
+
+    @SubscribeEvent
+    public static void onLeftClickEmpty(net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.LeftClickEmpty event) {
+        net.minecraft.world.entity.player.Player player = event.getEntity();
+        if (player.getPersistentData().getInt("mykaisen_character") == 1) {
+            boolean battleMode = !player.getPersistentData().contains("mykaisen_battle_mode") || player.getPersistentData().getBoolean("mykaisen_battle_mode");
+            if (battleMode) {
+                net.neoforged.neoforge.network.PacketDistributor.sendToServer(new com.my.kaisen.network.TriggerM1Payload());
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLeftClickBlock(net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.LeftClickBlock event) {
+        net.minecraft.world.entity.player.Player player = event.getEntity();
+        if (player.getPersistentData().getInt("mykaisen_character") == 1) {
+            boolean battleMode = !player.getPersistentData().contains("mykaisen_battle_mode") || player.getPersistentData().getBoolean("mykaisen_battle_mode");
+            if (battleMode) {
+                event.setCanceled(true);
+                net.neoforged.neoforge.network.PacketDistributor.sendToServer(new com.my.kaisen.network.TriggerM1Payload());
+            }
+        }
+    }
 }

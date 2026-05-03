@@ -29,6 +29,9 @@ public class DismantleProjectileRenderer extends EntityRenderer<DismantleProject
         
         // Flip upright
         poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+
+        // Lay flat horizontally as requested
+        poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
         
         // Scale up by 3.0f as requested
         poseStack.scale(3.0F, 3.0F, 3.0F);

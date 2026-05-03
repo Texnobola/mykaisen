@@ -43,6 +43,20 @@ public class DismantleProjectileEntity extends Projectile {
         this.setPos(this.getX() + deltaMovement.x, this.getY() + deltaMovement.y, this.getZ() + deltaMovement.z);
         ProjectileUtil.rotateTowardsMovement(this, 0.5F);
 
+        // Block destruction logic
+        if (!this.level().isClientSide) {
+            net.minecraft.world.phys.AABB destroyBox = this.getBoundingBox().inflate(0.5);
+            net.minecraft.core.BlockPos min = net.minecraft.core.BlockPos.containing(destroyBox.minX, destroyBox.minY, destroyBox.minZ);
+            net.minecraft.core.BlockPos max = net.minecraft.core.BlockPos.containing(destroyBox.maxX, destroyBox.maxY, destroyBox.maxZ);
+
+            for (net.minecraft.core.BlockPos pos : net.minecraft.core.BlockPos.betweenClosed(min, max)) {
+                net.minecraft.world.level.block.state.BlockState state = this.level().getBlockState(pos);
+                if (!state.isAir() && state.getDestroySpeed(this.level(), pos) >= 0) {
+                    this.level().destroyBlock(pos, true);
+                }
+            }
+        }
+
         if (!this.level().isClientSide && this.tickCount > 40) {
             this.discard();
         }

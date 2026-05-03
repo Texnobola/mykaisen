@@ -36,7 +36,7 @@ public class CharacterSelectScreen extends Screen {
         int y = (this.height - imageHeight) / 2;
 
         // Draw the book texture
-        guiGraphics.blit(BOOK_TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
+        guiGraphics.blit(BOOK_TEXTURE, x, y, 0, 0, imageWidth, imageHeight, 256, 256);
 
         // Draw title on the left page
         guiGraphics.drawString(this.font, "Choose Your Path", x + 20, y + 20, 0x000000, false);
