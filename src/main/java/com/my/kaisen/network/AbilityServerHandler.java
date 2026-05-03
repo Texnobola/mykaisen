@@ -39,9 +39,10 @@ public class AbilityServerHandler {
                         String dismantleAnim = onGround ? "dismantle" : "dismantle_air";
                         
                         if (!onGround) {
-                            player.setDeltaMovement(player.getDeltaMovement().add(0, 0.4D, 0));
+                            player.setNoGravity(true);
+                            player.setDeltaMovement(0, 0.4D, 0);
                             player.hurtMarked = true;
-                            CombatTickHandler.suspendedPlayers.put(player.getUUID(), 15);
+                            CombatTickHandler.airDismantlePlayers.put(player.getUUID(), 20);
                         }
 
                         net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
@@ -135,7 +136,7 @@ public class AbilityServerHandler {
                     // Cinematic Sequence
                     // 1. Send animation payload
                     net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 
-                            new PlayAnimationPayload("KingofCursesAwekeningAnimation", player.getId()));
+                            new PlayAnimationPayload("king_of_curses_awakening", player.getId()));
 
                     // 2. Play global sound
                     player.level().playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.universal_awekekning_sound.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0f, 1.0f);

@@ -88,5 +88,35 @@
     "sounds": [
       "mykaisen:black_flash_final"
     ]
+  },
+  "startup_sound_mk": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:startup_sound_mk"
+    ]
+  },
+  "swing_mk": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:swing_mk"
+    ]
+  },
+  "slam_mk": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:slam_mk"
+    ]
+  },
+  "universal_awekekning_sound": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:universal_awekekning_sound"
+    ]
+  },
+  "sukuna_awekening": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:sukuna_awekening"
+    ]
   }
 }

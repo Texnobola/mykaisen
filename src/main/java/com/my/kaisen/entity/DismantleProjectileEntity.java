@@ -1,0 +1,92 @@
+package com.my.kaisen.entity;
+
+import com.my.kaisen.registry.ModParticles;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import team.lodestar.lodestone.handlers.ScreenshakeHandler;
+import team.lodestar.lodestone.systems.particle.builder.WorldParticleBuilder;
+import team.lodestar.lodestone.systems.particle.data.color.ColorParticleData;
+import team.lodestar.lodestone.systems.particle.data.GenericParticleData;
+import team.lodestar.lodestone.systems.particle.data.spin.SpinParticleData;
+import team.lodestar.lodestone.systems.screenshake.ScreenshakeInstance;
+
+import java.awt.*;
+
+public class DismantleProjectileEntity extends Projectile {
+
+    public DismantleProjectileEntity(EntityType<? extends Projectile> entityType, Level level) {
+        super(entityType, level);
+    }
+
+    public DismantleProjectileEntity(EntityType<? extends Projectile> entityType, LivingEntity shooter, Level level) {
+        this(entityType, level);
+        this.setOwner(shooter);
+        this.setPos(shooter.getX(), shooter.getEyeY() - 0.1, shooter.getZ());
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+
+        if (this.level().isClientSide) {
+            spawnParticles();
+        }
+
+        Vec3 deltaMovement = this.getDeltaMovement();
+        HitResult hitResult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
+        if (hitResult.getType() != HitResult.Type.MISS) {
+            this.onHit(hitResult);
+        }
+
+        this.setPos(this.getX() + deltaMovement.x, this.getY() + deltaMovement.y, this.getZ() + deltaMovement.z);
+        ProjectileUtil.rotateTowardsMovement(this, 0.5F);
+
+        if (!this.level().isClientSide && this.tickCount > 40) {
+            this.discard();
+        }
+    }
+
+    private void spawnParticles() {
+        // Lodestone DISMANTLE_SLASH particle
+        WorldParticleBuilder.create(ModParticles.DISMANTLE_SLASH.get())
+                .setTransparencyData(GenericParticleData.create(0.8f, 0.0f).build())
+                .setScaleData(GenericParticleData.create(4.0f, 0.05f).build()) // Flat 2D crescent as requested
+                .setColorData(ColorParticleData.create(Color.WHITE, Color.LIGHT_GRAY).build())
+                .setSpinData(SpinParticleData.create((float) Math.toRadians(this.getYRot())).build())
+                .spawn(level(), getX(), getY(), getZ());
+    }
+
+    @Override
+    protected void onHitEntity(EntityHitResult result) {
+        super.onHitEntity(result);
+        if (!this.level().isClientSide && result.getEntity() instanceof LivingEntity target && target != this.getOwner()) {
+            if (this.getOwner() instanceof net.minecraft.world.entity.player.Player player) {
+                target.hurt(this.damageSources().playerAttack(player), 4.0F);
+            } else {
+                target.hurt(this.damageSources().generic(), 4.0F);
+            }
+            Vec3 look = this.getDeltaMovement().normalize();
+            target.setDeltaMovement(target.getDeltaMovement().add(look.scale(0.5).add(0, 0.2, 0)));
+            target.hurtMarked = true;
+            this.discard();
+        }
+    }
+
+    @Override
+    protected void onHit(HitResult result) {
+        super.onHit(result);
+        if (!this.level().isClientSide && result.getType() == HitResult.Type.BLOCK) {
+            this.discard();
+        }
+    }
+
+    @Override
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+    }
+}

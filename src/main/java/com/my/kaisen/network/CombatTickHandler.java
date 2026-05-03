@@ -77,6 +77,7 @@ public class CombatTickHandler {
     public static final Map<UUID, RushState> activeRushes = new ConcurrentHashMap<>();
     public static final Map<UUID, Integer> awakeningSequences = new ConcurrentHashMap<>();
     public static final Map<UUID, Integer> suspendedPlayers = new ConcurrentHashMap<>();
+    public static final Map<UUID, Integer> airDismantlePlayers = new ConcurrentHashMap<>();
 
     public static class RushState {
         public int ticks = 0;
@@ -158,28 +159,23 @@ public class CombatTickHandler {
             }
         }
 
+        if (airDismantlePlayers.containsKey(playerId)) {
+            int ticks = airDismantlePlayers.get(playerId);
+            if (ticks <= 1) {
+                player.setNoGravity(false);
+                airDismantlePlayers.remove(playerId);
+            } else {
+                airDismantlePlayers.put(playerId, ticks - 1);
+            }
+        }
+
         if (activeDismantles.containsKey(playerId)) {
             DismantleBurstState state = activeDismantles.get(playerId);
             if (state.ticks % 4 == 0) {
-                Vec3 eyePos = player.getEyePosition();
-                Vec3 look = player.getLookAngle();
-                Vec3 endPos = eyePos.add(look.scale(15.0));
-                AABB searchBox = player.getBoundingBox().expandTowards(look.scale(15.0)).inflate(1.0);
-
-                net.minecraft.world.phys.EntityHitResult hitResult = net.minecraft.world.entity.projectile.ProjectileUtil.getEntityHitResult(
-                        player.level(), player, eyePos, endPos, searchBox, e -> e instanceof LivingEntity && e.isAlive() && e != player
-                );
-
-                if (hitResult != null && hitResult.getEntity() instanceof LivingEntity target) {
-                    target.hurt(player.damageSources().playerAttack(player), 4.0F);
-                    target.setDeltaMovement(target.getDeltaMovement().add(look.scale(0.5).add(0, 0.2, 0)));
-                    target.hurtMarked = true;
-                }
-
-                // Spawn VFX 1.5 blocks in front of the player
-                Vec3 spawnPos = eyePos.add(look.scale(1.5D));
-                PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 
-                        new SpawnDismantleVfxPayload(spawnPos.x, spawnPos.y, spawnPos.z, player.getYRot()));
+                // Spawn Dismantle Projectile
+                com.my.kaisen.entity.DismantleProjectileEntity dismantle = new com.my.kaisen.entity.DismantleProjectileEntity(com.my.kaisen.registry.ModEntities.DISMANTLE_PROJECTILE.get(), player, player.level());
+                dismantle.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 2.5F, 0.0F); // High forward velocity
+                player.level().addFreshEntity(dismantle);
                 
                 player.level().playSound(null, player.blockPosition(), net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_SWEEP, net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.5F);
                 state.shotsFired++;
