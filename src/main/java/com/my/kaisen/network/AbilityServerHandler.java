@@ -49,16 +49,12 @@ public class AbilityServerHandler {
                                 player, new PlayAnimationPayload(dismantleAnim, player.getId())
                         );
                         
-                        // Spawn EXACTLY ONE DismantleProjectileEntity
-                        com.my.kaisen.entity.DismantleProjectileEntity dismantle = new com.my.kaisen.entity.DismantleProjectileEntity(com.my.kaisen.registry.ModEntities.DISMANTLE_PROJECTILE.get(), player, player.level());
-                        dismantle.setPos(player.getEyePosition());
-                        dismantle.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 3.0F, 0.0F);
-                        player.level().addFreshEntity(dismantle);
-                        
-                        player.level().playSound(null, player.blockPosition(), net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_SWEEP, net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.5F);
+                        // Start 5-shot barrage (Swapped logic)
+                        M1ComboHandler.comboShots.put(player.getUUID(), 5);
+                        M1ComboHandler.comboTicks.put(player.getUUID(), 0);
 
                         if (CombatTickHandler.cooldownsEnabled) {
-                            CombatTickHandler.abilityCooldowns.put(player.getUUID(), 10); // 0.5 seconds
+                            CombatTickHandler.abilityCooldowns.put(player.getUUID(), 60); // 3 seconds
                         }
                     }
                 } else if (abilityId == 2) {
@@ -332,9 +328,20 @@ public class AbilityServerHandler {
     public static void handleM1(final TriggerM1Payload payload, final IPayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player() instanceof ServerPlayer player) {
-                // Instantly start the 5-shot barrage
-                M1ComboHandler.comboShots.put(player.getUUID(), 5);
-                M1ComboHandler.comboTicks.put(player.getUUID(), 0);
+                // Short cooldown for melee replacement
+                if (CombatTickHandler.cooldownsEnabled && CombatTickHandler.abilityCooldowns.containsKey(player.getUUID())) return;
+
+                // Spawn EXACTLY ONE DismantleProjectileEntity
+                com.my.kaisen.entity.DismantleProjectileEntity dismantle = new com.my.kaisen.entity.DismantleProjectileEntity(com.my.kaisen.registry.ModEntities.DISMANTLE_PROJECTILE.get(), player, player.level());
+                dismantle.setPos(player.getEyePosition());
+                dismantle.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 3.0F, 0.0F);
+                player.level().addFreshEntity(dismantle);
+                
+                player.level().playSound(null, player.blockPosition(), net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_SWEEP, net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.5F);
+
+                if (CombatTickHandler.cooldownsEnabled) {
+                    CombatTickHandler.abilityCooldowns.put(player.getUUID(), 5); // 0.25 seconds
+                }
             }
         });
     }

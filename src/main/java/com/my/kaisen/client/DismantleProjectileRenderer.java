@@ -37,8 +37,8 @@ public class DismantleProjectileRenderer extends EntityRenderer<DismantleProject
         float scale = entity.isGiant() ? 6.0F : 3.0F;
         poseStack.scale(scale, scale, scale);
         
-        PoseStack.Pose lastPose = poseStack.last();
-        Matrix4f matrix4f = lastPose.pose();
+        PoseStack.Pose pose = poseStack.last();
+        Matrix4f matrix4f = pose.pose();
         
         VertexConsumer vertexconsumer = buffer.getBuffer(RenderType.entityTranslucent(TEXTURE));
         
