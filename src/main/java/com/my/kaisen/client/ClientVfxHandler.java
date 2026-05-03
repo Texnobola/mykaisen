@@ -10,6 +10,8 @@ import team.lodestar.lodestone.systems.particle.data.color.ColorParticleData;
 import team.lodestar.lodestone.systems.particle.data.GenericParticleData;
 import team.lodestar.lodestone.systems.particle.data.spin.SpinParticleData;
 
+import team.lodestar.lodestone.systems.particle.render_types.LodestoneWorldParticleRenderType;
+
 import java.awt.Color;
 import java.util.Random;
 
@@ -278,18 +280,15 @@ public class ClientVfxHandler {
         });
     }
 
-    /**
-     * Spawns a massive, single curved 2D anime slash using a custom particle.
-     */
     public static void spawnDismantle(Level level, double x, double y, double z, float yRot) {
         // Convert yRot to radians for Lodestone spin data.
         // We negate and adjust to align the crescent texture correctly with the player's view.
         float initialRotation = (float) Math.toRadians(-yRot);
 
         WorldParticleBuilder.create(com.my.kaisen.registry.ModParticles.DISMANTLE_SLASH.get())
+                .setRenderType(LodestoneWorldParticleRenderType.TRANSPARENT) // Standard translucent blending
                 .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
                 .setScaleData(GenericParticleData.create(6.0f, 0.0f).build())
-                .setColorData(ColorParticleData.create(Color.WHITE, new Color(173, 216, 230)).build())
                 .setSpinData(SpinParticleData.create(initialRotation, 0).build())
                 .setLifetime(4)
                 .setRandomMotion(0, 0, 0)

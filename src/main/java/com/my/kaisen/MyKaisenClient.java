@@ -19,5 +19,9 @@ public class MyKaisenClient {
     @SubscribeEvent
     static void onClientSetup(FMLClientSetupEvent event) {
         // Client setup code
+        top.theillusivec4.curios.api.client.CuriosRendererRegistry.register(
+                com.my.kaisen.registry.ModItems.SUKUNA_TATTOO.get(),
+                com.my.kaisen.client.TattooCurioRenderer::new
+        );
     }
 }

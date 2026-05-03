@@ -48,34 +48,8 @@ public class AbilityServerHandler {
                                 player, new PlayAnimationPayload(dismantleAnim, player.getId())
                         );
 
-                        net.minecraft.world.phys.Vec3 eyePos = player.getEyePosition();
-                        net.minecraft.world.phys.Vec3 look = player.getLookAngle();
-                        net.minecraft.world.phys.Vec3 endPos = eyePos.add(look.scale(15.0));
-                        net.minecraft.world.phys.AABB searchBox = player.getBoundingBox().expandTowards(look.scale(15.0)).inflate(1.0);
-
-                        net.minecraft.world.phys.EntityHitResult hitResult = net.minecraft.world.entity.projectile.ProjectileUtil.getEntityHitResult(
-                                player.level(), player, eyePos, endPos, searchBox, e -> e instanceof net.minecraft.world.entity.LivingEntity && e.isAlive() && e != player
-                        );
-
-                        if (hitResult != null && hitResult.getEntity() instanceof net.minecraft.world.entity.LivingEntity target) {
-                            target.hurt(player.damageSources().playerAttack(player), 6.0F);
-                            
-                            // Backward knockback
-                            net.minecraft.world.phys.Vec3 push = look.scale(0.5).add(0, 0.2, 0);
-                            target.setDeltaMovement(target.getDeltaMovement().add(push));
-                            target.hurtMarked = true;
-
-                            net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
-                                    player, new SpawnDismantleVfxPayload(target.getX(), target.getY(0.5), target.getZ(), player.getYRot())
-                            );
-                        } else {
-                            // Miss VFX at max range
-                            net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
-                                    player, new SpawnDismantleVfxPayload(endPos.x, endPos.y, endPos.z, player.getYRot())
-                            );
-                        }
-
-                        player.level().playSound(null, player.blockPosition(), net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_SWEEP, net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.5F);
+                        // Initiate burst state machine
+                        CombatTickHandler.activeDismantles.put(player.getUUID(), new CombatTickHandler.DismantleBurstState());
 
                         if (CombatTickHandler.cooldownsEnabled) {
                             CombatTickHandler.abilityCooldowns.put(player.getUUID(), 60); // 3 seconds
@@ -130,6 +104,26 @@ public class AbilityServerHandler {
                     // Sync to client
                     net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 
                             new SyncAwakeningPayload(player.getId(), true));
+
+                    // Auto-equip Curio tattoo
+                    top.theillusivec4.curios.api.CuriosApi.getCuriosInventory(player).ifPresent(inventory -> {
+                        inventory.findFirstCurio(com.my.kaisen.registry.ModItems.SUKUNA_TATTOO.get()).ifPresentOrElse(
+                                slotResult -> {}, // Already equipped
+                                () -> {
+                                    // Find a slot and equip
+                                    inventory.getCurios().forEach((id, handler) -> {
+                                        if (id.equals("body") || id.equals("head")) {
+                                            for (int i = 0; i < handler.getSlots(); i++) {
+                                                if (handler.getStacks().getStackInSlot(i).isEmpty()) {
+                                                    handler.getStacks().setStackInSlot(i, new net.minecraft.world.item.ItemStack(com.my.kaisen.registry.ModItems.SUKUNA_TATTOO.get()));
+                                                    return;
+                                                }
+                                            }
+                                        }
+                                    });
+                                }
+                        );
+                    });
 
                     // Heal the player
                     player.heal(45.0f);

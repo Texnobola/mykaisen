@@ -35,6 +35,9 @@ repositories {
         }
     }
     maven {
+        url = "https://maven.theillusivec4.top/"
+    }
+    maven {
         url = "https://www.cursemaven.com"
         content {
             includeGroup "curse.maven"
@@ -134,6 +137,9 @@ dependencies {
     implementation "curse.maven:playeranimator-658587:7389814"
     implementation "curse.maven:kleiders-custom-renderer-api-682065:5675429"
     implementation "curse.maven:lodestone-616457:7264731"
+    
+    compileOnly "top.theillusivec4.curios:curios-neoforge:9.4.0+1.21.1:api"
+    runtimeOnly "top.theillusivec4.curios:curios-neoforge:9.4.0+1.21.1"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

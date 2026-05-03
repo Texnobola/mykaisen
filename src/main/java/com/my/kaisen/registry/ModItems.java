@@ -13,6 +13,9 @@ public class ModItems {
     public static final DeferredItem<Item> CHARACTER_CHOOSER = ITEMS.register("character_chooser",
             () -> new CharacterChooserItem(new Item.Properties().stacksTo(1)));
 
+    public static final DeferredItem<Item> SUKUNA_TATTOO = ITEMS.register("sukuna_tattoo",
+            () -> new com.my.kaisen.item.SukunaTattooItem(new Item.Properties().stacksTo(1)));
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

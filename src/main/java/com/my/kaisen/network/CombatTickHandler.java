@@ -44,10 +44,17 @@ public class CombatTickHandler {
     public static final Map<UUID, Integer> crushingBlowMisses = new ConcurrentHashMap<>();
     public static final Map<UUID, AirCrushingState> airCrushingBlows = new ConcurrentHashMap<>();
     public static final Map<UUID, DivergentFistState> activeDivergentFists = new ConcurrentHashMap<>();
+    public static final Map<UUID, DismantleBurstState> activeDismantles = new ConcurrentHashMap<>();
+
     public record BeatdownState(LivingEntity targetEntity, int ticksRemaining) {}
     public record CrushingBlowState(LivingEntity targetEntity, int ticksElapsed) {}
     public record AirCrushingState(LivingEntity target, int ticks) {}
     
+    public static class DismantleBurstState {
+        public int ticks = 0;
+        public int shotsFired = 0;
+    }
+
     public static class DivergentFistState {
         public LivingEntity target;
         public int ticks = 0;
@@ -148,6 +155,38 @@ public class CombatTickHandler {
                 suspendedPlayers.remove(playerId);
             } else {
                 suspendedPlayers.put(playerId, ticks - 1);
+            }
+        }
+
+        if (activeDismantles.containsKey(playerId)) {
+            DismantleBurstState state = activeDismantles.get(playerId);
+            if (state.ticks % 4 == 0) {
+                Vec3 eyePos = player.getEyePosition();
+                Vec3 look = player.getLookAngle();
+                Vec3 endPos = eyePos.add(look.scale(15.0));
+                AABB searchBox = player.getBoundingBox().expandTowards(look.scale(15.0)).inflate(1.0);
+
+                net.minecraft.world.phys.EntityHitResult hitResult = net.minecraft.world.entity.projectile.ProjectileUtil.getEntityHitResult(
+                        player.level(), player, eyePos, endPos, searchBox, e -> e instanceof LivingEntity && e.isAlive() && e != player
+                );
+
+                if (hitResult != null && hitResult.getEntity() instanceof LivingEntity target) {
+                    target.hurt(player.damageSources().playerAttack(player), 4.0F);
+                    target.setDeltaMovement(target.getDeltaMovement().add(look.scale(0.5).add(0, 0.2, 0)));
+                    target.hurtMarked = true;
+                }
+
+                // Spawn VFX 1.5 blocks in front of the player
+                Vec3 spawnPos = eyePos.add(look.scale(1.5D));
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 
+                        new SpawnDismantleVfxPayload(spawnPos.x, spawnPos.y, spawnPos.z, player.getYRot()));
+                
+                player.level().playSound(null, player.blockPosition(), net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_SWEEP, net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.5F);
+                state.shotsFired++;
+            }
+            state.ticks++;
+            if (state.shotsFired >= 5) {
+                activeDismantles.remove(playerId);
             }
         }
 
