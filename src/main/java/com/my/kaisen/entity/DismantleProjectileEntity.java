@@ -30,7 +30,7 @@ public class DismantleProjectileEntity extends Projectile {
         this(entityType, level);
         this.setOwner(shooter);
         this.setPos(shooter.getX(), shooter.getEyeY() - 0.1, shooter.getZ());
-        if (!shooter.onGround()) {
+        if (!shooter.onGround() || shooter.getDeltaMovement().y < -0.1) {
             this.setGiant(true);
         }
     }

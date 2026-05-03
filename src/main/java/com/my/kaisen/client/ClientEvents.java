@@ -17,6 +17,15 @@ public class ClientEvents {
 
     @EventBusSubscriber(modid = MyKaisen.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
     public static class ModBusEvents {
+        @SubscribeEvent
+        public static void onAddLayers(EntityRenderersEvent.AddLayers event) {
+            for (net.minecraft.client.resources.PlayerSkin.Model skin : net.minecraft.client.resources.PlayerSkin.Model.values()) {
+                PlayerRenderer renderer = event.getSkin(skin);
+                if (renderer != null) {
+                    renderer.addLayer(new SukunaTattooLayer(renderer));
+                }
+            }
+        }
     }
 
     @SubscribeEvent

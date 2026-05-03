@@ -49,7 +49,7 @@ public class AbilityServerHandler {
                                 player, new PlayAnimationPayload(dismantleAnim, player.getId())
                         );
                         
-                        // Start 5-shot barrage (Swapped logic)
+                        // Start 5-shot barrage (Z Key)
                         M1ComboHandler.comboShots.put(player.getUUID(), 5);
                         M1ComboHandler.comboTicks.put(player.getUUID(), 0);
 
