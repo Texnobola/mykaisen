@@ -29,7 +29,9 @@ public class FugaProjectileRenderer extends EntityRenderer<FugaProjectileEntity>
         poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot()) - 90.0F));
         poseStack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
         
-        poseStack.scale(1.5F, 1.5F, 1.5F);
+        // Massive scale + pulsation
+        float scale = 4.0F + Mth.sin((entity.tickCount + partialTicks) * 0.4F) * 0.2F;
+        poseStack.scale(scale, scale, scale);
 
         VertexConsumer vertexconsumer = buffer.getBuffer(RenderType.entityTranslucentEmissive(TEXTURE));
         PoseStack.Pose pose = poseStack.last();

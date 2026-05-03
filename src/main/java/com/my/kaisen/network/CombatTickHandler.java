@@ -524,6 +524,9 @@ public class CombatTickHandler {
                 // Shoot sound
                 player.level().playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.FUGA_SHOOT.get(), net.minecraft.sounds.SoundSource.PLAYERS, 2.0F, 1.0F);
 
+                // Screen shake (recoil)
+                net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new CameraShakePayload(2.0f, 20));
+
                 // Spawn FugaProjectileEntity
                 com.my.kaisen.entity.FugaProjectileEntity fuga = new com.my.kaisen.entity.FugaProjectileEntity(com.my.kaisen.registry.ModEntities.FUGA_PROJECTILE.get(), player, player.level());
                 fuga.setPos(player.getEyePosition());
