@@ -27,6 +27,6 @@ public class MyKaisenClient {
 
     @SubscribeEvent
     static void onRegisterRenderers(net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(com.my.kaisen.registry.ModEntities.DISMANTLE_PROJECTILE.get(), net.minecraft.client.renderer.entity.NoopRenderer::new);
+        event.registerEntityRenderer(com.my.kaisen.registry.ModEntities.DISMANTLE_PROJECTILE.get(), com.my.kaisen.client.DismantleProjectileRenderer::new);
     }
 }

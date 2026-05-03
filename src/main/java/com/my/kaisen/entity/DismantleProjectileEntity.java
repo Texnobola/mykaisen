@@ -34,10 +34,6 @@ public class DismantleProjectileEntity extends Projectile {
     public void tick() {
         super.tick();
 
-        if (this.level().isClientSide) {
-            spawnParticles();
-        }
-
         Vec3 deltaMovement = this.getDeltaMovement();
         HitResult hitResult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
         if (hitResult.getType() != HitResult.Type.MISS) {
@@ -50,16 +46,6 @@ public class DismantleProjectileEntity extends Projectile {
         if (!this.level().isClientSide && this.tickCount > 40) {
             this.discard();
         }
-    }
-
-    private void spawnParticles() {
-        // Lodestone DISMANTLE_SLASH particle
-        WorldParticleBuilder.create(ModParticles.DISMANTLE_SLASH.get())
-                .setTransparencyData(GenericParticleData.create(0.8f, 0.0f).build())
-                .setScaleData(GenericParticleData.create(4.0f, 0.05f).build()) // Flat 2D crescent as requested
-                .setColorData(ColorParticleData.create(Color.WHITE, Color.LIGHT_GRAY).build())
-                .setSpinData(SpinParticleData.create((float) Math.toRadians(this.getYRot())).build())
-                .spawn(level(), getX(), getY(), getZ());
     }
 
     @Override
