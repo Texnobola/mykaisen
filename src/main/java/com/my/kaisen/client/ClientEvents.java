@@ -17,19 +17,6 @@ public class ClientEvents {
 
     @EventBusSubscriber(modid = MyKaisen.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
     public static class ModBusEvents {
-        @SubscribeEvent
-        public static void onAddLayers(EntityRenderersEvent.AddLayers event) {
-            // Default Skin (Steve)
-            PlayerRenderer defaultRenderer = event.getSkin(net.minecraft.client.resources.PlayerSkin.Model.WIDE);
-            if (defaultRenderer != null) {
-                defaultRenderer.addLayer(new SukunaTattooLayer<>(defaultRenderer));
-            }
-            // Slim Skin (Alex)
-            PlayerRenderer slimRenderer = event.getSkin(net.minecraft.client.resources.PlayerSkin.Model.SLIM);
-            if (slimRenderer != null) {
-                slimRenderer.addLayer(new SukunaTattooLayer<>(slimRenderer));
-            }
-        }
     }
 
     @SubscribeEvent

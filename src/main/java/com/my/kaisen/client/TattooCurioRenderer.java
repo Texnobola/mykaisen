@@ -18,7 +18,33 @@ public class TattooCurioRenderer implements ICurioRenderer {
     private static final ResourceLocation TATTOO_TEXTURE = ResourceLocation.fromNamespaceAndPath(MyKaisen.MODID, "textures/entity/sukuna_tattoos.png");
 
     @Override
-    public <T extends LivingEntity, M extends EntityModel<T>> void render(ItemStack stack, SlotContext slotContext, PoseStack matrixStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        // Muted: SukunaTattooLayer handles the rendering to ensure it wraps the skin correctly.
+    public <T extends net.minecraft.world.entity.LivingEntity, M extends net.minecraft.client.model.EntityModel<T>> void render(
+            net.minecraft.world.item.ItemStack stack,
+            top.theillusivec4.curios.api.SlotContext slotContext,
+            com.mojang.blaze3d.vertex.PoseStack matrixStack,
+            net.minecraft.client.renderer.entity.RenderLayerParent<T, M> renderLayerParent,
+            net.minecraft.client.renderer.MultiBufferSource renderTypeBuffer,
+            int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        
+        net.minecraft.client.model.EntityModel<T> baseModel = renderLayerParent.getModel();
+        
+        if (baseModel instanceof net.minecraft.client.model.HumanoidModel<?> model) {
+            matrixStack.pushPose();
+            
+            // Scale up by exactly 1% to prevent Z-fighting with the player's skin/jacket layer
+            matrixStack.scale(1.01F, 1.01F, 1.01F);
+            // Offset slightly down so the scaling doesn't push the model upward
+            matrixStack.translate(0.0F, -0.015F, 0.0F); 
+            
+            com.mojang.blaze3d.vertex.VertexConsumer buffer = renderTypeBuffer.getBuffer(
+                net.minecraft.client.renderer.RenderType.entityTranslucent(
+                    net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("mykaisen", "textures/entity/sukuna_tattoos.png")
+                )
+            );
+            
+            model.renderToBuffer(matrixStack, buffer, light, net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
+            
+            matrixStack.popPose();
+        }
     }
 }
