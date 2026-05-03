@@ -19,8 +19,12 @@ public class TattooCurioRenderer implements ICurioRenderer {
 
     @Override
     public <T extends LivingEntity, M extends EntityModel<T>> void render(ItemStack stack, SlotContext slotContext, PoseStack matrixStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        M model = renderLayerParent.getModel();
-        VertexConsumer vertexconsumer = renderTypeBuffer.getBuffer(RenderType.entityCutoutNoCull(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("mykaisen", "textures/entity/sukuna_tattoos.png")));
-        model.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
+        if (slotContext.entity() instanceof net.minecraft.client.player.AbstractClientPlayer player) {
+            M model = renderLayerParent.getModel();
+            VertexConsumer vertexconsumer = renderTypeBuffer.getBuffer(RenderType.entityCutoutNoCull(TATTOO_TEXTURE));
+            
+            // Render the model itself using the tattoo texture to "paint" it onto the skin
+            model.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
+        }
     }
 }

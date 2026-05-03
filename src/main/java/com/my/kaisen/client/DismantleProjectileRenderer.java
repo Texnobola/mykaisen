@@ -33,15 +33,16 @@ public class DismantleProjectileRenderer extends EntityRenderer<DismantleProject
         // Lay flat horizontally as requested
         poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
         
-        // Scale up by 3.0f as requested
-        poseStack.scale(3.0F, 3.0F, 3.0F);
+        // Scale based on isGiant variant
+        float scale = entity.isGiant() ? 6.0F : 3.0F;
+        poseStack.scale(scale, scale, scale);
         
         PoseStack.Pose lastPose = poseStack.last();
         Matrix4f matrix4f = lastPose.pose();
         
         VertexConsumer vertexconsumer = buffer.getBuffer(RenderType.entityTranslucent(TEXTURE));
         
-        // Manually draw the 4 vertices of the quad
+        // Centered quad vertices (MUST range from -0.5 to 0.5 for perfect centering)
         vertexconsumer.addVertex(matrix4f, -0.5F, -0.5F, 0.0F).setColor(255, 255, 255, 255).setUv(0.0F, 1.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(0.0F, 1.0F, 0.0F);
         vertexconsumer.addVertex(matrix4f, 0.5F, -0.5F, 0.0F).setColor(255, 255, 255, 255).setUv(1.0F, 1.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(0.0F, 1.0F, 0.0F);
         vertexconsumer.addVertex(matrix4f, 0.5F, 0.5F, 0.0F).setColor(255, 255, 255, 255).setUv(1.0F, 0.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(0.0F, 1.0F, 0.0F);
