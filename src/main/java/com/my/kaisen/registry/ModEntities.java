@@ -26,6 +26,11 @@ public class ModEntities {
                     .updateInterval(1)
                     .build("fuga_projectile"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<com.my.kaisen.entity.ShrineEntity>> SHRINE = ENTITY_TYPES.register("shrine",
+            () -> EntityType.Builder.<com.my.kaisen.entity.ShrineEntity>of(com.my.kaisen.entity.ShrineEntity::new, MobCategory.MISC)
+                    .sized(2.0F, 5.0F)
+                    .build("shrine"));
+
     public static void register(IEventBus eventBus) {
         ENTITY_TYPES.register(eventBus);
     }

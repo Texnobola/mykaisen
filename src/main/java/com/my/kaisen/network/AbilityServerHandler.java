@@ -101,9 +101,25 @@ public class AbilityServerHandler {
                         // Ability 4: Manji Kick (Universal Counter)
                         CombatTickHandler.executeManjiKick(player);
                     } else {
-                        // TODO: Malevolent Shrine
+                        // Ability 4 (Awakened): Malevolent Shrine
+                        if (CombatTickHandler.cooldownsEnabled && CombatTickHandler.abilityCooldowns.containsKey(player.getUUID())) return;
+
+                        // Generate physical arena
+                        com.my.kaisen.util.DomainHandler.generateDomainArena(player.level(), player.blockPosition(), player);
+
+                        if (CombatTickHandler.cooldownsEnabled) {
+                            CombatTickHandler.abilityCooldowns.put(player.getUUID(), 1200); // 60 seconds cooldown
+                        }
                     }
                 }
+            }
+        });
+    }
+
+    public static void handleDomain(final TriggerDomainPayload payload, final IPayloadContext context) {
+        context.enqueueWork(() -> {
+            if (context.player() instanceof ServerPlayer player) {
+                com.my.kaisen.util.DomainHandler.generateDomainArena(player.level(), player.blockPosition(), player);
             }
         });
     }

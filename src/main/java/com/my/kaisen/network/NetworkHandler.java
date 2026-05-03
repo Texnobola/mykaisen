@@ -153,6 +153,13 @@ public class NetworkHandler {
                 }
         );
         
+        // Register TriggerDomainPayload to be sent from Client to Server
+        registrar.playToServer(
+                TriggerDomainPayload.TYPE,
+                TriggerDomainPayload.STREAM_CODEC,
+                AbilityServerHandler::handleDomain
+        );
+
         // Register TriggerFugaPayload to be sent from Client to Server
         registrar.playToServer(
                 TriggerFugaPayload.TYPE,

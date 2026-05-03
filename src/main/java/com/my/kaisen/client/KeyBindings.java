@@ -61,6 +61,14 @@ public class KeyBindings {
             KEY_CATEGORY_MY_KAISEN
     );
 
+    public static final String KEY_DOMAIN = "key.mykaisen.domain";
+    public static final KeyMapping DOMAIN_KEY = new KeyMapping(
+            KEY_DOMAIN,
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_M,
+            KEY_CATEGORY_MY_KAISEN
+    );
+
     @SubscribeEvent
     public static void registerBindings(RegisterKeyMappingsEvent event) {
         event.register(ABILITY_1_KEY);
@@ -69,5 +77,6 @@ public class KeyBindings {
         event.register(ABILITY_4_KEY);
         event.register(SWITCH_MODE_KEY);
         event.register(AWAKEN_KEY);
+        event.register(DOMAIN_KEY);
     }
 }
