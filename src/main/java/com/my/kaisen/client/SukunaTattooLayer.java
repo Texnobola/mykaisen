@@ -21,17 +21,16 @@ public class SukunaTattooLayer extends RenderLayer<AbstractClientPlayer, PlayerM
 
     @Override
     public void render(PoseStack poseStack, MultiBufferSource buffer, int packedLight, AbstractClientPlayer player, float limbSwing, float limbSwingAmount, float partialTick, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (top.theillusivec4.curios.api.CuriosApi.getCuriosHelper().findFirstCurio(player, ModItems.SUKUNA_TATTOO.get()).isPresent()) {
-            poseStack.pushPose();
-            
-            // Inflate the model slightly (1.01F) to prevent Z-fighting, just like armor does
-            poseStack.scale(1.01F, 1.01F, 1.01F);
-            poseStack.translate(0.0F, -0.015F, 0.0F); // Counteract scale offset
-            
-            VertexConsumer vertexconsumer = buffer.getBuffer(RenderType.entityTranslucent(TATTOO_TEXTURE));
-            this.getParentModel().renderToBuffer(poseStack, vertexconsumer, packedLight, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
-            
-            poseStack.popPose();
-        }
+        // Diagnostic log - if this spans the console, the layer is attached
+        System.out.println("TATTOO LAYER RUNNING FOR: " + player.getName().getString());
+        
+        poseStack.pushPose();
+        poseStack.scale(1.01F, 1.01F, 1.01F);
+        poseStack.translate(0.0F, -0.015F, 0.0F);
+        
+        VertexConsumer vertexconsumer = buffer.getBuffer(RenderType.entityTranslucent(ResourceLocation.fromNamespaceAndPath("mykaisen", "textures/entity/sukuna_tattoos.png")));
+        this.getParentModel().renderToBuffer(poseStack, vertexconsumer, packedLight, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
+        
+        poseStack.popPose();
     }
 }
