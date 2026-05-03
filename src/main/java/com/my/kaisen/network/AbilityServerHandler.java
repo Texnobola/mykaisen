@@ -62,7 +62,20 @@ public class AbilityServerHandler {
                         // Ability 2: Crushing Blow
                         executeCrushingBlow(player);
                     } else {
-                        // TODO: Open (Fuga)
+                        // Ability 2 (Awakened): Open (Fuga)
+                        if (CombatTickHandler.cooldownsEnabled && CombatTickHandler.abilityCooldowns.containsKey(player.getUUID())) return;
+
+                        // Play Fuga Animation
+                        net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                                player, new PlayAnimationPayload("fuga", player.getId())
+                        );
+
+                        // Start Charge-Up (65 ticks = 3.25 seconds)
+                        CombatTickHandler.fugaChargeTicks.put(player.getUUID(), 65);
+
+                        if (CombatTickHandler.cooldownsEnabled) {
+                            CombatTickHandler.abilityCooldowns.put(player.getUUID(), 200); // 10 seconds cooldown
+                        }
                     }
                 } else if (abilityId == 3) {
                     if (!isAwakened) {

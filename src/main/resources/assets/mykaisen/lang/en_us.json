@@ -4,10 +4,10 @@
   "mykaisen.configuration.section.mykaisen.common.toml": "My Kaisen Configs",
   "mykaisen.configuration.section.mykaisen.common.toml.title": "My Kaisen Configs",
   "key.category.mykaisen": "My Kaisen",
-  "key.mykaisen.ability1": "Ability 1 (Cursed Strikes)",
-  "key.mykaisen.ability2": "Ability 2 (Crushing Blow)",
-  "key.mykaisen.ability3": "Ability 3 (Divergent Fist)",
-  "key.mykaisen.ability4": "Ability 4 (Manji Kick)",
+  "key.mykaisen.ability1": "Ability 1 (Cursed Strikes / Dismantle)",
+  "key.mykaisen.ability2": "Ability 2 (Crushing Blow / Fuga)",
+  "key.mykaisen.ability3": "Ability 3 (Divergent Fist / Rush)",
+  "key.mykaisen.ability4": "Ability 4 (Manji Kick / Shrine)",
   "key.mykaisen.switch_mode": "Switch Combat Mode",
   "subtitles.mykaisen.dash": "Cursed Energy Dash",
   "subtitles.mykaisen.cursed_strikes": "Flurry of strikes",
@@ -28,5 +28,11 @@
   "effect.mykaisen.lock_in": "Lock In",
   "subtitles.mykaisen.startup_sound_mk": "Manji Stance",
   "subtitles.mykaisen.swing_mk": "Manji Dash",
-  "subtitles.mykaisen.slam_mk": "Manji Kick Impact"
+  "subtitles.mykaisen.slam_mk": "Manji Kick Impact",
+  "subtitles.mykaisen.charging_up": "Flame gathering",
+  "subtitles.mykaisen.flame_forming": "Flame forming",
+  "subtitles.mykaisen.arrow_created": "Arrow created",
+  "subtitles.mykaisen.flame_idle": "Flame idling",
+  "subtitles.mykaisen.fuga_shoot": "Fuga shot",
+  "subtitles.mykaisen.fuga_hits": "Apocalyptic explosion"
 }
