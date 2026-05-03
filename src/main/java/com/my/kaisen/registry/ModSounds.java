@@ -71,6 +71,24 @@ public class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> sukuna_awekening = SOUND_EVENTS.register("sukuna_awekening",
             () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MyKaisen.MODID, "sukuna_awekening")));
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> FUGA_CHARGING = SOUND_EVENTS.register("charging_up",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MyKaisen.MODID, "charging_up")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> FUGA_FLAME_FORMING = SOUND_EVENTS.register("flame_forming",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MyKaisen.MODID, "flame_forming")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> FUGA_ARROW_CREATED = SOUND_EVENTS.register("arrow_created",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MyKaisen.MODID, "arrow_created")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> FUGA_FLAME_IDLE = SOUND_EVENTS.register("flame_idle",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MyKaisen.MODID, "flame_idle")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> FUGA_SHOOT = SOUND_EVENTS.register("fuga_shoot",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MyKaisen.MODID, "fuga_shoot")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> FUGA_HITS = SOUND_EVENTS.register("fuga_hits",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MyKaisen.MODID, "fuga_hits")));
+
     public static void register(IEventBus eventBus) {
         SOUND_EVENTS.register(eventBus);
     }

@@ -325,6 +325,20 @@ public class AbilityServerHandler {
         }
     }
 
+    public static void handleFuga(final TriggerFugaPayload payload, final IPayloadContext context) {
+        context.enqueueWork(() -> {
+            if (context.player() instanceof ServerPlayer player) {
+                // Play Fuga Animation
+                net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                        player, new PlayAnimationPayload("fuga", player.getId())
+                );
+
+                // Start Charge-Up (65 ticks = 3.25 seconds)
+                CombatTickHandler.fugaChargeTicks.put(player.getUUID(), 65);
+            }
+        });
+    }
+
     public static void handleM1(final TriggerM1Payload payload, final IPayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player() instanceof ServerPlayer player) {

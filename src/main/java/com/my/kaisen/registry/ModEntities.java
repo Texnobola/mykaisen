@@ -19,6 +19,13 @@ public class ModEntities {
                     .updateInterval(20)
                     .build("dismantle_projectile"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<com.my.kaisen.entity.FugaProjectileEntity>> FUGA_PROJECTILE = ENTITY_TYPES.register("fuga_projectile",
+            () -> EntityType.Builder.<com.my.kaisen.entity.FugaProjectileEntity>of(com.my.kaisen.entity.FugaProjectileEntity::new, MobCategory.MISC)
+                    .sized(1.0F, 1.0F)
+                    .clientTrackingRange(10)
+                    .updateInterval(1)
+                    .build("fuga_projectile"));
+
     public static void register(IEventBus eventBus) {
         ENTITY_TYPES.register(eventBus);
     }

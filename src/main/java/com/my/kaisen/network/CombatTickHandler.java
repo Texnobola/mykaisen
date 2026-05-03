@@ -73,6 +73,7 @@ public class CombatTickHandler {
     public static final Map<UUID, Integer> awakeningSequences = new ConcurrentHashMap<>();
     public static final Map<UUID, Integer> suspendedPlayers = new ConcurrentHashMap<>();
     public static final Map<UUID, Integer> airDismantlePlayers = new ConcurrentHashMap<>();
+    public static final Map<UUID, Integer> fugaChargeTicks = new ConcurrentHashMap<>();
 
     public static class RushState {
         public int ticks = 0;
@@ -477,6 +478,61 @@ public class CombatTickHandler {
         // 7. Rush (Awakened Ability 3)
         // -----------------------------------------------------
         tickRush(player);
+
+        // -----------------------------------------------------
+        // 8. Fuga Charge-Up
+        // -----------------------------------------------------
+        if (fugaChargeTicks.containsKey(playerId)) {
+            int ticks = fugaChargeTicks.get(playerId);
+            net.minecraft.server.level.ServerLevel serverLevel = (net.minecraft.server.level.ServerLevel) player.level();
+
+            // Sound Triggers
+            if (ticks == 64) {
+                player.level().playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.FUGA_CHARGING.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
+            } else if (ticks == 40) {
+                player.level().playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.FUGA_FLAME_FORMING.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
+            } else if (ticks == 20) {
+                player.level().playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.FUGA_ARROW_CREATED.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
+            }
+
+            if (ticks > 20) {
+                // Phase 1: Gathering flames (inward movement)
+                for (int i = 0; i < 5; i++) {
+                    double angle = serverLevel.random.nextDouble() * Math.PI * 2;
+                    double radius = 1.5D;
+                    double ox = Math.cos(angle) * radius;
+                    double oz = Math.sin(angle) * radius;
+                    serverLevel.sendParticles(net.minecraft.core.particles.ParticleTypes.FLAME,
+                            player.getX() + ox, player.getY() + 0.5 + (serverLevel.random.nextDouble() * 1.5), player.getZ() + oz,
+                            1, -ox * 0.1, 0.0, -oz * 0.1, 0.05);
+                }
+            } else if (ticks > 0) {
+                // Phase 2: Idling and burning in front of the player
+                Vec3 look = player.getLookAngle();
+                Vec3 front = player.getEyePosition().add(look.scale(0.6));
+                for (int i = 0; i < 3; i++) {
+                    serverLevel.sendParticles(net.minecraft.core.particles.ParticleTypes.SOUL_FIRE_FLAME,
+                            front.x, front.y, front.z, 2, 0.1, 0.1, 0.1, 0.02);
+                    serverLevel.sendParticles(net.minecraft.core.particles.ParticleTypes.FLAME,
+                            front.x, front.y, front.z, 5, 0.1, 0.1, 0.1, 0.03);
+                }
+            }
+
+            if (ticks <= 0) {
+                fugaChargeTicks.remove(playerId);
+                
+                // Shoot sound
+                player.level().playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.FUGA_SHOOT.get(), net.minecraft.sounds.SoundSource.PLAYERS, 2.0F, 1.0F);
+
+                // Spawn FugaProjectileEntity
+                com.my.kaisen.entity.FugaProjectileEntity fuga = new com.my.kaisen.entity.FugaProjectileEntity(com.my.kaisen.registry.ModEntities.FUGA_PROJECTILE.get(), player, player.level());
+                fuga.setPos(player.getEyePosition());
+                fuga.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 4.0F, 1.0F);
+                player.level().addFreshEntity(fuga);
+            } else {
+                fugaChargeTicks.put(playerId, ticks - 1);
+            }
+        }
     }
     
     private static void tickDivergentFists(ServerPlayer player) {

@@ -118,5 +118,41 @@
     "sounds": [
       "mykaisen:sukuna_awekening"
     ]
+  },
+  "charging_up": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:charging_up"
+    ]
+  },
+  "flame_forming": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:flame_forming"
+    ]
+  },
+  "arrow_created": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:arrow_created"
+    ]
+  },
+  "flame_idle": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:flame_idle"
+    ]
+  },
+  "fuga_shoot": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:fuga_shoot"
+    ]
+  },
+  "fuga_hits": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:fuga_hits"
+    ]
   }
 }

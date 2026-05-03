@@ -26,6 +26,11 @@ public class ClientEvents {
                 }
             }
         }
+
+        @SubscribeEvent
+        public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
+            event.registerEntityRenderer(com.my.kaisen.registry.ModEntities.FUGA_PROJECTILE.get(), FugaProjectileRenderer::new);
+        }
     }
 
     @SubscribeEvent
