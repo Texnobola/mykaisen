@@ -19,15 +19,6 @@ public class TattooCurioRenderer implements ICurioRenderer {
 
     @Override
     public <T extends LivingEntity, M extends EntityModel<T>> void render(ItemStack stack, SlotContext slotContext, PoseStack matrixStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (slotContext.entity() instanceof net.minecraft.client.player.AbstractClientPlayer player) {
-            net.minecraft.client.renderer.entity.EntityRenderer<?> renderer = net.minecraft.client.Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(player);
-            if (renderer instanceof net.minecraft.client.renderer.entity.player.PlayerRenderer playerRenderer) {
-                net.minecraft.client.model.HumanoidModel<net.minecraft.client.player.AbstractClientPlayer> model = playerRenderer.getModel();
-                VertexConsumer vertexconsumer = renderTypeBuffer.getBuffer(RenderType.entityCutoutNoCull(TATTOO_TEXTURE));
-                
-                // This wraps the tattoo texture perfectly around the arm/leg/torso geometry
-                model.renderToBuffer(matrixStack, vertexconsumer, light, net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
-            }
-        }
+        // Muted: SukunaTattooLayer handles the rendering to ensure it wraps the skin correctly.
     }
 }

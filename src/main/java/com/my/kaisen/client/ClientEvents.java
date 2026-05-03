@@ -19,17 +19,16 @@ public class ClientEvents {
     public static class ModBusEvents {
         @SubscribeEvent
         public static void onAddLayers(EntityRenderersEvent.AddLayers event) {
-            for (net.minecraft.world.entity.player.PlayerModelPart part : net.minecraft.world.entity.player.PlayerModelPart.values()) {
-                // This is not the right way to iterate skins in 1.21.1
+            // Default Skin (Steve)
+            PlayerRenderer defaultRenderer = event.getSkin(net.minecraft.client.resources.PlayerSkin.Model.WIDE);
+            if (defaultRenderer != null) {
+                defaultRenderer.addLayer(new SukunaTattooLayer<>(defaultRenderer));
             }
-            
-            // Correct way for 1.21.1 to get skins
-            event.getSkins().forEach(skin -> {
-                PlayerRenderer renderer = event.getSkin(skin);
-                if (renderer != null) {
-                    renderer.addLayer(new SukunaTattooLayer<>(renderer));
-                }
-            });
+            // Slim Skin (Alex)
+            PlayerRenderer slimRenderer = event.getSkin(net.minecraft.client.resources.PlayerSkin.Model.SLIM);
+            if (slimRenderer != null) {
+                slimRenderer.addLayer(new SukunaTattooLayer<>(slimRenderer));
+            }
         }
     }
 

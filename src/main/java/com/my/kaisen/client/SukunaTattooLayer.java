@@ -20,16 +20,10 @@ public class SukunaTattooLayer<T extends AbstractClientPlayer, M extends PlayerM
     }
 
     @Override
-    public void render(PoseStack poseStack, MultiBufferSource buffer, int packedLight, T livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        // Check if the player is awakened
-        if (!livingEntity.getPersistentData().getBoolean("is_awakened")) {
-            return;
+    public void render(PoseStack poseStack, MultiBufferSource buffer, int packedLight, T player, float limbSwing, float limbSwingAmount, float partialTick, float ageInTicks, float netHeadYaw, float headPitch) {
+        if (top.theillusivec4.curios.api.CuriosApi.getCuriosHelper().findFirstCurio(player, com.my.kaisen.registry.ModItems.SUKUNA_TATTOO.get()).isPresent()) {
+            VertexConsumer vertexconsumer = buffer.getBuffer(RenderType.entityTranslucent(TATTOO_TEXTURE));
+            this.getParentModel().renderToBuffer(poseStack, vertexconsumer, packedLight, net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
         }
-
-        // Get the translucent render type
-        VertexConsumer vertexconsumer = buffer.getBuffer(RenderType.entityTranslucent(TATTOO_TEXTURE));
-
-        // Render the model overlay
-        this.getParentModel().renderToBuffer(poseStack, vertexconsumer, packedLight, LivingEntityRenderer.getOverlayCoords(livingEntity, 0.0F), 0xFFFFFFFF);
     }
 }
