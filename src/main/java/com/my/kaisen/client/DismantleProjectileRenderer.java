@@ -24,23 +24,25 @@ public class DismantleProjectileRenderer extends EntityRenderer<DismantleProject
     public void render(DismantleProjectileEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         poseStack.pushPose();
         
+        // Billboard rotation - face the camera
+        poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
+        
+        // Flip upright
+        poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+        
         // Scale up by 3.0f as requested
         poseStack.scale(3.0F, 3.0F, 3.0F);
-        
-        // Billboard rotation
-        poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
-        poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
         
         PoseStack.Pose lastPose = poseStack.last();
         Matrix4f matrix4f = lastPose.pose();
         
-        VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityCutout(TEXTURE));
+        VertexConsumer vertexconsumer = buffer.getBuffer(RenderType.entityTranslucent(TEXTURE));
         
-        // Quad vertices
-        vertexConsumer.addVertex(matrix4f, -0.5F, -0.25F, 0.0F).setColor(255, 255, 255, 255).setUv(0.0F, 1.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(0.0F, 1.0F, 0.0F);
-        vertexConsumer.addVertex(matrix4f, 0.5F, -0.25F, 0.0F).setColor(255, 255, 255, 255).setUv(1.0F, 1.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(0.0F, 1.0F, 0.0F);
-        vertexConsumer.addVertex(matrix4f, 0.5F, 0.75F, 0.0F).setColor(255, 255, 255, 255).setUv(1.0F, 0.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(0.0F, 1.0F, 0.0F);
-        vertexConsumer.addVertex(matrix4f, -0.5F, 0.75F, 0.0F).setColor(255, 255, 255, 255).setUv(0.0F, 0.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(0.0F, 1.0F, 0.0F);
+        // Manually draw the 4 vertices of the quad
+        vertexconsumer.addVertex(matrix4f, -0.5F, -0.5F, 0.0F).setColor(255, 255, 255, 255).setUv(0.0F, 1.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(0.0F, 1.0F, 0.0F);
+        vertexconsumer.addVertex(matrix4f, 0.5F, -0.5F, 0.0F).setColor(255, 255, 255, 255).setUv(1.0F, 1.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(0.0F, 1.0F, 0.0F);
+        vertexconsumer.addVertex(matrix4f, 0.5F, 0.5F, 0.0F).setColor(255, 255, 255, 255).setUv(1.0F, 0.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(0.0F, 1.0F, 0.0F);
+        vertexconsumer.addVertex(matrix4f, -0.5F, 0.5F, 0.0F).setColor(255, 255, 255, 255).setUv(0.0F, 0.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(0.0F, 1.0F, 0.0F);
         
         poseStack.popPose();
         super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);

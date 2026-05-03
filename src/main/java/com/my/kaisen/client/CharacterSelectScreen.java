@@ -8,7 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public class CharacterSelectScreen extends Screen {
-    private static final net.minecraft.resources.ResourceLocation BOOK_TEXTURE = net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(com.my.kaisen.MyKaisen.MODID, "textures/gui/cursed_book.png");
+    private static final net.minecraft.resources.ResourceLocation BOOK_TEXTURE = net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("mykaisen", "textures/gui/cursed_book.png");
     private final int imageWidth = 192;
     private final int imageHeight = 192;
 
