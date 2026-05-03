@@ -44,16 +44,11 @@ public class CombatTickHandler {
     public static final Map<UUID, Integer> crushingBlowMisses = new ConcurrentHashMap<>();
     public static final Map<UUID, AirCrushingState> airCrushingBlows = new ConcurrentHashMap<>();
     public static final Map<UUID, DivergentFistState> activeDivergentFists = new ConcurrentHashMap<>();
-    public static final Map<UUID, DismantleBurstState> activeDismantles = new ConcurrentHashMap<>();
 
     public record BeatdownState(LivingEntity targetEntity, int ticksRemaining) {}
     public record CrushingBlowState(LivingEntity targetEntity, int ticksElapsed) {}
     public record AirCrushingState(LivingEntity target, int ticks) {}
     
-    public static class DismantleBurstState {
-        public int ticks = 0;
-        public int shotsFired = 0;
-    }
 
     public static class DivergentFistState {
         public LivingEntity target;
@@ -169,22 +164,6 @@ public class CombatTickHandler {
             }
         }
 
-        if (activeDismantles.containsKey(playerId)) {
-            DismantleBurstState state = activeDismantles.get(playerId);
-            if (state.ticks % 4 == 0) {
-                // Spawn Dismantle Projectile
-                com.my.kaisen.entity.DismantleProjectileEntity dismantle = new com.my.kaisen.entity.DismantleProjectileEntity(com.my.kaisen.registry.ModEntities.DISMANTLE_PROJECTILE.get(), player, player.level());
-                dismantle.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 2.5F, 0.0F); // High forward velocity
-                player.level().addFreshEntity(dismantle);
-                
-                player.level().playSound(null, player.blockPosition(), net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_SWEEP, net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.5F);
-                state.shotsFired++;
-            }
-            state.ticks++;
-            if (state.shotsFired >= 5) {
-                activeDismantles.remove(playerId);
-            }
-        }
 
         // -----------------------------------------------------
         // 0. Cooldown Logic & Timers

@@ -18,24 +18,9 @@ public class TattooCurioRenderer implements ICurioRenderer {
     private static final ResourceLocation TATTOO_TEXTURE = ResourceLocation.fromNamespaceAndPath(MyKaisen.MODID, "textures/entity/sukuna_tattoos.png");
 
     @Override
-    public <T extends LivingEntity, M extends EntityModel<T>> void render(
-            ItemStack stack,
-            SlotContext slotContext,
-            PoseStack matrixStack,
-            RenderLayerParent<T, M> renderLayerParent,
-            MultiBufferSource renderBuffer,
-            int light,
-            float limbSwing,
-            float limbSwingAmount,
-            float partialTicks,
-            float ageInTicks,
-            float netHeadYaw,
-            float headPitch) {
-
+    public <T extends LivingEntity, M extends EntityModel<T>> void render(ItemStack stack, SlotContext slotContext, PoseStack matrixStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         M model = renderLayerParent.getModel();
-        VertexConsumer vertexConsumer = renderBuffer.getBuffer(RenderType.entityTranslucent(TATTOO_TEXTURE));
-
-        // Use the parent model to render the tattoos directly onto the entity's body
-        model.renderToBuffer(matrixStack, vertexConsumer, light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
+        VertexConsumer vertexconsumer = renderTypeBuffer.getBuffer(RenderType.entityTranslucent(TATTOO_TEXTURE));
+        model.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
     }
 }

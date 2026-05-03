@@ -48,12 +48,17 @@ public class AbilityServerHandler {
                         net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
                                 player, new PlayAnimationPayload(dismantleAnim, player.getId())
                         );
-
-                        // Initiate burst state machine
-                        CombatTickHandler.activeDismantles.put(player.getUUID(), new CombatTickHandler.DismantleBurstState());
+                        
+                        // Spawn EXACTLY ONE DismantleProjectileEntity
+                        com.my.kaisen.entity.DismantleProjectileEntity dismantle = new com.my.kaisen.entity.DismantleProjectileEntity(com.my.kaisen.registry.ModEntities.DISMANTLE_PROJECTILE.get(), player, player.level());
+                        dismantle.setPos(player.getEyePosition());
+                        dismantle.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 3.0F, 0.0F);
+                        player.level().addFreshEntity(dismantle);
+                        
+                        player.level().playSound(null, player.blockPosition(), net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_SWEEP, net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.5F);
 
                         if (CombatTickHandler.cooldownsEnabled) {
-                            CombatTickHandler.abilityCooldowns.put(player.getUUID(), 60); // 3 seconds
+                            CombatTickHandler.abilityCooldowns.put(player.getUUID(), 10); // 0.5 seconds
                         }
                     }
                 } else if (abilityId == 2) {

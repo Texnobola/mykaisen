@@ -286,7 +286,7 @@ public class ClientVfxHandler {
         float initialRotation = (float) Math.toRadians(-yRot);
 
         WorldParticleBuilder.create(com.my.kaisen.registry.ModParticles.DISMANTLE_SLASH.get())
-                .setRenderType(LodestoneWorldParticleRenderType.TRANSPARENT) // Standard translucent blending
+                .setRenderType(LodestoneWorldParticleRenderType.TRANSPARENT) // Fixed render type
                 .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
                 .setScaleData(GenericParticleData.create(6.0f, 0.0f).build())
                 .setSpinData(SpinParticleData.create(initialRotation, 0).build())
