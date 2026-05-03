@@ -279,32 +279,23 @@ public class ClientVfxHandler {
     }
 
     /**
-     * Spawns a wide, razor-thin horizontal slash of white/light-blue cursed energy.
+     * Spawns a massive, single curved 2D anime slash using a custom particle.
      */
     public static void spawnDismantle(Level level, double x, double y, double z, float yRot) {
-        // yRot is the yaw. We want the line to be perpendicular to the look direction.
-        double angle = Math.toRadians(yRot + 90.0f);
-        double perpX = Math.cos(angle);
-        double perpZ = Math.sin(angle);
+        // Convert yRot to radians for Lodestone spin data.
+        // We negate and adjust to align the crescent texture correctly with the player's view.
+        float initialRotation = (float) Math.toRadians(-yRot);
 
-        // Spawn a tight line of razor-thin sparks
-        int sparkCount = 10;
-        double slashWidth = 5.0; // Wider slash
-        
-        for (int i = 0; i < sparkCount; i++) {
-            double offset = (i / (double)(sparkCount - 1)) - 0.5;
-            
-            double px = x + (perpX * offset * slashWidth);
-            double pz = z + (perpZ * offset * slashWidth);
-
-            WorldParticleBuilder.create(LodestoneParticleTypes.SPARK_PARTICLE)
-                    .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
-                    // Razor-thin and wide: X scale = 4.0, Y scale = 0.1
-                    .setScaleData(GenericParticleData.create(4.0f, 0.1f, 0.0f).build())
-                    .setColorData(ColorParticleData.create(Color.WHITE, new Color(173, 216, 230)).build())
-                    .setLifetime(3 + RANDOM.nextInt(3)) // 3-5 ticks
-                    .spawn(level, px, y, pz);
-        }
+        WorldParticleBuilder.create(com.my.kaisen.registry.ModParticles.DISMANTLE_SLASH.get())
+                .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
+                .setScaleData(GenericParticleData.create(6.0f, 0.0f).build())
+                .setColorData(ColorParticleData.create(Color.WHITE, new Color(173, 216, 230)).build())
+                .setSpinData(SpinParticleData.create(initialRotation, 0).build())
+                .setLifetime(4)
+                .setRandomMotion(0, 0, 0)
+                .setRandomOffset(0, 0, 0)
+                .addMotion(0, 0, 0)
+                .spawn(level, x, y, z);
     }
     /**
      * Receiver for the SpawnCleaveRushVfxPayload.

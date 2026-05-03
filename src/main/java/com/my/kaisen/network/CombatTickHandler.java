@@ -69,6 +69,7 @@ public class CombatTickHandler {
 
     public static final Map<UUID, RushState> activeRushes = new ConcurrentHashMap<>();
     public static final Map<UUID, Integer> awakeningSequences = new ConcurrentHashMap<>();
+    public static final Map<UUID, Integer> suspendedPlayers = new ConcurrentHashMap<>();
 
     public static class RushState {
         public int ticks = 0;
@@ -136,6 +137,17 @@ public class CombatTickHandler {
                 awakeningSequences.remove(playerId);
             } else {
                 awakeningSequences.put(playerId, ticks - 1);
+            }
+        }
+
+        if (suspendedPlayers.containsKey(playerId)) {
+            int ticks = suspendedPlayers.get(playerId);
+            player.setDeltaMovement(0, 0, 0);
+            player.hasImpulse = true;
+            if (ticks <= 1) {
+                suspendedPlayers.remove(playerId);
+            } else {
+                suspendedPlayers.put(playerId, ticks - 1);
             }
         }
 

@@ -21,6 +21,12 @@ public class ServerEvents {
             player.getPersistentData().putBoolean("mykaisen_first_join", true);
             player.getInventory().add(new net.minecraft.world.item.ItemStack(com.my.kaisen.registry.ModItems.CHARACTER_CHOOSER.get()));
         }
+
+        // Sync awakening status on join
+        if (player instanceof ServerPlayer serverPlayer && player.getPersistentData().getBoolean("is_awakened")) {
+            net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(serverPlayer, 
+                    new com.my.kaisen.network.SyncAwakeningPayload(player.getId(), true));
+        }
     }
 
     @SubscribeEvent

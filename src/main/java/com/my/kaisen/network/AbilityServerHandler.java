@@ -35,7 +35,15 @@ public class AbilityServerHandler {
                         if (CombatTickHandler.cooldownsEnabled && CombatTickHandler.abilityCooldowns.containsKey(player.getUUID())) return;
 
                         // Animation — grounded vs airborne variant
-                        String dismantleAnim = player.onGround() ? "dismantle" : "dismantle_air";
+                        boolean onGround = player.onGround();
+                        String dismantleAnim = onGround ? "dismantle" : "dismantle_air";
+                        
+                        if (!onGround) {
+                            player.setDeltaMovement(player.getDeltaMovement().add(0, 0.4D, 0));
+                            player.hurtMarked = true;
+                            CombatTickHandler.suspendedPlayers.put(player.getUUID(), 15);
+                        }
+
                         net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
                                 player, new PlayAnimationPayload(dismantleAnim, player.getId())
                         );
