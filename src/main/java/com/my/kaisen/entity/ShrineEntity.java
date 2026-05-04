@@ -13,6 +13,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -88,21 +89,24 @@ public class ShrineEntity extends Entity implements GeoEntity {
             }
  
             // Shibuya-level Devastation (Open Barrier only)
-            if (isOpen() && lifeTicks % 2 == 0) {
+            if (isOpen()) {
                 ServerLevel serverLevel = (ServerLevel) this.level();
-                int destroyRadius = (int) (lifeTicks * 2); // Expanding destruction
-                if (destroyRadius > 200) destroyRadius = 200;
- 
-                for (int i = 0; i < 20; i++) { // Destroy 20 random surface blocks per tick
-                    double angle = Math.random() * Math.PI * 2;
-                    double dist = Math.random() * destroyRadius;
-                    int dx = (int) (Math.cos(angle) * dist);
-                    int dz = (int) (Math.sin(angle) * dist);
+                for (int i = 0; i < 40; i++) {
+                    int dx = this.getRandom().nextInt(400) - 200;
+                    int dz = this.getRandom().nextInt(400) - 200;
                     BlockPos targetPos = this.blockPosition().offset(dx, 0, dz);
-                    BlockPos surfacePos = serverLevel.getHeightmapPos(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE, targetPos).below();
+                    BlockPos surfacePos = serverLevel.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, targetPos).below();
                     
-                    if (!serverLevel.getBlockState(surfacePos).isAir()) {
-                        serverLevel.destroyBlock(surfacePos, false);
+                    net.minecraft.world.level.block.state.BlockState state = serverLevel.getBlockState(surfacePos);
+                    if (!state.isAir() && state.getDestroySpeed(serverLevel, surfacePos) >= 0 && state.getBlock() != com.my.kaisen.registry.ModBlocks.DOMAIN_BARRIER.get()) {
+                        // Flag 2: Update clients but prevent heavy vanilla physics/particles
+                        serverLevel.setBlock(surfacePos, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), 2);
+                        
+                        // GPU-Friendly Lodestone Ash (1-in-5 chance)
+                        if (this.getRandom().nextInt(5) == 0) {
+                            net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, 
+                                    new com.my.kaisen.network.SpawnDomainAshPayload(surfacePos.getX() + 0.5, surfacePos.getY() + 0.5, surfacePos.getZ() + 0.5));
+                        }
                     }
                 }
             }

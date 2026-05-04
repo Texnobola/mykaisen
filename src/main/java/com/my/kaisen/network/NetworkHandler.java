@@ -139,6 +139,13 @@ public class NetworkHandler {
                 (payload, ctx) -> com.my.kaisen.client.ClientVfxHandler.handleCleaveRushVfx(payload, ctx)
         );
 
+        // Register SpawnDomainAshPayload to be sent from Server to Client
+        registrar.playToClient(
+                SpawnDomainAshPayload.TYPE,
+                SpawnDomainAshPayload.STREAM_CODEC,
+                com.my.kaisen.client.ClientVfxHandler::handleDomainAshVfx
+        );
+
         // Register SyncAwakeningPayload to be sent from Server to Client
         registrar.playToClient(
                 SyncAwakeningPayload.TYPE,

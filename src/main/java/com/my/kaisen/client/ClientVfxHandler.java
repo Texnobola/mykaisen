@@ -1,6 +1,7 @@
 package com.my.kaisen.client;
 
 import com.my.kaisen.network.SpawnBlackFlashPayload;
+import com.my.kaisen.network.SpawnDomainAshPayload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -363,6 +364,28 @@ public class ClientVfxHandler {
                         .spawn(level, x, y, z);
             }
         }
+    }
+ 
+    /**
+     * Receiver for the SpawnDomainAshPayload.
+     */
+    public static void handleDomainAshVfx(final SpawnDomainAshPayload payload, final IPayloadContext context) {
+        context.enqueueWork(() -> {
+            Level level = Minecraft.getInstance().level;
+            if (level != null) {
+                spawnDomainAsh(level, payload.x(), payload.y(), payload.z());
+            }
+        });
+    }
+ 
+    public static void spawnDomainAsh(Level level, double x, double y, double z) {
+        WorldParticleBuilder.create(LodestoneParticleTypes.SMOKE_PARTICLE)
+                .setTransparencyData(GenericParticleData.create(0.8f, 0.0f).build())
+                .setScaleData(GenericParticleData.create(1.0f, 3.5f).build())
+                .setColorData(ColorParticleData.create(new Color(60, 60, 60), Color.BLACK).build())
+                .setLifetime(40 + RANDOM.nextInt(20))
+                .addMotion((RANDOM.nextDouble() - 0.5) * 0.05, 0.05 + RANDOM.nextDouble() * 0.1, (RANDOM.nextDouble() - 0.5) * 0.05)
+                .spawn(level, x, y, z);
     }
 }
 
