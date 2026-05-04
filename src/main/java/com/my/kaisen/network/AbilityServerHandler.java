@@ -112,6 +112,10 @@ public class AbilityServerHandler {
                         // Generate physical arena
                         com.my.kaisen.util.DomainHandler.generateDomainArena(player.level(), player.blockPosition(), player, isShifting);
                         
+                        // Play Animation
+                        net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 
+                                new com.my.kaisen.network.PlayAnimationPayload("shrine_opening_domain", player.getId()));
+
                         // Cinematic Effects
                         net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, new com.my.kaisen.network.CameraShakePayload(3.0f, 40));
                         player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(30.0)).forEach(e -> {
@@ -134,6 +138,10 @@ public class AbilityServerHandler {
             if (context.player() instanceof ServerPlayer player) {
                 com.my.kaisen.util.DomainHandler.generateDomainArena(player.level(), player.blockPosition(), player, payload.isOpenBarrier());
                 
+                // Play Animation
+                net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 
+                        new com.my.kaisen.network.PlayAnimationPayload("shrine_opening_domain", player.getId()));
+
                 // Cinematic Effects
                 net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, new com.my.kaisen.network.CameraShakePayload(3.0f, 40));
                 player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(30.0)).forEach(e -> {
