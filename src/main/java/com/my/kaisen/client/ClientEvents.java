@@ -41,10 +41,24 @@ public class ClientEvents {
         }
     }
 
+    private static int domainChargeTicks = 0;
+
     @SubscribeEvent
     public static void onClientPlayerTick(net.neoforged.neoforge.event.tick.PlayerTickEvent.Post event) {
         if (event.getEntity().level().isClientSide()) {
             net.minecraft.world.entity.player.Player player = event.getEntity();
+            
+            // Domain Charge Logic
+            if (KeyBindings.DOMAIN_KEY.isDown()) {
+                domainChargeTicks++;
+                if (domainChargeTicks == 20) {
+                    net.neoforged.neoforge.network.PacketDistributor.sendToServer(new com.my.kaisen.network.TriggerDomainPayload(player.isShiftKeyDown()));
+                    player.level().playSound(player, player.blockPosition(), com.my.kaisen.registry.ModSounds.universal_awekekning_sound.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.2F);
+                }
+            } else {
+                domainChargeTicks = 0;
+            }
+
             if (player.getPersistentData().getBoolean("is_awakened")) {
                 ClientVfxHandler.spawnMenacingAura(
                         player.level(),

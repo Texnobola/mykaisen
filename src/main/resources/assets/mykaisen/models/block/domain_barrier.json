@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "mykaisen:block/sukuna_domain_barrier"
+  }
+}

@@ -109,20 +109,32 @@ public class AbilityServerHandler {
 
                         boolean isShifting = player.isShiftKeyDown();
                         
-                        // Generate physical arena
-                        com.my.kaisen.util.DomainHandler.generateDomainArena(player.level(), player.blockPosition(), player, isShifting);
-                        
-                        // Play Animation
-                        net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 
-                                new com.my.kaisen.network.PlayAnimationPayload("shrine_opening_domain", player.getId()));
+                        // Toggle Logic: Check if a shrine already exists for this owner
+                        java.util.List<com.my.kaisen.entity.ShrineEntity> existingShrines = player.level().getEntitiesOfClass(com.my.kaisen.entity.ShrineEntity.class, player.getBoundingBox().inflate(300.0),
+                                (e) -> e.getOwnerUUID() != null && e.getOwnerUUID().equals(player.getUUID()));
 
-                        // Cinematic Effects
-                        net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, new com.my.kaisen.network.CameraShakePayload(3.0f, 40));
-                        player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(30.0)).forEach(e -> {
-                            if (e != player) {
-                                e.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 60, 0, false, false));
+                        if (!existingShrines.isEmpty()) {
+                            for (com.my.kaisen.entity.ShrineEntity existing : existingShrines) {
+                                if (existing.getCurrentState() != com.my.kaisen.entity.ShrineEntity.DomainState.COLLAPSING) {
+                                    existing.setState(com.my.kaisen.entity.ShrineEntity.DomainState.COLLAPSING);
+                                }
                             }
-                        });
+                        } else {
+                            // Spawn new Shrine
+                            com.my.kaisen.entity.ShrineEntity shrine = com.my.kaisen.util.DomainHandler.spawnShrine(player.level(), player.blockPosition(), player, isShifting);
+                            
+                            // Play Animation
+                            net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 
+                                    new com.my.kaisen.network.PlayAnimationPayload("shrine_opening_domain", player.getId()));
+
+                            // Cinematic Effects
+                            net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, new com.my.kaisen.network.CameraShakePayload(3.0f, 40));
+                            player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(30.0)).forEach(e -> {
+                                if (e != player) {
+                                    e.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 60, 0, false, false));
+                                }
+                            });
+                        }
 
                         if (CombatTickHandler.cooldownsEnabled) {
                             CombatTickHandler.abilityCooldowns.put(player.getUUID(), 1200); // 60 seconds cooldown
@@ -133,22 +145,35 @@ public class AbilityServerHandler {
         });
     }
 
-    public static void handleDomain(final TriggerDomainPayload payload, final IPayloadContext context) {
+    public static void handleDomain(final com.my.kaisen.network.TriggerDomainPayload payload, final net.neoforged.neoforge.network.handling.IPayloadContext context) {
         context.enqueueWork(() -> {
-            if (context.player() instanceof ServerPlayer player) {
-                com.my.kaisen.util.DomainHandler.generateDomainArena(player.level(), player.blockPosition(), player, payload.isOpenBarrier());
-                
-                // Play Animation
-                net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 
-                        new com.my.kaisen.network.PlayAnimationPayload("shrine_opening_domain", player.getId()));
+            if (context.player() instanceof net.minecraft.server.level.ServerPlayer player) {
+                // Toggle Logic: Check if a shrine already exists for this owner
+                java.util.List<com.my.kaisen.entity.ShrineEntity> existingShrines = player.level().getEntitiesOfClass(com.my.kaisen.entity.ShrineEntity.class, player.getBoundingBox().inflate(300.0),
+                        (e) -> e.getOwnerUUID() != null && e.getOwnerUUID().equals(player.getUUID()));
 
-                // Cinematic Effects
-                net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, new com.my.kaisen.network.CameraShakePayload(3.0f, 40));
-                player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(30.0)).forEach(e -> {
-                    if (e != player) {
-                        e.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 60, 0, false, false));
+                if (!existingShrines.isEmpty()) {
+                    for (com.my.kaisen.entity.ShrineEntity existing : existingShrines) {
+                        if (existing.getCurrentState() != com.my.kaisen.entity.ShrineEntity.DomainState.COLLAPSING) {
+                            existing.setState(com.my.kaisen.entity.ShrineEntity.DomainState.COLLAPSING);
+                        }
                     }
-                });
+                } else {
+                    // Spawn new Shrine
+                    com.my.kaisen.entity.ShrineEntity shrine = com.my.kaisen.util.DomainHandler.spawnShrine(player.level(), player.blockPosition(), player, payload.isOpenBarrier());
+                    
+                    // Play Animation
+                    net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 
+                            new com.my.kaisen.network.PlayAnimationPayload("shrine_opening_domain", player.getId()));
+
+                    // Cinematic Effects
+                    net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, new com.my.kaisen.network.CameraShakePayload(3.0f, 40));
+                    player.level().getEntitiesOfClass(net.minecraft.world.entity.LivingEntity.class, player.getBoundingBox().inflate(30.0)).forEach(e -> {
+                        if (e != player) {
+                            e.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.DARKNESS, 60, 0, false, false));
+                        }
+                    });
+                }
             }
         });
     }

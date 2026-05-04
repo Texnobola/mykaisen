@@ -16,6 +16,12 @@ public class ModItems {
     public static final DeferredItem<Item> SUKUNA_TATTOO = ITEMS.register("sukuna_tattoo",
             () -> new com.my.kaisen.item.SukunaTattooItem(new Item.Properties().stacksTo(1)));
 
+    public static final DeferredItem<Item> DOMAIN_BARRIER_ITEM = ITEMS.register("domain_barrier",
+            () -> new net.minecraft.world.item.BlockItem(ModBlocks.DOMAIN_BARRIER.get(), new Item.Properties()));
+
+    public static final DeferredItem<Item> DOMAIN_FLOOR_ITEM = ITEMS.register("domain_floor",
+            () -> new net.minecraft.world.item.BlockItem(ModBlocks.DOMAIN_FLOOR.get(), new Item.Properties()));
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

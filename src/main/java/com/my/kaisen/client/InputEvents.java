@@ -44,9 +44,5 @@ public class InputEvents {
             PacketDistributor.sendToServer(new com.my.kaisen.network.AwakenPayload());
         }
 
-        if (KeyBindings.DOMAIN_KEY.consumeClick()) {
-            // Send payload to trigger Domain Expansion
-            PacketDistributor.sendToServer(new com.my.kaisen.network.TriggerDomainPayload(net.minecraft.client.Minecraft.getInstance().player.isShiftKeyDown()));
-        }
     }
 }
