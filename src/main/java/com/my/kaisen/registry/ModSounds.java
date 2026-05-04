@@ -89,6 +89,9 @@ public class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> FUGA_HITS = SOUND_EVENTS.register("fuga_hits",
             () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MyKaisen.MODID, "fuga_hits")));
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> DISMANTLE_SLASH = SOUND_EVENTS.register("dismantle_slash",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MyKaisen.MODID, "dismantle_slash")));
+
     public static void register(IEventBus eventBus) {
         SOUND_EVENTS.register(eventBus);
     }

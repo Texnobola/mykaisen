@@ -154,5 +154,11 @@
     "sounds": [
       "mykaisen:fuga_hits"
     ]
+  },
+  "dismantle_slash": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:swing_mk"
+    ]
   }
 }

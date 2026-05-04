@@ -1,6 +1,9 @@
 package com.my.kaisen.network;
 
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -104,8 +107,18 @@ public class AbilityServerHandler {
                         // Ability 4 (Awakened): Malevolent Shrine
                         if (CombatTickHandler.cooldownsEnabled && CombatTickHandler.abilityCooldowns.containsKey(player.getUUID())) return;
 
+                        boolean isShifting = player.isShiftKeyDown();
+                        
                         // Generate physical arena
-                        com.my.kaisen.util.DomainHandler.generateDomainArena(player.level(), player.blockPosition(), player);
+                        com.my.kaisen.util.DomainHandler.generateDomainArena(player.level(), player.blockPosition(), player, isShifting);
+                        
+                        // Cinematic Effects
+                        net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, new com.my.kaisen.network.CameraShakePayload(3.0f, 40));
+                        player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(30.0)).forEach(e -> {
+                            if (e != player) {
+                                e.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 60, 0, false, false));
+                            }
+                        });
 
                         if (CombatTickHandler.cooldownsEnabled) {
                             CombatTickHandler.abilityCooldowns.put(player.getUUID(), 1200); // 60 seconds cooldown
@@ -119,7 +132,15 @@ public class AbilityServerHandler {
     public static void handleDomain(final TriggerDomainPayload payload, final IPayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player() instanceof ServerPlayer player) {
-                com.my.kaisen.util.DomainHandler.generateDomainArena(player.level(), player.blockPosition(), player);
+                com.my.kaisen.util.DomainHandler.generateDomainArena(player.level(), player.blockPosition(), player, payload.isOpenBarrier());
+                
+                // Cinematic Effects
+                net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, new com.my.kaisen.network.CameraShakePayload(3.0f, 40));
+                player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(30.0)).forEach(e -> {
+                    if (e != player) {
+                        e.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 60, 0, false, false));
+                    }
+                });
             }
         });
     }

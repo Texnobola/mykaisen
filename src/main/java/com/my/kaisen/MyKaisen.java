@@ -25,7 +25,7 @@ public class MyKaisen {
     public MyKaisen(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
 
-        BLOCKS.register(modEventBus);
+        com.my.kaisen.registry.ModBlocks.register(modEventBus);
         com.my.kaisen.registry.ModItems.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
         
