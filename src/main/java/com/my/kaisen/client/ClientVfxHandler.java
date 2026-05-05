@@ -306,4 +306,66 @@ public class ClientVfxHandler {
             addScreenshake(60, 4.0f);
         });
     }
+
+    public static void handleCleaveVfx(com.my.kaisen.network.SpawnCleaveVfxPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            Level level = Minecraft.getInstance().level;
+            if (level == null) return;
+            
+            // Slice effect
+            WorldParticleBuilder.create(com.my.kaisen.registry.ModParticles.CLEAVE_SLASH.get())
+                    .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
+                    .setScaleData(GenericParticleData.create(2.5f, 0.0f).build())
+                    .setSpinData(SpinParticleData.create(payload.rotation(), payload.rotation()).build())
+                    .setLifetime(10)
+                    .spawn(level, payload.x(), payload.y(), payload.z());
+        });
+    }
+
+    public static void handleCleaveWebVfx(com.my.kaisen.network.SpawnCleaveWebVfxPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            Level level = Minecraft.getInstance().level;
+            if (level == null) return;
+
+            // Massive central spiderweb pattern (Visualizes the web from the reference)
+            WorldParticleBuilder.create(com.my.kaisen.registry.ModParticles.CLEAVE_WEB.get())
+                    .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
+                    .setScaleData(GenericParticleData.create(1.0f, 16.0f, 0.0f).build()) // Sudden expansion
+                    .setLifetime(30)
+                    .spawn(level, payload.x(), payload.y() + 0.2, payload.z());
+
+            // Secondary faint web for depth
+            WorldParticleBuilder.create(com.my.kaisen.registry.ModParticles.CLEAVE_WEB.get())
+                    .setTransparencyData(GenericParticleData.create(0.5f, 0.0f).build())
+                    .setScaleData(GenericParticleData.create(8.0f, 20.0f, 0.0f).build())
+                    .setSpinData(SpinParticleData.create(45.0f, 45.0f).build())
+                    .setLifetime(20)
+                    .spawn(level, payload.x(), payload.y() + 0.1, payload.z());
+
+            // Radial "Shatter" effects to simulate ground breaking
+            for (int i = 0; i < 360; i += 15) {
+                double rad = Math.toRadians(i);
+                WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
+                        .setTransparencyData(GenericParticleData.create(0.4f, 0.0f).build())
+                        .setScaleData(GenericParticleData.create(0.8f, 2.5f, 0.0f).build())
+                        .setColorData(ColorParticleData.create(Color.WHITE, Color.DARK_GRAY).build())
+                        .setLifetime(15 + RANDOM.nextInt(10))
+                        .setMotion(new Vec3(Math.cos(rad) * 0.4, 0.05, Math.sin(rad) * 0.4))
+                        .spawn(level, payload.x(), payload.y() + 0.1, payload.z());
+            }
+
+            // Smoke/Dust puff at center
+            for (int i = 0; i < 20; i++) {
+                WorldParticleBuilder.create(LodestoneParticleTypes.SMOKE_PARTICLE)
+                        .setTransparencyData(GenericParticleData.create(0.3f, 0.0f).build())
+                        .setScaleData(GenericParticleData.create(1.0f, 3.0f).build())
+                        .setColorData(ColorParticleData.create(Color.GRAY, Color.BLACK).build())
+                        .setLifetime(25)
+                        .setRandomMotion(0.2)
+                        .spawn(level, payload.x(), payload.y(), payload.z());
+            }
+
+            addScreenshake(40, 1.8f);
+        });
+    }
 }

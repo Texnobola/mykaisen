@@ -14,6 +14,8 @@ public class ModParticles {
 
     public static final Supplier<LodestoneWorldParticleType> DISMANTLE_SLASH = PARTICLES.register("dismantle_slash", LodestoneWorldParticleType::new);
     public static final Supplier<LodestoneWorldParticleType> GLOWING_FIRE = PARTICLES.register("glowing_fire", LodestoneWorldParticleType::new);
+    public static final Supplier<LodestoneWorldParticleType> CLEAVE_SLASH = PARTICLES.register("cleave_slash", LodestoneWorldParticleType::new);
+    public static final Supplier<LodestoneWorldParticleType> CLEAVE_WEB = PARTICLES.register("cleave_web", LodestoneWorldParticleType::new);
 
     public static void register(IEventBus eventBus) {
         PARTICLES.register(eventBus);

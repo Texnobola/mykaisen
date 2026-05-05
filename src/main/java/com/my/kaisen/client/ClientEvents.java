@@ -71,6 +71,20 @@ public class ClientEvents {
                         player.getBbWidth() * 0.8,
                         player.getBbHeight()
                 );
+
+                // Cleave Normal Trigger (R during Rush)
+                if (KeyBindings.ABILITY_R_KEY.consumeClick()) {
+                    // We just send it, server checks if player is in Rush
+                    PacketDistributor.sendToServer(new com.my.kaisen.network.TriggerCleaveNormalPayload());
+                }
+
+                // Cleave Web Trigger (Z + Right Shift)
+                if (KeyBindings.ABILITY_1_KEY.isDown() && com.mojang.blaze3d.platform.InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT_SHIFT)) {
+                    // Short delay/cooldown on client to prevent spamming packets
+                    if (player.tickCount % 20 == 0) {
+                        PacketDistributor.sendToServer(new com.my.kaisen.network.TriggerCleaveWebPayload());
+                    }
+                }
             }
         }
     }

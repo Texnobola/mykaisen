@@ -219,11 +219,34 @@ public class NetworkHandler {
                 AbilityServerHandler::handleFuga
         );
 
-        // Register TriggerM1Payload to be sent from Client to Server
         registrar.playToServer(
                 TriggerM1Payload.TYPE,
                 TriggerM1Payload.STREAM_CODEC,
                 AbilityServerHandler::handleM1
+        );
+
+        registrar.playToServer(
+                TriggerCleaveNormalPayload.TYPE,
+                TriggerCleaveNormalPayload.STREAM_CODEC,
+                AbilityServerHandler::handleCleaveNormal
+        );
+
+        registrar.playToServer(
+                TriggerCleaveWebPayload.TYPE,
+                TriggerCleaveWebPayload.STREAM_CODEC,
+                AbilityServerHandler::handleCleaveWeb
+        );
+
+        registrar.playToClient(
+                SpawnCleaveVfxPayload.TYPE,
+                SpawnCleaveVfxPayload.STREAM_CODEC,
+                com.my.kaisen.client.ClientVfxHandler::handleCleaveVfx
+        );
+
+        registrar.playToClient(
+                SpawnCleaveWebVfxPayload.TYPE,
+                SpawnCleaveWebVfxPayload.STREAM_CODEC,
+                com.my.kaisen.client.ClientVfxHandler::handleCleaveWebVfx
         );
     }
 }

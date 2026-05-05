@@ -95,7 +95,7 @@ public class ShrineOverlay implements LayeredDraw.Layer {
         } 
         else if (state == ShrineEntity.DomainState.ACTIVE && shrine.isOpen()) {
             int dust = shrine.getDustLevel();
-            float progress = dust / 1000.0f;
+            float progress = dust / 5000.0f;
             
             int barWidth = 240; // Wider
             int barHeight = 12; // Taller

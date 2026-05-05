@@ -5,6 +5,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class AbilityServerHandler {
@@ -85,11 +86,11 @@ public class AbilityServerHandler {
                         // Ability 3: Divergent Fist / Black Flash
                         executeDivergentFist(player);
                     } else {
-                        // Rush: 3-stage combo (Dash → Kick Up → Slam Down)
+                        // Cleave Rush: Gap-closer → Grab (Stick to Hand) → Multi-Cleave → Explosion
                         if (CombatTickHandler.cooldownsEnabled && CombatTickHandler.abilityCooldowns.containsKey(player.getUUID())) return;
-                        if (CombatTickHandler.activeRushes.containsKey(player.getUUID())) return;
+                        if (CombatTickHandler.activeCleaveRushes.containsKey(player.getUUID())) return;
 
-                        CombatTickHandler.activeRushes.put(player.getUUID(), new CombatTickHandler.RushState());
+                        CombatTickHandler.activeCleaveRushes.put(player.getUUID(), new CombatTickHandler.CleaveRushState());
 
                         if (CombatTickHandler.cooldownsEnabled) {
                             CombatTickHandler.abilityCooldowns.put(player.getUUID(), 300); // 15 seconds
@@ -150,12 +151,11 @@ public class AbilityServerHandler {
             if (context.player() instanceof ServerPlayer player) {
                 float meter = CombatTickHandler.awakeningMeter.getOrDefault(player.getUUID(), 0.0f);
                 if (meter >= 100.0f) {
-                    CombatTickHandler.awakeningMeter.put(player.getUUID(), 0.0f);
-                    player.getPersistentData().putBoolean("is_awakened", true);
+                    // Handled via sequence start in CombatTickHandler
+                    CombatTickHandler.awakeningSequences.put(player.getUUID(), 40); 
                     
-                    // Sync to client
                     net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 
-                            new SyncAwakeningPayload(player.getId(), true));
+                            new com.my.kaisen.network.PlayAnimationPayload("sukuna_awakening", player.getId()));
 
                     // Auto-equip Curio tattoo
                     top.theillusivec4.curios.api.CuriosApi.getCuriosInventory(player).ifPresent(inventory -> {
@@ -186,7 +186,7 @@ public class AbilityServerHandler {
                     
                     // Cinematic Sequence
                     // 1. Send animation payload
-                    net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 
+                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 
                             new PlayAnimationPayload("king_of_curses_awakening", player.getId()));
 
                     // 2. Play global sound
@@ -393,9 +393,7 @@ public class AbilityServerHandler {
         context.enqueueWork(() -> {
             if (context.player() instanceof ServerPlayer player) {
                 if (player.getPersistentData().getInt("mykaisen_character") != 1) return;
-
-                // Short cooldown for melee replacement
-                if (CombatTickHandler.cooldownsEnabled && CombatTickHandler.abilityCooldowns.containsKey(player.getUUID())) return;
+                if (!player.getPersistentData().getBoolean("is_awakened")) return;
 
                 // Spawn EXACTLY ONE DismantleProjectileEntity
                 com.my.kaisen.entity.DismantleProjectileEntity dismantle = new com.my.kaisen.entity.DismantleProjectileEntity(com.my.kaisen.registry.ModEntities.DISMANTLE_PROJECTILE.get(), player, player.level());
@@ -404,9 +402,77 @@ public class AbilityServerHandler {
                 player.level().addFreshEntity(dismantle);
                 
                 player.level().playSound(null, player.blockPosition(), net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_SWEEP, net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.5F);
+            }
+        });
+    }
+    public static void handleCleaveNormal(final TriggerCleaveNormalPayload payload, final IPayloadContext context) {
+        context.enqueueWork(() -> {
+            if (context.player() instanceof ServerPlayer player) {
+                if (CombatTickHandler.activeRushes.containsKey(player.getUUID())) {
+                    CombatTickHandler.RushState state = CombatTickHandler.activeRushes.get(player.getUUID());
+                    if (state.ticks >= 21) { // Slam phase
+                        state.isCleaveMode = true;
+                        player.level().playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.SUKUNA_MOCKING.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
+                    }
+                }
+            }
+        });
+    }
 
+    public static void handleCleaveWeb(final TriggerCleaveWebPayload payload, final IPayloadContext context) {
+        context.enqueueWork(() -> {
+            if (context.player() instanceof ServerPlayer player) {
+                if (player.getPersistentData().getInt("mykaisen_character") != 1 || !player.getPersistentData().getBoolean("is_awakened")) return;
+                
+                // Cleave Web logic
+                net.minecraft.world.level.Level level = player.level();
+                Vec3 center = player.position();
+                int radius = 7;
+
+                // Slam down if in air to touch the ground (Manga accurate Spiderweb start)
+                if (!player.onGround() && player.getDeltaMovement().y > -2.0) {
+                    player.setDeltaMovement(0, -3.0, 0);
+                    player.hurtMarked = true;
+                }
+
+                // VFX and Sound
+                net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SpawnCleaveWebVfxPayload(center.x, center.y, center.z));
+                level.playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.CLEAVE_SLASH.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.5F, 0.8F);
+                level.playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.SUKUNA_MOCKING.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
+
+                // Entity damage (High damage AoE)
+                net.minecraft.world.phys.AABB area = player.getBoundingBox().inflate(radius);
+                java.util.List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, area, e -> e != player && e.isAlive());
+                for (LivingEntity target : targets) {
+                    target.hurt(target.damageSources().playerAttack(player), 40.0F);
+                    net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(target, new SpawnCleaveVfxPayload(target.getX(), target.getY(0.5), target.getZ(), (float)level.random.nextInt(360)));
+                }
+
+                // Block destruction (Fractured Spiderweb Crater)
+                if (level instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+                    for (int x = -radius; x <= radius; x++) {
+                        for (int z = -radius; z <= radius; z++) {
+                            double distSq = x*x + z*z;
+                            if (distSq <= radius * radius) {
+                                // Destroy ground blocks with "fracture" patterns
+                                for (int y = -1; y <= 1; y++) {
+                                    net.minecraft.core.BlockPos pos = player.blockPosition().offset(x, y, z);
+                                    float destroySpeed = serverLevel.getBlockState(pos).getDestroySpeed(serverLevel, pos);
+                                    if (destroySpeed >= 0 && destroySpeed < 50.0f) {
+                                        // Pattern: Keep some blocks to look like lines of a web
+                                        if (level.random.nextDouble() > 0.3) {
+                                            serverLevel.destroyBlock(pos, false);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // Cooldown
                 if (CombatTickHandler.cooldownsEnabled) {
-                    CombatTickHandler.abilityCooldowns.put(player.getUUID(), 5); // 0.25 seconds
+                    CombatTickHandler.abilityCooldowns.put(player.getUUID(), 360); // 18 seconds
                 }
             }
         });

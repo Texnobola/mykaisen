@@ -92,6 +92,12 @@ public class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> DISMANTLE_SLASH = SOUND_EVENTS.register("dismantle_slash",
             () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MyKaisen.MODID, "dismantle_slash")));
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> CLEAVE_SLASH = SOUND_EVENTS.register("cleave_slash",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MyKaisen.MODID, "cleave_slash")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> SUKUNA_MOCKING = SOUND_EVENTS.register("sukuna_mocking",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MyKaisen.MODID, "sukuna_mocking")));
+
     public static void register(IEventBus eventBus) {
         SOUND_EVENTS.register(eventBus);
     }

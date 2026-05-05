@@ -210,7 +210,7 @@ public class ShrineEntity extends Entity implements GeoEntity {
             }
         }
  
-        // Shibuya-level Devastation (Open Barrier only) - MASSIVELY BUFFED
+        // Shibuya-level Devastation (Open Barrier only) - OPTIMIZED to fix lag
         if (isOpen()) {
             ServerLevel serverLevel = (ServerLevel) this.level();
             
@@ -225,7 +225,7 @@ public class ShrineEntity extends Entity implements GeoEntity {
                 }
             }
 
-            for (int i = 0; i < 120; i++) { // Increased from 40
+            for (int i = 0; i < 60; i++) { // Reduced from 120 to fix lag
                 int dx = this.getRandom().nextInt(400) - 200;
                 int dz = this.getRandom().nextInt(400) - 200;
                 BlockPos targetPos = centerPos.offset(dx, 0, dz);
@@ -234,13 +234,18 @@ public class ShrineEntity extends Entity implements GeoEntity {
                 net.minecraft.world.level.block.state.BlockState state = serverLevel.getBlockState(surfacePos);
                 if (!state.isAir() && state.getDestroySpeed(serverLevel, surfacePos) >= 0 && state.getBlock() != ModBlocks.DOMAIN_BARRIER.get() && state.getBlock() != ModBlocks.DOMAIN_FLOOR.get()) {
                     serverLevel.setBlock(surfacePos, Blocks.AIR.defaultBlockState(), 2 | 16);
-                    if (i % 5 == 0) setDustLevel(getDustLevel() + 1); // Only give dust every 5 blocks
- 
+                    if (i % 5 == 0) setDustLevel(getDustLevel() + 1);
+                    
                     if (this.getRandom().nextInt(10) == 0) {
                         PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, 
                                 new SpawnDomainAshPayload(surfacePos.getX() + 0.5, surfacePos.getY() + 0.5, surfacePos.getZ() + 0.5));
                     }
                 }
+            }
+        } else {
+            // Night Vision for close-barrier (Owner gets it)
+            if (owner != null) {
+                owner.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 100, 0, false, false));
             }
         }
     }

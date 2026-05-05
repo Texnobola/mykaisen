@@ -53,6 +53,14 @@ public class KeyBindings {
             KEY_CATEGORY_MY_KAISEN
     );
 
+    public static final String KEY_CLEAVE = "key.mykaisen.cleave";
+    public static final KeyMapping ABILITY_R_KEY = new KeyMapping(
+            KEY_CLEAVE,
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_R,
+            KEY_CATEGORY_MY_KAISEN
+    );
+
     public static final String KEY_AWAKEN = "key.mykaisen.awaken";
     public static final KeyMapping AWAKEN_KEY = new KeyMapping(
             KEY_AWAKEN,
@@ -76,6 +84,7 @@ public class KeyBindings {
         event.register(ABILITY_3_KEY);
         event.register(ABILITY_4_KEY);
         event.register(SWITCH_MODE_KEY);
+        event.register(ABILITY_R_KEY);
         event.register(AWAKEN_KEY);
         event.register(DOMAIN_KEY);
     }

@@ -90,6 +90,7 @@ public class CombatTickHandler {
     public static class RushState {
         public int ticks = 0;
         public LivingEntity target = null;
+        public boolean isCleaveMode = false;
     }
     
     private static void createCrater(net.minecraft.server.level.ServerLevel level, Vec3 pos, int minBlocks, int maxBlocks) {
@@ -151,8 +152,25 @@ public class CombatTickHandler {
             player.hurtMarked = true;
             if (ticks <= 1) {
                 awakeningSequences.remove(playerId);
+                // Start the actual awakening duration timer
+                player.getPersistentData().putInt("mykaisen_awakening_timer", 2840); // 2m 22s
+                player.getPersistentData().putBoolean("is_awakened", true);
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncAwakeningPayload(player.getId(), true));
+                awakeningMeter.put(playerId, 0.0f); // Reset meter
             } else {
                 awakeningSequences.put(playerId, ticks - 1);
+            }
+        }
+
+        // Handle Awakening Expiration
+        if (player.getPersistentData().getBoolean("is_awakened")) {
+            int timer = player.getPersistentData().getInt("mykaisen_awakening_timer");
+            if (timer > 0) {
+                player.getPersistentData().putInt("mykaisen_awakening_timer", timer - 1);
+            } else {
+                player.getPersistentData().putBoolean("is_awakened", false);
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncAwakeningPayload(player.getId(), false));
+                player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cYour Awakening has expired."));
             }
         }
 
@@ -732,6 +750,16 @@ public class CombatTickHandler {
                 player.level().playSound(null, player.blockPosition(),
                         net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_STRONG,
                         net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 0.8F);
+
+                // Play the Grab animation
+                net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                        player, new PlayAnimationPayload("cleave", player.getId())
+                );
+                
+                // Stun target
+                state.target.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 40, 10, false, false));
+                state.target.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.BLINDNESS, 40, 0, false, false));
+
             } else if (state.ticks > 15) {
                 // Missed – clean up
                 activeCleaveRushes.remove(playerId);
@@ -754,8 +782,12 @@ public class CombatTickHandler {
         player.setDeltaMovement(Vec3.ZERO);
         player.hurtMarked = true;
 
-        // Pin target 1.5 blocks in front of the player's face
-        Vec3 pinPos = player.getEyePosition().add(player.getLookAngle().scale(1.5));
+        // Pin target to hand position (Manga/Game accurate)
+        Vec3 look = player.getLookAngle();
+        Vec3 right = new Vec3(-look.z, 0, look.x).normalize(); // Perpendicular to look
+        Vec3 pinPos = player.getEyePosition()
+                .add(look.scale(1.0)) // Forward
+                .add(right.scale(0.4)); // To the side (Hand)
         target.teleportTo(pinPos.x, pinPos.y - target.getEyeHeight() * 0.5, pinPos.z);
         target.setDeltaMovement(Vec3.ZERO);
         target.hurtMarked = true;
@@ -904,7 +936,13 @@ public class CombatTickHandler {
 
             if (target.onGround()) {
                 // Final impact damage
-                target.hurt(target.damageSources().playerAttack(player), 5.0F);
+                float damage = state.isCleaveMode ? 60.0F : 5.0F;
+                target.hurt(target.damageSources().playerAttack(player), damage);
+
+                if (state.isCleaveMode) {
+                    player.level().playSound(null, target.blockPosition(), com.my.kaisen.registry.ModSounds.CLEAVE_SLASH.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.5F, 1.0F);
+                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(target, new SpawnCleaveVfxPayload(target.getX(), target.getY(0.5), target.getZ(), (float)player.level().random.nextInt(360)));
+                }
 
                 // Crater + VFX
                 if (player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
