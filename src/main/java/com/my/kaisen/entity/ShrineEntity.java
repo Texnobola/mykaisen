@@ -84,7 +84,7 @@ public class ShrineEntity extends Entity implements GeoEntity {
     }
  
     public void setDustLevel(int level) {
-        this.entityData.set(DUST_LEVEL, Math.min(1000, level));
+        this.entityData.set(DUST_LEVEL, Math.min(5000, level));
     }
  
     public int getDustLevel() {
@@ -234,7 +234,7 @@ public class ShrineEntity extends Entity implements GeoEntity {
                 net.minecraft.world.level.block.state.BlockState state = serverLevel.getBlockState(surfacePos);
                 if (!state.isAir() && state.getDestroySpeed(serverLevel, surfacePos) >= 0 && state.getBlock() != ModBlocks.DOMAIN_BARRIER.get() && state.getBlock() != ModBlocks.DOMAIN_FLOOR.get()) {
                     serverLevel.setBlock(surfacePos, Blocks.AIR.defaultBlockState(), 2 | 16);
-                    setDustLevel(getDustLevel() + 1);
+                    if (i % 5 == 0) setDustLevel(getDustLevel() + 1); // Only give dust every 5 blocks
  
                     if (this.getRandom().nextInt(10) == 0) {
                         PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, 
@@ -246,11 +246,16 @@ public class ShrineEntity extends Entity implements GeoEntity {
     }
  
     private void tickCollapsing() {
+        int radius = 15;
         if (!isOpen()) {
-            int radius = 15;
             int yLayer = 15 - (collapseTicks / 10);
             if (yLayer >= -1) {
                 DomainHandler.handleDomainLayer(this.level(), centerPos, radius, yLayer, true);
+            }
+        } else {
+            // Cleanup floor for open-barrier
+            if (collapseTicks == 1) {
+                DomainHandler.handleDomainLayer(this.level(), centerPos, radius, -1, true);
             }
         }
  

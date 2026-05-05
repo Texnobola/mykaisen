@@ -81,7 +81,7 @@ public class FugaProjectileEntity extends Projectile {
  
             boolean synergized = false;
             for (ShrineEntity shrine : shrines) {
-                if (shrine.isOpen() && shrine.getDustLevel() >= 1000) {
+                if (shrine.isOpen() && shrine.getDustLevel() >= 5000) {
                     synergized = true;
                     
                     // THERMOBARIC WIPEOUT

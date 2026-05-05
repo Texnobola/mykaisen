@@ -13,5 +13,6 @@ public class ClientModEvents {
     @SubscribeEvent
     public static void onRegisterGuiLayers(RegisterGuiLayersEvent event) {
         event.registerAboveAll(ResourceLocation.fromNamespaceAndPath(MyKaisen.MODID, "shrine_hud"), new ShrineOverlay());
+        event.registerAboveAll(ResourceLocation.fromNamespaceAndPath(MyKaisen.MODID, "ability_hud"), new AbilityOverlay());
     }
 }
