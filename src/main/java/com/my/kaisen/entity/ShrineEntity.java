@@ -113,7 +113,7 @@ public class ShrineEntity extends Entity implements GeoEntity {
                         Entity entity = serverLevel.getEntity(this.ownerUUID);
                         if (entity instanceof LivingEntity owner) {
                             owner.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 5, 10, false, false));
-                            owner.setDeltaMovement(0, owner.getDeltaMovement().y, 0);
+                            owner.setDeltaMovement(0, 0, 0);
                         }
                     }
  

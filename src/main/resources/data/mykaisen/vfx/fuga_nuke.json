@@ -1,0 +1,30 @@
+{
+  "startColor": "#FF6400",
+  "endColor": "#000000",
+  "scale": 1.0,
+  "lifespan": 40,
+  "implosion": {
+    "startColor": "#FF6400",
+    "endColor": "#000000",
+    "scale": 2.0,
+    "lifespan": 10
+  },
+  "shockwave": {
+    "startColor": "#FF4500",
+    "endColor": "#000000",
+    "scale": 10.0,
+    "lifespan": 60
+  },
+  "pillar": {
+    "startColor": "#FFFFFF",
+    "endColor": "#FFFF00",
+    "scale": 8.0,
+    "lifespan": 40
+  },
+  "dome": {
+    "startColor": "#FF8C00",
+    "endColor": "#000000",
+    "scale": 12.0,
+    "lifespan": 100
+  }
+}

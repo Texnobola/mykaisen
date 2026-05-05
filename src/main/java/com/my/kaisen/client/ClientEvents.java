@@ -32,6 +32,32 @@ public class ClientEvents {
             event.registerEntityRenderer(com.my.kaisen.registry.ModEntities.FUGA_PROJECTILE.get(), FugaProjectileRenderer::new);
             event.registerEntityRenderer(com.my.kaisen.registry.ModEntities.SHRINE.get(), ShrineRenderer::new);
         }
+ 
+        @SubscribeEvent
+        public static void onRegisterClientReloadListeners(net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent event) {
+            event.registerReloadListener(new com.my.kaisen.registry.VfxRegistry());
+        }
+ 
+        @SubscribeEvent
+        public static void onRegisterClientCommands(net.neoforged.neoforge.client.event.RegisterClientCommandsEvent event) {
+            event.getDispatcher().register(net.minecraft.commands.Commands.literal("vfxloop")
+                    .then(net.minecraft.commands.Commands.argument("effect", com.mojang.brigadier.arguments.StringArgumentType.string())
+                            .executes(context -> {
+                                String effect = com.mojang.brigadier.arguments.StringArgumentType.getString(context, "effect");
+                                if (effect.equals("stop")) {
+                                    VfxDebugCommand.stopLoop();
+                                } else {
+                                    VfxDebugCommand.setLoop(effect);
+                                }
+                                return 1;
+                            }))
+                    .then(net.minecraft.commands.Commands.literal("stop")
+                            .executes(context -> {
+                                VfxDebugCommand.stopLoop();
+                                return 1;
+                            }))
+            );
+        }
     }
 
     @SubscribeEvent

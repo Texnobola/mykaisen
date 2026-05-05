@@ -402,6 +402,8 @@ public class ClientVfxHandler {
     }
  
     public static void spawnFugaNuke(Level level, double x, double y, double z) {
+        com.my.kaisen.registry.VfxRegistry.VfxData data = com.my.kaisen.registry.VfxRegistry.get("fuga_nuke");
+ 
         // 1. Cinematic Polish: Randomized pitch and Screenshake
         float pitch = 0.5f + RANDOM.nextFloat() * 0.2f;
         level.playSound(Minecraft.getInstance().player, x, y, z, com.my.kaisen.registry.ModSounds.FUGA_HITS.get(), net.minecraft.sounds.SoundSource.PLAYERS, 10.0F, pitch);
@@ -413,7 +415,8 @@ public class ClientVfxHandler {
                         .build()
         );
  
-        // 2. The Implosion (Pre-Detonation Vacuum)
+        // 2. The Implosion
+        com.my.kaisen.registry.VfxRegistry.VfxData implosion = com.my.kaisen.registry.VfxRegistry.VfxData.fromJson(data.getSubPhase("implosion"));
         for (int i = 0; i < 150; i++) {
             double rx = (RANDOM.nextDouble() - 0.5) * 30.0;
             double ry = (RANDOM.nextDouble() - 0.5) * 30.0;
@@ -421,14 +424,15 @@ public class ClientVfxHandler {
             
             WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
                     .setTransparencyData(GenericParticleData.create(0.0f, 0.8f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(2.0f, 0.0f).build())
-                    .setColorData(ColorParticleData.create(new Color(255, 100, 0), Color.BLACK).build())
-                    .setLifetime(10)
+                    .setScaleData(GenericParticleData.create(implosion.scale, 0.0f).build())
+                    .setColorData(ColorParticleData.create(new Color(implosion.startColor), new Color(implosion.endColor)).build())
+                    .setLifetime(implosion.lifespan)
                     .addMotion(-rx / 10.0, -ry / 10.0, -rz / 10.0)
                     .spawn(level, x + rx, y + ry, z + rz);
         }
  
-        // 3. The Apocalyptic Shockwave (Horizontal Ring)
+        // 3. The Shockwave
+        com.my.kaisen.registry.VfxRegistry.VfxData shockwave = com.my.kaisen.registry.VfxRegistry.VfxData.fromJson(data.getSubPhase("shockwave"));
         for (int i = 0; i < 200; i++) {
             double angle = i * (360.0 / 200.0);
             double rad = Math.toRadians(angle);
@@ -437,14 +441,15 @@ public class ClientVfxHandler {
  
             WorldParticleBuilder.create(LodestoneParticleTypes.SMOKE_PARTICLE)
                     .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(10.0f, 30.0f).build())
-                    .setColorData(ColorParticleData.create(new Color(255, 69, 0), Color.BLACK).build())
-                    .setLifetime(60 + RANDOM.nextInt(40))
+                    .setScaleData(GenericParticleData.create(shockwave.scale, shockwave.scale * 3.0f).build())
+                    .setColorData(ColorParticleData.create(new Color(shockwave.startColor), new Color(shockwave.endColor)).build())
+                    .setLifetime(shockwave.lifespan + RANDOM.nextInt(40))
                     .addMotion(vx, 0, vz)
                     .spawn(level, x, y, z);
         }
  
-        // 4. The Pillar of Fire
+        // 4. The Pillar
+        com.my.kaisen.registry.VfxRegistry.VfxData pillar = com.my.kaisen.registry.VfxRegistry.VfxData.fromJson(data.getSubPhase("pillar"));
         for (int i = 0; i < 300; i++) {
             double vx = (RANDOM.nextDouble() - 0.5) * 0.5;
             double vy = RANDOM.nextDouble() * 5.0;
@@ -452,14 +457,15 @@ public class ClientVfxHandler {
  
             WorldParticleBuilder.create(com.my.kaisen.registry.ModParticles.GLOWING_FIRE.get())
                     .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(8.0f, 15.0f).build())
-                    .setColorData(ColorParticleData.create(Color.WHITE, Color.YELLOW).build())
-                    .setLifetime(40 + RANDOM.nextInt(20))
+                    .setScaleData(GenericParticleData.create(pillar.scale, pillar.scale * 2.0f).build())
+                    .setColorData(ColorParticleData.create(new Color(pillar.startColor), new Color(pillar.endColor)).build())
+                    .setLifetime(pillar.lifespan + RANDOM.nextInt(20))
                     .addMotion(vx, vy, vz)
                     .spawn(level, x, y, z);
         }
  
-        // 5. The Mushroom Dome (Dense Ash)
+        // 5. The Mushroom Dome
+        com.my.kaisen.registry.VfxRegistry.VfxData dome = com.my.kaisen.registry.VfxRegistry.VfxData.fromJson(data.getSubPhase("dome"));
         double domeHeight = 40.0;
         for (int i = 0; i < 500; i++) {
             double angle = RANDOM.nextDouble() * Math.PI * 2;
@@ -468,13 +474,13 @@ public class ClientVfxHandler {
             double vy = (RANDOM.nextDouble() - 0.2) * 0.5;
             double vz = Math.sin(angle) * (r / 10.0);
  
-            Color ashColor = RANDOM.nextBoolean() ? new Color(255, 140, 0) : Color.BLACK;
+            Color ashColor = RANDOM.nextBoolean() ? new Color(dome.startColor) : new Color(dome.endColor);
  
             WorldParticleBuilder.create(LodestoneParticleTypes.SMOKE_PARTICLE)
                     .setTransparencyData(GenericParticleData.create(0.9f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(12.0f, 25.0f).build())
+                    .setScaleData(GenericParticleData.create(dome.scale, dome.scale * 2.0f).build())
                     .setColorData(ColorParticleData.create(ashColor, Color.BLACK).build())
-                    .setLifetime(100 + RANDOM.nextInt(50))
+                    .setLifetime(dome.lifespan + RANDOM.nextInt(50))
                     .addMotion(vx, vy, vz)
                     .spawn(level, x, y + domeHeight, z);
         }
