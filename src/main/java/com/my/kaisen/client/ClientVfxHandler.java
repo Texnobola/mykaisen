@@ -12,12 +12,29 @@ import team.lodestar.lodestone.systems.particle.data.GenericParticleData;
 import team.lodestar.lodestone.systems.particle.data.color.ColorParticleData;
 import team.lodestar.lodestone.systems.particle.data.spin.SpinParticleData;
 import team.lodestar.lodestone.systems.screenshake.ScreenshakeInstance;
+import team.lodestar.lodestone.systems.easing.Easing;
+import com.my.kaisen.network.SpawnFugaVfxPayload;
+import com.my.kaisen.network.SpawnFugaNukePayload;
+import com.my.kaisen.network.SpawnDismantleVfxPayload;
+import com.my.kaisen.network.SpawnCleaveRushVfxPayload;
+import com.my.kaisen.network.SpawnBlackFlashPayload;
+import com.my.kaisen.network.SpawnDivergentAuraPayload;
+import com.my.kaisen.network.SpawnCursedStrikesVfxPayload;
+import com.my.kaisen.network.SpawnCrushingBlowVfxPayload;
+import com.my.kaisen.network.SpawnAwakeningVfxPayload;
+import com.my.kaisen.network.SpawnDomainAshPayload;
+import com.my.kaisen.network.SpawnDomainActivationVfxPayload;
  
 import java.awt.*;
 import java.util.Random;
+import java.util.Optional;
  
 public class ClientVfxHandler {
     private static final Random RANDOM = new Random();
+ 
+    private static void addScreenshake(int duration, float intensity) {
+        ScreenshakeHandler.addScreenshake(new ScreenshakeInstance(duration, intensity, intensity, 0f, Easing.LINEAR, Easing.SINE_OUT, 1.0f, Optional.empty()));
+    }
  
     public static void spawnFugaNuke(Level level, double x, double y, double z) {
         // 1. Implosion (Vacuum)
@@ -76,7 +93,7 @@ public class ClientVfxHandler {
                     .spawn(level, x, y + 2, z);
         }
  
-        ScreenshakeHandler.addScreenshake(new ScreenshakeInstance(100).setIntensity(3.0f, 0.0f));
+        addScreenshake(100, 3.0f);
     }
  
     public static void spawnBlackFlash(Level level, double x, double y, double z) {
@@ -104,7 +121,7 @@ public class ClientVfxHandler {
                     .spawn(level, x, y, z);
         }
  
-        ScreenshakeHandler.addScreenshake(new ScreenshakeInstance(20).setIntensity(1.5f));
+        addScreenshake(20, 1.5f);
     }
  
     public static void spawnMenacingAura(Level level, double x, double y, double z, double width, double height) {
@@ -165,12 +182,12 @@ public class ClientVfxHandler {
                         .setRandomMotion(0.3)
                         .spawn(level, payload.x(), payload.y(), payload.z());
             }
-            ScreenshakeHandler.addScreenshake(new ScreenshakeInstance(15).setIntensity(0.5f));
+            addScreenshake(15, 0.5f);
         });
     }
  
     public static void handleCameraShake(com.my.kaisen.network.CameraShakePayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
-        ctx.enqueueWork(() -> ScreenshakeHandler.addScreenshake(new ScreenshakeInstance(payload.duration()).setIntensity(payload.intensity())));
+        ctx.enqueueWork(() -> addScreenshake(payload.durationTicks(), payload.intensity()));
     }
  
     public static void handleAwakeningVfx(com.my.kaisen.network.SpawnAwakeningVfxPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
@@ -185,14 +202,14 @@ public class ClientVfxHandler {
                         .setRandomMotion(0.5)
                         .spawn(level, payload.x(), payload.y(), payload.z());
             }
-            ScreenshakeHandler.addScreenshake(new ScreenshakeInstance(60).setIntensity(2.0f));
+            addScreenshake(60, 2.0f);
         });
     }
  
     public static void handleDismantleVfx(com.my.kaisen.network.SpawnDismantleVfxPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             Level level = Minecraft.getInstance().level;
-            float angle = (float) Math.toRadians(payload.rotation());
+            float angle = (float) Math.toRadians(payload.yRot());
             for (int i = 0; i < 10; i++) {
                 double offset = (i - 5) * 0.2;
                 WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
@@ -208,8 +225,8 @@ public class ClientVfxHandler {
     public static void handleCleaveRushVfx(com.my.kaisen.network.SpawnCleaveRushVfxPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             Level level = Minecraft.getInstance().level;
-            Color color = payload.isFinal() ? Color.RED : Color.WHITE;
-            int count = payload.isFinal() ? 40 : 10;
+            Color color = payload.isFinalHit() ? Color.RED : Color.WHITE;
+            int count = payload.isFinalHit() ? 40 : 10;
             for (int i = 0; i < count; i++) {
                 WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
                         .setTransparencyData(GenericParticleData.create(0.8f, 0.0f).build())
@@ -235,10 +252,44 @@ public class ClientVfxHandler {
         });
     }
  
-    public static void handleFugaNukeVfx(com.my.kaisen.network.SpawnFugaNukePayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
+    public static void handleFugaNukeVfx(SpawnFugaNukePayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
         ctx.enqueueWork(() -> spawnFugaNuke(Minecraft.getInstance().level, payload.x(), payload.y(), payload.z()));
     }
  
+    public static void handleFugaVfx(SpawnFugaVfxPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            Level level = Minecraft.getInstance().level;
+            double x = payload.x();
+            double y = payload.y();
+            double z = payload.z();
+            
+            // Core Flash
+            for (int i = 0; i < 30; i++) {
+                WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
+                        .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
+                        .setScaleData(GenericParticleData.create(1.0f, 3.0f, 0.0f).build())
+                        .setColorData(ColorParticleData.create(Color.WHITE, Color.ORANGE).build())
+                        .setLifetime(15)
+                        .setRandomMotion(0.4)
+                        .spawn(level, x, y, z);
+            }
+            
+            // Fire Ring
+            for (int i = 0; i < 360; i += 15) {
+                double rad = Math.toRadians(i);
+                WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
+                        .setTransparencyData(GenericParticleData.create(0.8f, 0.0f).build())
+                        .setScaleData(GenericParticleData.create(0.5f, 1.5f, 0.0f).build())
+                        .setColorData(ColorParticleData.create(Color.ORANGE, Color.RED).build())
+                        .setLifetime(20)
+                        .setMotion(new Vec3(Math.cos(rad) * 0.6, 0.1, Math.sin(rad) * 0.6))
+                        .spawn(level, x, y, z);
+            }
+            
+            addScreenshake(30, 2.0f);
+        });
+    }
+
     public static void handleDomainActivationVfx(com.my.kaisen.network.SpawnDomainActivationVfxPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             Level level = Minecraft.getInstance().level;
@@ -252,7 +303,7 @@ public class ClientVfxHandler {
                         .setMotion(new Vec3(Math.cos(rad) * 1.2, 0.1, Math.sin(rad) * 1.2))
                         .spawn(level, payload.x(), payload.y(), payload.z());
             }
-            ScreenshakeHandler.addScreenshake(new ScreenshakeInstance(60).setIntensity(4.0f));
+            addScreenshake(60, 4.0f);
         });
     }
 }

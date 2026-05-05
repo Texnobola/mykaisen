@@ -97,25 +97,33 @@ public class ShrineOverlay implements LayeredDraw.Layer {
             int dust = shrine.getDustLevel();
             float progress = dust / 1000.0f;
             
-            int barWidth = 180;
-            int barHeight = 10;
+            int barWidth = 240; // Wider
+            int barHeight = 12; // Taller
             int x = (width - barWidth) / 2;
-            int y = height - 70;
- 
-            // Frame
-            guiGraphics.fill(x - 2, y - 2, x + barWidth + 2, y + barHeight + 2, 0xFF550000);
-            guiGraphics.fill(x - 1, y - 1, x + barWidth + 1, y + barHeight + 1, 0xFF000000);
+            int y = height - 100; // Moved up slightly
+
+            // Outer Frame (Glowing Dark Red)
+            guiGraphics.fill(x - 3, y - 3, x + barWidth + 3, y + barHeight + 3, 0xFF770000);
+            guiGraphics.fill(x - 2, y - 2, x + barWidth + 2, y + barHeight + 2, 0xFF000000);
             
-            // Progress Bar (Glowing Red/Orange)
-            int color = 0xFFFF0000; // Red
-            if (progress >= 1.0f) color = 0xFFFFFFFF; // White glow when full
+            // Progress Bar (Vibrant Red with pulse effect?)
+            int color = 0xFFFF0000;
+            if (progress >= 1.0f) color = 0xFFFFD700; // Gold when ready
             
             guiGraphics.fill(x, y, x + (int)(barWidth * Math.min(1.0f, progress)), y + barHeight, color);
             
-            String label = "EXPLOSIVE DUST: " + (int)(Math.min(1.0f, progress) * 100) + "%";
-            if (progress >= 1.0f) label = "§lREADY FOR FUGA";
+            // Background of bar (Darker red)
+            guiGraphics.fill(x + (int)(barWidth * Math.min(1.0f, progress)), y, x + barWidth, y + barHeight, 0x55440000);
+
+            String label = "MALEVOLENT DUST: " + (int)(Math.min(1.0f, progress) * 100) + "%";
+            if (progress >= 1.0f) label = "§lDIVINE FLAME: READY";
             
-            guiGraphics.drawCenteredString(mc.font, label, width / 2, y - 15, progress >= 1.0f ? 0xFFFFFF : 0xFFAA00);
+            guiGraphics.pose().pushPose();
+            float labelScale = 1.2f;
+            guiGraphics.pose().translate(width / 2.0, y - 18, 0);
+            guiGraphics.pose().scale(labelScale, labelScale, labelScale);
+            guiGraphics.drawCenteredString(mc.font, label, 0, 0, progress >= 1.0f ? 0xFFFF00 : 0xFFFFFF);
+            guiGraphics.pose().popPose();
         }
     }
 }

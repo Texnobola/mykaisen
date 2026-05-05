@@ -40,6 +40,9 @@ public class NetworkHandler {
                             // Save chosen character ID to persistent data
                             player.getPersistentData().putInt("mykaisen_character", payload.characterId());
 
+                            // Sync to client
+                            net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, new SyncCharacterPayload(payload.characterId()));
+
                             // Confirm choice via chat
                             player.sendSystemMessage(net.minecraft.network.chat.Component.literal("You have chosen the Sorcerer path."));
                         }
@@ -55,13 +58,15 @@ public class NetworkHandler {
                     ctx.enqueueWork(() -> {
                         if (ctx.player() instanceof net.minecraft.server.level.ServerPlayer player) {
                             boolean currentMode = player.getPersistentData().getBoolean("mykaisen_battle_mode");
-                            // Default to true if not set, then toggle
-                            boolean newMode = !currentMode;
                             if (!player.getPersistentData().contains("mykaisen_battle_mode")) {
-                                newMode = false; // If it was never set, assume we were in battle mode (default) and go to play mode? 
-                                // Actually let's assume default is BATTLE MODE (true). So toggle makes it FALSE.
+                                currentMode = true; // Default to true
                             }
+                            boolean newMode = !currentMode;
                             player.getPersistentData().putBoolean("mykaisen_battle_mode", newMode);
+                            
+                            // Sync to client
+                            net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, new SyncBattleModePayload(newMode));
+
                             String modeName = newMode ? "BATTLE" : "PLAYING";
                             player.sendSystemMessage(net.minecraft.network.chat.Component.literal("Mode switched to: " + modeName));
                         }
@@ -146,11 +151,8 @@ public class NetworkHandler {
                 com.my.kaisen.client.ClientVfxHandler::handleDomainAshVfx
         );
  
-        registrar.playToClient(
-                SpawnFugaNukePayload.TYPE,
-                SpawnFugaNukePayload.STREAM_CODEC,
-                com.my.kaisen.client.ClientVfxHandler::handleFugaNukeVfx
-        );
+        registrar.playToClient(SpawnFugaNukePayload.TYPE, SpawnFugaNukePayload.STREAM_CODEC, com.my.kaisen.client.ClientVfxHandler::handleFugaNukeVfx);
+        registrar.playToClient(SpawnFugaVfxPayload.TYPE, SpawnFugaVfxPayload.STREAM_CODEC, com.my.kaisen.client.ClientVfxHandler::handleFugaVfx);
 
         // Register SyncAwakeningPayload to be sent from Server to Client
         registrar.playToClient(
@@ -179,6 +181,26 @@ public class NetworkHandler {
                 (payload, ctx) -> {
                     ctx.enqueueWork(() -> {
                         com.my.kaisen.client.ShrineOverlay.setBlackFlashCombo(payload.combo());
+                    });
+                }
+        );
+
+        registrar.playToClient(
+                SyncCharacterPayload.TYPE,
+                SyncCharacterPayload.STREAM_CODEC,
+                (payload, ctx) -> {
+                    ctx.enqueueWork(() -> {
+                        net.minecraft.client.Minecraft.getInstance().player.getPersistentData().putInt("mykaisen_character", payload.characterId());
+                    });
+                }
+        );
+
+        registrar.playToClient(
+                SyncBattleModePayload.TYPE,
+                SyncBattleModePayload.STREAM_CODEC,
+                (payload, ctx) -> {
+                    ctx.enqueueWork(() -> {
+                        net.minecraft.client.Minecraft.getInstance().player.getPersistentData().putBoolean("mykaisen_battle_mode", payload.battleMode());
                     });
                 }
         );

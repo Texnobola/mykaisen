@@ -104,41 +104,8 @@ public class AbilityServerHandler {
                         // Ability 4: Manji Kick (Universal Counter)
                         CombatTickHandler.executeManjiKick(player);
                     } else {
-                        // Ability 4 (Awakened): Malevolent Shrine
-                        if (CombatTickHandler.cooldownsEnabled && CombatTickHandler.abilityCooldowns.containsKey(player.getUUID())) return;
-
-                        boolean isShifting = player.isShiftKeyDown();
-                        
-                        // Toggle Logic: Check if a shrine already exists for this owner
-                        java.util.List<com.my.kaisen.entity.ShrineEntity> existingShrines = player.level().getEntitiesOfClass(com.my.kaisen.entity.ShrineEntity.class, player.getBoundingBox().inflate(300.0),
-                                (e) -> e.getOwnerUUID() != null && e.getOwnerUUID().equals(player.getUUID()));
-
-                        if (!existingShrines.isEmpty()) {
-                            for (com.my.kaisen.entity.ShrineEntity existing : existingShrines) {
-                                if (existing.getCurrentState() != com.my.kaisen.entity.ShrineEntity.DomainState.COLLAPSING) {
-                                    existing.setState(com.my.kaisen.entity.ShrineEntity.DomainState.COLLAPSING);
-                                }
-                            }
-                        } else {
-                            // Spawn new Shrine
-                            com.my.kaisen.entity.ShrineEntity shrine = com.my.kaisen.util.DomainHandler.spawnShrine(player.level(), player.blockPosition(), player, isShifting);
-                            
-                            // Play Animation
-                            net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 
-                                    new com.my.kaisen.network.PlayAnimationPayload("shrine_opening_domain", player.getId()));
-
-                            // Cinematic Effects
-                            net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, new com.my.kaisen.network.CameraShakePayload(3.0f, 40));
-                            player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(30.0)).forEach(e -> {
-                                if (e != player) {
-                                    e.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 60, 0, false, false));
-                                }
-                            });
-                        }
-
-                        if (CombatTickHandler.cooldownsEnabled) {
-                            CombatTickHandler.abilityCooldowns.put(player.getUUID(), 1200); // 60 seconds cooldown
-                        }
+                        // Ability 4 (Awakened): Handled via 5s hold (TriggerDomainPayload)
+                        player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§eHold Ability 4 (V) to manifest Malevolent Shrine..."));
                     }
                 }
             }
@@ -425,6 +392,8 @@ public class AbilityServerHandler {
     public static void handleM1(final TriggerM1Payload payload, final IPayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player() instanceof ServerPlayer player) {
+                if (player.getPersistentData().getInt("mykaisen_character") != 1) return;
+
                 // Short cooldown for melee replacement
                 if (CombatTickHandler.cooldownsEnabled && CombatTickHandler.abilityCooldowns.containsKey(player.getUUID())) return;
 

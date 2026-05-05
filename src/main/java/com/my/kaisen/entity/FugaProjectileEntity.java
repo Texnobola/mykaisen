@@ -111,6 +111,8 @@ public class FugaProjectileEntity extends Projectile {
  
             if (!synergized) {
                 this.level().explode(shooter, this.getX(), this.getY(), this.getZ(), 12.0F, true, Level.ExplosionInteraction.TNT);
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, 
+                        new com.my.kaisen.network.SpawnFugaVfxPayload(this.getX(), this.getY(), this.getZ()));
             }
         }
  

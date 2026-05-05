@@ -5,6 +5,8 @@ import com.my.kaisen.registry.ModSounds;
 import com.my.kaisen.util.DomainHandler;
 import com.my.kaisen.network.SpawnDomainAshPayload;
 import com.my.kaisen.network.SpawnDismantleVfxPayload;
+import java.util.Optional;
+import java.util.Random;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -21,6 +23,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -35,6 +38,7 @@ public class ShrineEntity extends Entity implements GeoEntity {
     private static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(ShrineEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DUST_LEVEL = SynchedEntityData.defineId(ShrineEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> FORMING_TICKS = SynchedEntityData.defineId(ShrineEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Optional<UUID>> OWNER_UUID = SynchedEntityData.defineId(ShrineEntity.class, EntityDataSerializers.OPTIONAL_UUID);
  
     public enum DomainState { FORMING, ACTIVE, COLLAPSING }
  
@@ -55,12 +59,12 @@ public class ShrineEntity extends Entity implements GeoEntity {
  
     public void setOwner(Entity owner) {
         if (owner != null) {
-            this.ownerUUID = owner.getUUID();
+            this.entityData.set(OWNER_UUID, Optional.of(owner.getUUID()));
         }
     }
     
     public UUID getOwnerUUID() {
-        return this.ownerUUID;
+        return this.entityData.get(OWNER_UUID).orElse(null);
     }
  
     public void setOpen(boolean open) {
@@ -109,8 +113,9 @@ public class ShrineEntity extends Entity implements GeoEntity {
                     setFormingTicks(formingTicks);
                     
                     // Lock caster movement during forming
-                    if (this.ownerUUID != null && this.level() instanceof ServerLevel serverLevel) {
-                        Entity entity = serverLevel.getEntity(this.ownerUUID);
+                    UUID ownerId = getOwnerUUID();
+                    if (ownerId != null && this.level() instanceof ServerLevel serverLevel) {
+                        Entity entity = serverLevel.getEntity(ownerId);
                         if (entity instanceof LivingEntity owner) {
                             owner.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 5, 20, false, false));
                             owner.setDeltaMovement(0, 0, 0);
@@ -174,30 +179,52 @@ public class ShrineEntity extends Entity implements GeoEntity {
             double radius = isOpen() ? 200.0 : 15.0;
             AABB area = this.getBoundingBox().inflate(radius);
             List<LivingEntity> targets = this.level().getEntitiesOfClass(LivingEntity.class, area, 
-                    (entity) -> entity.getUUID() != this.ownerUUID && entity.isAlive());
- 
+                    (entity) -> !entity.getUUID().equals(getOwnerUUID()) && entity.isAlive());
+
             for (LivingEntity target : targets) {
                 float healthBefore = target.getHealth();
                 target.hurt(this.damageSources().magic(), 4.0F); // Buffed Damage
                 
                 // If killed, increment dust
                 if (!target.isAlive() || target.getHealth() < healthBefore) {
-                     setDustLevel(getDustLevel() + 5);
+                     setDustLevel(getDustLevel() + 10); // More dust for kills
                 }
- 
+
                 ServerLevel serverLevel = (ServerLevel) this.level();
                 if (activeTicks % 6 == 0) {
                     serverLevel.playSound(null, target.getX(), target.getY(), target.getZ(), ModSounds.DISMANTLE_SLASH.get(), net.minecraft.sounds.SoundSource.NEUTRAL, 1.0F, 1.0F);
                 }
                 
+                // Visual Barrage
                 PacketDistributor.sendToPlayersTrackingEntityAndSelf(target, 
                         new SpawnDismantleVfxPayload(target.getX(), target.getY() + target.getBbHeight()/2, target.getZ(), (float)Math.random() * 360f));
+                
+                // Real carnage: Shoot actual dismantle projectiles randomly
+                if (this.getRandom().nextInt(5) == 0) {
+                    com.my.kaisen.entity.DismantleProjectileEntity dismantle = new com.my.kaisen.entity.DismantleProjectileEntity(com.my.kaisen.registry.ModEntities.DISMANTLE_PROJECTILE.get(), this.level());
+                    dismantle.setPos(this.getX(), this.getY() + 3, this.getZ());
+                    Vec3 dir = target.position().subtract(dismantle.position()).normalize();
+                    dismantle.setDeltaMovement(dir.scale(3.0));
+                    this.level().addFreshEntity(dismantle);
+                }
             }
         }
  
         // Shibuya-level Devastation (Open Barrier only) - MASSIVELY BUFFED
         if (isOpen()) {
             ServerLevel serverLevel = (ServerLevel) this.level();
+            
+            // Visual Carnage: Spawn random slashes
+            if (activeTicks % 2 == 0) {
+                for (int i = 0; i < 5; i++) {
+                    double ox = (this.getRandom().nextDouble() - 0.5) * 60;
+                    double oy = this.getRandom().nextDouble() * 20;
+                    double oz = (this.getRandom().nextDouble() - 0.5) * 60;
+                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, 
+                        new SpawnDismantleVfxPayload(this.getX() + ox, this.getY() + oy, this.getZ() + oz, (float)this.getRandom().nextInt(360)));
+                }
+            }
+
             for (int i = 0; i < 120; i++) { // Increased from 40
                 int dx = this.getRandom().nextInt(400) - 200;
                 int dz = this.getRandom().nextInt(400) - 200;
@@ -253,6 +280,7 @@ public class ShrineEntity extends Entity implements GeoEntity {
         builder.define(STATE, DomainState.FORMING.ordinal());
         builder.define(DUST_LEVEL, 0);
         builder.define(FORMING_TICKS, 0);
+        builder.define(OWNER_UUID, Optional.empty());
     }
  
     @Override

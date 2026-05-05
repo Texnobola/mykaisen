@@ -24,6 +24,17 @@ public class CombatTickHandler {
     public static final Map<UUID, Float> awakeningMeter = new ConcurrentHashMap<>();
     public static final Map<UUID, Integer> blackFlashCombos = new ConcurrentHashMap<>();
 
+    @SubscribeEvent
+    public static void onPlayerJoin(net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            int charId = player.getPersistentData().getInt("mykaisen_character");
+            boolean battleMode = !player.getPersistentData().contains("mykaisen_battle_mode") || player.getPersistentData().getBoolean("mykaisen_battle_mode");
+            
+            PacketDistributor.sendToPlayer(player, new SyncCharacterPayload(charId));
+            PacketDistributor.sendToPlayer(player, new SyncBattleModePayload(battleMode));
+        }
+    }
+
     public static void addAwakening(ServerPlayer player, float amount) {
         UUID uuid = player.getUUID();
         float current = awakeningMeter.getOrDefault(uuid, 0.0f);

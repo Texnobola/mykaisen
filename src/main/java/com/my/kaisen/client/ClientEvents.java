@@ -50,7 +50,8 @@ public class ClientEvents {
             net.minecraft.world.entity.player.Player player = event.getEntity();
             
             // Domain Charge Logic (5 Seconds = 100 Ticks)
-            if (KeyBindings.DOMAIN_KEY.isDown()) {
+            // Domain Charge Logic (5 Seconds = 100 Ticks)
+            if (KeyBindings.ABILITY_4_KEY.isDown()) {
                 domainChargeTicks++;
                 if (domainChargeTicks == 100) {
                     PacketDistributor.sendToServer(new com.my.kaisen.network.TriggerDomainPayload(player.isShiftKeyDown()));
@@ -79,26 +80,20 @@ public class ClientEvents {
     }
  
     @SubscribeEvent
-    public static void onLeftClickEmpty(net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.LeftClickEmpty event) {
-        net.minecraft.world.entity.player.Player player = event.getEntity();
-        if (player.getPersistentData().getInt("mykaisen_character") == 1) {
-            boolean battleMode = !player.getPersistentData().contains("mykaisen_battle_mode") || player.getPersistentData().getBoolean("mykaisen_battle_mode");
-            if (battleMode) {
-                PacketDistributor.sendToServer(new com.my.kaisen.network.TriggerM1Payload());
-            }
-        }
-    }
- 
-    @SubscribeEvent
-    public static void onLeftClickBlock(net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.LeftClickBlock event) {
-        net.minecraft.world.entity.player.Player player = event.getEntity();
-        if (player.getPersistentData().getInt("mykaisen_character") == 1) {
-            boolean battleMode = !player.getPersistentData().contains("mykaisen_battle_mode") || player.getPersistentData().getBoolean("mykaisen_battle_mode");
-            if (battleMode) {
-                if (event.getSide().isClient()) {
-                    event.setCanceled(true);
+    public static void onMouseInput(net.neoforged.neoforge.client.event.InputEvent.MouseButton.Pre event) {
+        if (event.getButton() == 0 && event.getAction() == 1) { // Left Click Press (Action 1 = GLFW_PRESS)
+            Minecraft mc = Minecraft.getInstance();
+            if (mc.screen == null && mc.player != null) {
+                // If character data is synced, this check will pass.
+                int charId = mc.player.getPersistentData().getInt("mykaisen_character");
+                if (charId == 1) {
+                    boolean battleMode = !mc.player.getPersistentData().contains("mykaisen_battle_mode") || mc.player.getPersistentData().getBoolean("mykaisen_battle_mode");
+                    if (battleMode) {
+                        PacketDistributor.sendToServer(new com.my.kaisen.network.TriggerM1Payload());
+                        // Optional: Swing arm visually
+                        mc.player.swing(net.minecraft.world.InteractionHand.MAIN_HAND);
+                    }
                 }
-                PacketDistributor.sendToServer(new com.my.kaisen.network.TriggerM1Payload());
             }
         }
     }
