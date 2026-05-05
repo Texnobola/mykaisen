@@ -33,6 +33,17 @@ public class ClientAnimationHandler {
         );
     }
 
+    public static void playAnimation(AbstractClientPlayer player, String animName) {
+        var animation = PlayerAnimationRegistry.getAnimation(ResourceLocation.fromNamespaceAndPath(MyKaisen.MODID, animName));
+        if (animation != null) {
+            var animationData = PlayerAnimationAccess.getPlayerAssociatedData(player).get(ANIMATION_LAYER_ID);
+            if (animationData instanceof ModifierLayer<?> rawLayer) {
+                ModifierLayer<IAnimation> layer = (ModifierLayer<IAnimation>) rawLayer;
+                layer.setAnimation(new KeyframeAnimationPlayer((dev.kosmx.playerAnim.core.data.KeyframeAnimation) animation));
+            }
+        }
+    }
+ 
     public static void handleAnimation(PlayAnimationPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
             Minecraft mc = Minecraft.getInstance();

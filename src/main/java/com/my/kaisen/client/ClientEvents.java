@@ -32,32 +32,6 @@ public class ClientEvents {
             event.registerEntityRenderer(com.my.kaisen.registry.ModEntities.FUGA_PROJECTILE.get(), FugaProjectileRenderer::new);
             event.registerEntityRenderer(com.my.kaisen.registry.ModEntities.SHRINE.get(), ShrineRenderer::new);
         }
- 
-        @SubscribeEvent
-        public static void onRegisterClientReloadListeners(net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent event) {
-            event.registerReloadListener(new com.my.kaisen.registry.VfxRegistry());
-        }
- 
-        @SubscribeEvent
-        public static void onRegisterClientCommands(net.neoforged.neoforge.client.event.RegisterClientCommandsEvent event) {
-            event.getDispatcher().register(net.minecraft.commands.Commands.literal("vfxloop")
-                    .then(net.minecraft.commands.Commands.argument("effect", com.mojang.brigadier.arguments.StringArgumentType.string())
-                            .executes(context -> {
-                                String effect = com.mojang.brigadier.arguments.StringArgumentType.getString(context, "effect");
-                                if (effect.equals("stop")) {
-                                    VfxDebugCommand.stopLoop();
-                                } else {
-                                    VfxDebugCommand.setLoop(effect);
-                                }
-                                return 1;
-                            }))
-                    .then(net.minecraft.commands.Commands.literal("stop")
-                            .executes(context -> {
-                                VfxDebugCommand.stopLoop();
-                                return 1;
-                            }))
-            );
-        }
     }
 
     @SubscribeEvent
@@ -74,12 +48,15 @@ public class ClientEvents {
         if (event.getEntity().level().isClientSide()) {
             net.minecraft.world.entity.player.Player player = event.getEntity();
             
-            // Domain Charge Logic
+            // Domain Charge Logic (5 Seconds = 100 Ticks)
             if (KeyBindings.DOMAIN_KEY.isDown()) {
                 domainChargeTicks++;
-                if (domainChargeTicks == 20) {
+                if (domainChargeTicks == 100) {
                     net.neoforged.neoforge.network.PacketDistributor.sendToServer(new com.my.kaisen.network.TriggerDomainPayload(player.isShiftKeyDown()));
                     player.level().playSound(player, player.blockPosition(), com.my.kaisen.registry.ModSounds.universal_awekekning_sound.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.2F);
+                    
+                    // Simple trigger
+                    com.my.kaisen.client.ClientAnimationHandler.playAnimation((AbstractClientPlayer)player, "shrine_opening_domain");
                 }
             } else {
                 domainChargeTicks = 0;
