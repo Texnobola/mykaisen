@@ -83,9 +83,12 @@ public class FugaProjectileEntity extends Projectile {
  
             boolean synergized = false;
             for (ShrineEntity shrine : shrines) {
-                if (shrine.isOpen() && shrine.getCurrentState() == ShrineEntity.DomainState.ACTIVE) {
+                if (shrine.isOpen() && shrine.getCurrentState() == ShrineEntity.DomainState.ACTIVE && shrine.getDustLevel() >= 1000) {
                     // THERMOBARIC DETONATION (Synergy)
                     synergized = true;
+                    
+                    // Reset Dust Level
+                    shrine.setDustLevel(0);
                     
                     // Damage everything within the 200m radius of the Shrine
                     AABB nukeArea = shrine.getBoundingBox().inflate(200.0);

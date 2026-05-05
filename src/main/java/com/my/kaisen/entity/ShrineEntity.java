@@ -33,6 +33,8 @@ import java.util.UUID;
 public class ShrineEntity extends Entity implements GeoEntity {
     private static final EntityDataAccessor<Boolean> OPEN = SynchedEntityData.defineId(ShrineEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(ShrineEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> DUST_LEVEL = SynchedEntityData.defineId(ShrineEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> FORMING_TICKS = SynchedEntityData.defineId(ShrineEntity.class, EntityDataSerializers.INT);
  
     public enum DomainState { FORMING, ACTIVE, COLLAPSING }
  
@@ -77,6 +79,22 @@ public class ShrineEntity extends Entity implements GeoEntity {
         return DomainState.values()[this.entityData.get(STATE)];
     }
  
+    public void setDustLevel(int level) {
+        this.entityData.set(DUST_LEVEL, Math.min(1000, level));
+    }
+ 
+    public int getDustLevel() {
+        return this.entityData.get(DUST_LEVEL);
+    }
+ 
+    public int getFormingTicks() {
+        return this.entityData.get(FORMING_TICKS);
+    }
+ 
+    public void setFormingTicks(int ticks) {
+        this.entityData.set(FORMING_TICKS, ticks);
+    }
+ 
     @Override
     public void tick() {
         super.tick();
@@ -88,15 +106,26 @@ public class ShrineEntity extends Entity implements GeoEntity {
             switch (getCurrentState()) {
                 case FORMING:
                     formingTicks++;
+                    setFormingTicks(formingTicks);
+                    
+                    // Lock caster movement during forming
+                    if (this.ownerUUID != null && this.level() instanceof ServerLevel serverLevel) {
+                        Entity entity = serverLevel.getEntity(this.ownerUUID);
+                        if (entity instanceof LivingEntity owner) {
+                            owner.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 5, 10, false, false));
+                            owner.setDeltaMovement(0, owner.getDeltaMovement().y, 0);
+                        }
+                    }
+ 
                     if (!isOpen() && formingTicks <= 40) {
-                        // Layer by layer generation over 40 ticks
+                        // Layer by layer generation over first 40 ticks
                         int radius = 15;
                         int yLayer = (formingTicks / 2) - 1; // 0 to 19
                         if (yLayer <= radius) {
                             DomainHandler.handleDomainLayer(this.level(), centerPos, radius, yLayer, false);
                         }
                     }
-                    if (formingTicks >= 40) {
+                    if (formingTicks >= 100) { // 5 Seconds
                         setState(DomainState.ACTIVE);
                     }
                     break;
@@ -166,6 +195,9 @@ public class ShrineEntity extends Entity implements GeoEntity {
                 if (!state.isAir() && state.getDestroySpeed(serverLevel, surfacePos) >= 0 && state.getBlock() != ModBlocks.DOMAIN_BARRIER.get() && state.getBlock() != ModBlocks.DOMAIN_FLOOR.get()) {
                     serverLevel.setBlock(surfacePos, Blocks.AIR.defaultBlockState(), 2);
                     
+                    // Increment Dust Meter
+                    setDustLevel(getDustLevel() + 1);
+ 
                     if (this.getRandom().nextInt(5) == 0) {
                         PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, 
                                 new SpawnDomainAshPayload(surfacePos.getX() + 0.5, surfacePos.getY() + 0.5, surfacePos.getZ() + 0.5));
@@ -214,6 +246,8 @@ public class ShrineEntity extends Entity implements GeoEntity {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(OPEN, false);
         builder.define(STATE, DomainState.FORMING.ordinal());
+        builder.define(DUST_LEVEL, 0);
+        builder.define(FORMING_TICKS, 0);
     }
  
     @Override
@@ -227,6 +261,7 @@ public class ShrineEntity extends Entity implements GeoEntity {
         this.collapseTicks = compound.getInt("CollapseTicks");
         this.setOpen(compound.getBoolean("IsOpen"));
         this.setState(DomainState.values()[compound.getInt("DomainState")]);
+        this.setDustLevel(compound.getInt("DustLevel"));
         if (compound.contains("CenterX")) {
             this.centerPos = new BlockPos(compound.getInt("CenterX"), compound.getInt("CenterY"), compound.getInt("CenterZ"));
         }
@@ -243,6 +278,7 @@ public class ShrineEntity extends Entity implements GeoEntity {
         compound.putInt("CollapseTicks", this.collapseTicks);
         compound.putBoolean("IsOpen", this.isOpen());
         compound.putInt("DomainState", getCurrentState().ordinal());
+        compound.putInt("DustLevel", getDustLevel());
         if (this.centerPos != null) {
             compound.putInt("CenterX", centerPos.getX());
             compound.putInt("CenterY", centerPos.getY());

@@ -13,6 +13,7 @@ public class ModParticles {
     public static final DeferredRegister<ParticleType<?>> PARTICLES = DeferredRegister.create(Registries.PARTICLE_TYPE, MyKaisen.MODID);
 
     public static final Supplier<LodestoneWorldParticleType> DISMANTLE_SLASH = PARTICLES.register("dismantle_slash", LodestoneWorldParticleType::new);
+    public static final Supplier<LodestoneWorldParticleType> GLOWING_FIRE = PARTICLES.register("glowing_fire", LodestoneWorldParticleType::new);
 
     public static void register(IEventBus eventBus) {
         PARTICLES.register(eventBus);
