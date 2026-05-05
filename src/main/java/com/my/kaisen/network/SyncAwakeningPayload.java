@@ -8,14 +8,11 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 
 public record SyncAwakeningPayload(int playerId, boolean isAwakened) implements CustomPacketPayload {
-
     public static final Type<SyncAwakeningPayload> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MyKaisen.MODID, "sync_awakening"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncAwakeningPayload> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.INT,
-            SyncAwakeningPayload::playerId,
-            ByteBufCodecs.BOOL,
-            SyncAwakeningPayload::isAwakened,
+            ByteBufCodecs.VAR_INT, SyncAwakeningPayload::playerId,
+            ByteBufCodecs.BOOL, SyncAwakeningPayload::isAwakened,
             SyncAwakeningPayload::new
     );
 

@@ -13,5 +13,7 @@ public class ClientParticleEvents {
     @SubscribeEvent
     public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(ModParticles.DISMANTLE_SLASH.get(), LodestoneWorldParticleType.Factory::new);
+        event.registerSpriteSet(ModParticles.CLEAVE_SLASH.get(), LodestoneWorldParticleType.Factory::new);
+        event.registerSpriteSet(ModParticles.CLEAVE_WEB.get(), LodestoneWorldParticleType.Factory::new);
     }
 }

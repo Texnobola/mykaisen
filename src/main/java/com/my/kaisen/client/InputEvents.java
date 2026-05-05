@@ -16,12 +16,11 @@ public class InputEvents {
         // We check input on Post tick to ensure the game has processed inputs for the frame
         if (KeyBindings.ABILITY_1_KEY.consumeClick()) {
             // Check for Cleave Web (Z + Right Shift)
-            if (net.minecraft.client.Minecraft.getInstance().player != null && 
-                net.minecraft.client.Minecraft.getInstance().player.getPersistentData().getBoolean("is_awakened") && 
-                com.mojang.blaze3d.platform.InputConstants.isKeyDown(net.minecraft.client.Minecraft.getInstance().getWindow().getWindow(), org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT_SHIFT)) {
+            // We only check for Right Shift here; the server will validate Awakening and Character status.
+            if (com.mojang.blaze3d.platform.InputConstants.isKeyDown(net.minecraft.client.Minecraft.getInstance().getWindow().getWindow(), org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT_SHIFT)) {
                 PacketDistributor.sendToServer(new com.my.kaisen.network.TriggerCleaveWebPayload());
             } else {
-                // Send payload for Cursed Strikes (Ability ID 1)
+                // Send payload for Cursed Strikes / Dismantle (Ability ID 1)
                 PacketDistributor.sendToServer(new AbilityPayload(1));
             }
         }

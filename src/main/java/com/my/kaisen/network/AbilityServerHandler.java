@@ -422,7 +422,14 @@ public class AbilityServerHandler {
     public static void handleCleaveWeb(final TriggerCleaveWebPayload payload, final IPayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player() instanceof ServerPlayer player) {
-                if (player.getPersistentData().getInt("mykaisen_character") != 1 || !player.getPersistentData().getBoolean("is_awakened")) return;
+                if (player.getPersistentData().getInt("mykaisen_character") != 1) {
+                    player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cOnly Sukuna can use Cleave Web."));
+                    return;
+                }
+                if (!player.getPersistentData().getBoolean("is_awakened")) {
+                    player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cYou must be Awakened to use Cleave Web."));
+                    return;
+                }
                 
                 // Cleave Web logic
                 net.minecraft.world.level.Level level = player.level();
