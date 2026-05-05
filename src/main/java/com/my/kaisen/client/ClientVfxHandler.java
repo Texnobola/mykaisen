@@ -402,80 +402,66 @@ public class ClientVfxHandler {
     }
  
     public static void spawnFugaNuke(Level level, double x, double y, double z) {
-        // 1. Cinematic Polish: Randomized pitch and Screenshake
-        float pitch = 0.5f + RANDOM.nextFloat() * 0.2f;
-        level.playSound(Minecraft.getInstance().player, x, y, z, com.my.kaisen.registry.ModSounds.FUGA_HITS.get(), net.minecraft.sounds.SoundSource.PLAYERS, 10.0F, pitch);
- 
+        // 1. Extreme Screen Shake
         team.lodestar.lodestone.handlers.ScreenshakeHandler.addScreenshake(
                 team.lodestar.lodestone.systems.screenshake.ScreenshakeBuilder.create()
-                        .setDuration(80)
+                        .setDuration(100)
                         .setStrength(3.0f)
                         .build()
         );
  
-        // 2. Phase 1: The Implosion (10 ticks inward)
-        for (int i = 0; i < 150; i++) {
-            double rx = (RANDOM.nextDouble() - 0.5) * 40.0;
-            double ry = (RANDOM.nextDouble() - 0.5) * 40.0;
-            double rz = (RANDOM.nextDouble() - 0.5) * 40.0;
-            
-            WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
-                    .setTransparencyData(GenericParticleData.create(0.0f, 0.8f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(3.0f, 0.0f).build())
-                    .setColorData(ColorParticleData.create(new Color(255, 100, 0), Color.BLACK).build())
-                    .setLifetime(10)
-                    .addMotion(-rx / 10.0, -ry / 10.0, -rz / 10.0)
-                    .spawn(level, x + rx, y + ry, z + rz);
-        }
+        // 2. Play Audio
+        level.playSound(Minecraft.getInstance().player, x, y, z, com.my.kaisen.registry.ModSounds.FUGA_HITS.get(), net.minecraft.sounds.SoundSource.PLAYERS, 15.0F, 0.6F);
  
-        // 3. Phase 2: The Shockwave (Expanding Disc)
-        for (int i = 0; i < 300; i++) {
-            double angle = i * (360.0 / 300.0);
+        // 3. Expanding Shockwave (Horizontal Disc)
+        for (int i = 0; i < 500; i++) {
+            double angle = i * (360.0 / 500.0);
             double rad = Math.toRadians(angle);
-            double vx = Math.cos(rad) * 12.0;
-            double vz = Math.sin(rad) * 12.0;
+            // High velocity to cover 200 blocks quickly
+            double vx = Math.cos(rad) * 40.0;
+            double vz = Math.sin(rad) * 40.0;
  
             WorldParticleBuilder.create(com.my.kaisen.registry.ModParticles.GLOWING_FIRE.get())
                     .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(15.0f, 35.0f).build())
+                    .setScaleData(GenericParticleData.create(20.0f, 40.0f).build())
                     .setColorData(ColorParticleData.create(new Color(255, 69, 0), Color.YELLOW).build())
-                    .setLifetime(50 + RANDOM.nextInt(30))
+                    .setLifetime(40 + RANDOM.nextInt(20))
                     .addMotion(vx, 0, vz)
                     .spawn(level, x, y, z);
         }
  
-        // 4. Phase 3: The Pillar & Mushroom Dome
-        // Vertical Pillar
-        for (int i = 0; i < 400; i++) {
-            double vx = (RANDOM.nextDouble() - 0.5) * 1.5;
-            double vy = RANDOM.nextDouble() * 8.0;
-            double vz = (RANDOM.nextDouble() - 0.5) * 1.5;
+        // 4. Mushroom Cloud (Pillar + Dome)
+        // Vertical Cylinder
+        for (int i = 0; i < 500; i++) {
+            double vx = (RANDOM.nextDouble() - 0.5) * 4.0;
+            double vy = RANDOM.nextDouble() * 15.0;
+            double vz = (RANDOM.nextDouble() - 0.5) * 4.0;
  
             WorldParticleBuilder.create(com.my.kaisen.registry.ModParticles.GLOWING_FIRE.get())
                     .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(10.0f, 20.0f).build())
+                    .setScaleData(GenericParticleData.create(12.0f, 25.0f).build())
                     .setColorData(ColorParticleData.create(Color.WHITE, Color.YELLOW).build())
-                    .setLifetime(60 + RANDOM.nextInt(30))
+                    .setLifetime(80 + RANDOM.nextInt(40))
                     .addMotion(vx, vy, vz)
                     .spawn(level, x, y, z);
         }
  
-        // Mushroom Dome
-        double domeHeight = 50.0;
-        for (int i = 0; i < 600; i++) {
+        // Dark Smoke Dome
+        double domeHeight = 60.0;
+        for (int i = 0; i < 800; i++) {
             double angle = RANDOM.nextDouble() * Math.PI * 2;
-            double r = RANDOM.nextDouble() * 50.0;
-            double vx = Math.cos(angle) * (r / 8.0);
-            double vy = (RANDOM.nextDouble() - 0.2) * 1.0;
-            double vz = Math.sin(angle) * (r / 8.0);
+            double r = RANDOM.nextDouble() * 60.0;
+            double vx = Math.cos(angle) * (r / 5.0);
+            double vy = (RANDOM.nextDouble() - 0.1) * 2.0;
+            double vz = Math.sin(angle) * (r / 5.0);
  
-            Color ashColor = RANDOM.nextBoolean() ? new Color(100, 100, 100) : Color.BLACK;
+            Color ashColor = RANDOM.nextBoolean() ? new Color(50, 50, 50) : Color.BLACK;
  
             WorldParticleBuilder.create(LodestoneParticleTypes.SMOKE_PARTICLE)
                     .setTransparencyData(GenericParticleData.create(0.9f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(15.0f, 30.0f).build())
+                    .setScaleData(GenericParticleData.create(20.0f, 40.0f).build())
                     .setColorData(ColorParticleData.create(ashColor, Color.BLACK).build())
-                    .setLifetime(120 + RANDOM.nextInt(60))
+                    .setLifetime(160 + RANDOM.nextInt(80))
                     .addMotion(vx, vy, vz)
                     .spawn(level, x, y + domeHeight, z);
         }

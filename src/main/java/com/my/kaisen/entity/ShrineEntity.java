@@ -193,7 +193,8 @@ public class ShrineEntity extends Entity implements GeoEntity {
                 
                 net.minecraft.world.level.block.state.BlockState state = serverLevel.getBlockState(surfacePos);
                 if (!state.isAir() && state.getDestroySpeed(serverLevel, surfacePos) >= 0 && state.getBlock() != ModBlocks.DOMAIN_BARRIER.get() && state.getBlock() != ModBlocks.DOMAIN_FLOOR.get()) {
-                    serverLevel.setBlock(surfacePos, Blocks.AIR.defaultBlockState(), 2);
+                    // Use destroyBlock(pos, false) for silent removal (no drops, no falling blocks)
+                    serverLevel.destroyBlock(surfacePos, false);
                     
                     // Increment Dust Meter
                     setDustLevel(getDustLevel() + 1);
