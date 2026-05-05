@@ -15,9 +15,27 @@ public class VfxDebugCommand {
     private static String activeLoopEffect = null;
     private static int loopTicks = 0;
  
-    public static void register(CommandDispatcher<net.minecraft.commands.CommandSourceStack> dispatcher) {
-        // Since we are in a client event subscriber, we might need a different way to register client commands.
-        // In NeoForge, client commands are registered via RegisterClientCommandsEvent.
+    @SubscribeEvent
+    public static void onClientCommandRegister(net.neoforged.neoforge.client.event.RegisterClientCommandsEvent event) {
+        event.getDispatcher().register(
+            net.minecraft.commands.Commands.literal("shaderdebug")
+                .then(net.minecraft.commands.Commands.argument("effect", StringArgumentType.string())
+                    .executes(context -> {
+                        String effect = StringArgumentType.getString(context, "effect");
+                        LocalPlayer player = Minecraft.getInstance().player;
+                        if (player == null) return 0;
+                        
+                        if (effect.equals("black_flash")) {
+                            ClientVfxHandler.spawnBlackFlash(player.level(), player.getX(), player.getY() + 1, player.getZ());
+                        } else if (effect.equals("fuga_nuke")) {
+                            setLoop("fuga_nuke");
+                        } else if (effect.equals("stop")) {
+                            stopLoop();
+                        }
+                        return 1;
+                    })
+                )
+        );
     }
  
     @SubscribeEvent

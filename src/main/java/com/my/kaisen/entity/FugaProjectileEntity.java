@@ -102,12 +102,13 @@ public class FugaProjectileEntity extends Projectile {
                     // Change Shrine state to COLLAPSING
                     shrine.setState(ShrineEntity.DomainState.COLLAPSING);
  
-                    // Trigger Nuke VFX at the Shrine center
-                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(shrine, new SpawnFugaNukePayload(shrine.getX(), shrine.getY(), shrine.getZ()));
+                    // Trigger Nuke VFX at the Shrine center and send to all players in the dimension
+                    SpawnFugaNukePayload nukePayload = new SpawnFugaNukePayload(shrine.getX(), shrine.getY(), shrine.getZ());
+                    CameraShakePayload shakePayload = new CameraShakePayload(8.0f, 60);
                     
-                    // Huge Recoil Shake for everyone
                     for (ServerPlayer p : serverLevel.players()) {
-                        PacketDistributor.sendToPlayer(p, new CameraShakePayload(8.0f, 60));
+                        PacketDistributor.sendToPlayer(p, nukePayload);
+                        PacketDistributor.sendToPlayer(p, shakePayload);
                     }
                     break;
                 }
