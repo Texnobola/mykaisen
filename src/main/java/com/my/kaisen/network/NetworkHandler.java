@@ -166,6 +166,23 @@ public class NetworkHandler {
                 }
         );
         
+        // Register SpawnDomainActivationVfxPayload to be sent from Server to Client
+        registrar.playToClient(
+                SpawnDomainActivationVfxPayload.TYPE,
+                SpawnDomainActivationVfxPayload.STREAM_CODEC,
+                com.my.kaisen.client.ClientVfxHandler::handleDomainActivationVfx
+        );
+        
+        registrar.playToClient(
+                SyncBlackFlashComboPayload.TYPE,
+                SyncBlackFlashComboPayload.STREAM_CODEC,
+                (payload, ctx) -> {
+                    ctx.enqueueWork(() -> {
+                        com.my.kaisen.client.ShrineOverlay.setBlackFlashCombo(payload.combo());
+                    });
+                }
+        );
+
         // Register TriggerDomainPayload to be sent from Client to Server
         registrar.playToServer(
                 TriggerDomainPayload.TYPE,

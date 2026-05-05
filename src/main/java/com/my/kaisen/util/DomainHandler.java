@@ -50,6 +50,17 @@ public class DomainHandler {
      * Spawns the Malevolent Shrine entity behind the caster.
      */
     public static com.my.kaisen.entity.ShrineEntity spawnShrine(Level level, BlockPos center, Player caster, boolean isOpen) {
+        if (!level.isClientSide) {
+            java.util.List<com.my.kaisen.entity.ShrineEntity> existingShrines = level.getEntitiesOfClass(
+                com.my.kaisen.entity.ShrineEntity.class, 
+                caster.getBoundingBox().inflate(300.0), 
+                e -> e.getOwnerUUID() != null && e.getOwnerUUID().equals(caster.getUUID())
+            );
+            for (com.my.kaisen.entity.ShrineEntity existing : existingShrines) {
+                existing.discard();
+            }
+        }
+
         com.my.kaisen.entity.ShrineEntity shrine = new com.my.kaisen.entity.ShrineEntity(com.my.kaisen.registry.ModEntities.SHRINE.get(), level);
         
         float yaw = caster.getYRot();

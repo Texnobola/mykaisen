@@ -112,20 +112,24 @@ public class ShrineEntity extends Entity implements GeoEntity {
                     if (this.ownerUUID != null && this.level() instanceof ServerLevel serverLevel) {
                         Entity entity = serverLevel.getEntity(this.ownerUUID);
                         if (entity instanceof LivingEntity owner) {
-                            owner.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 5, 10, false, false));
+                            owner.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 5, 20, false, false));
                             owner.setDeltaMovement(0, 0, 0);
                         }
                     }
  
-                    if (!isOpen() && formingTicks <= 40) {
-                        // Layer by layer generation over first 40 ticks
+                    if (formingTicks >= 40) { // 2 Seconds forming after the 5s charge
                         int radius = 15;
-                        int yLayer = (formingTicks / 2) - 1; // 0 to 19
-                        if (yLayer <= radius) {
-                            DomainHandler.handleDomainLayer(this.level(), centerPos, radius, yLayer, false);
+                        if (!this.isOpen()) {
+                            for (int yLayer = -1; yLayer <= radius; yLayer++) {
+                                DomainHandler.handleDomainLayer(this.level(), centerPos, radius, yLayer, false);
+                            }
+                        } else {
+                            DomainHandler.handleDomainLayer(this.level(), centerPos, radius, -1, false);
                         }
-                    }
-                    if (formingTicks >= 100) { // 5 Seconds
+                        
+                        PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, 
+                                new com.my.kaisen.network.SpawnDomainActivationVfxPayload(centerPos.getX(), centerPos.getY(), centerPos.getZ()));
+ 
                         setState(DomainState.ACTIVE);
                     }
                     break;
@@ -160,32 +164,41 @@ public class ShrineEntity extends Entity implements GeoEntity {
  
         // Caster Buffs
         if (owner != null && owner.isAlive()) {
-            owner.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 10, 2, false, false));
-            owner.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 10, 1, false, false));
-            owner.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 10, 1, false, false));
+            owner.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 10, 3, false, false));
+            owner.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 10, 2, false, false));
+            owner.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 10, 2, false, false));
         }
  
-        // Sure-Hit Dismantle Storm (Every 5 ticks)
-        if (activeTicks % 5 == 0) {
-            AABB area = this.getBoundingBox().inflate(isOpen() ? 200.0 : 14.0);
+        // Sure-Hit Dismantle Storm (Every 3 ticks - FASTER)
+        if (activeTicks % 3 == 0) {
+            double radius = isOpen() ? 200.0 : 15.0;
+            AABB area = this.getBoundingBox().inflate(radius);
             List<LivingEntity> targets = this.level().getEntitiesOfClass(LivingEntity.class, area, 
                     (entity) -> entity.getUUID() != this.ownerUUID && entity.isAlive());
  
             for (LivingEntity target : targets) {
-                target.hurt(this.damageSources().magic(), 2.0F);
+                float healthBefore = target.getHealth();
+                target.hurt(this.damageSources().magic(), 4.0F); // Buffed Damage
                 
+                // If killed, increment dust
+                if (!target.isAlive() || target.getHealth() < healthBefore) {
+                     setDustLevel(getDustLevel() + 5);
+                }
+ 
                 ServerLevel serverLevel = (ServerLevel) this.level();
-                serverLevel.playSound(null, target.getX(), target.getY(), target.getZ(), ModSounds.DISMANTLE_SLASH.get(), net.minecraft.sounds.SoundSource.NEUTRAL, 1.0F, 1.0F);
+                if (activeTicks % 6 == 0) {
+                    serverLevel.playSound(null, target.getX(), target.getY(), target.getZ(), ModSounds.DISMANTLE_SLASH.get(), net.minecraft.sounds.SoundSource.NEUTRAL, 1.0F, 1.0F);
+                }
                 
                 PacketDistributor.sendToPlayersTrackingEntityAndSelf(target, 
                         new SpawnDismantleVfxPayload(target.getX(), target.getY() + target.getBbHeight()/2, target.getZ(), (float)Math.random() * 360f));
             }
         }
  
-        // Shibuya-level Devastation (Open Barrier only)
+        // Shibuya-level Devastation (Open Barrier only) - MASSIVELY BUFFED
         if (isOpen()) {
             ServerLevel serverLevel = (ServerLevel) this.level();
-            for (int i = 0; i < 40; i++) {
+            for (int i = 0; i < 120; i++) { // Increased from 40
                 int dx = this.getRandom().nextInt(400) - 200;
                 int dz = this.getRandom().nextInt(400) - 200;
                 BlockPos targetPos = centerPos.offset(dx, 0, dz);
@@ -193,13 +206,10 @@ public class ShrineEntity extends Entity implements GeoEntity {
                 
                 net.minecraft.world.level.block.state.BlockState state = serverLevel.getBlockState(surfacePos);
                 if (!state.isAir() && state.getDestroySpeed(serverLevel, surfacePos) >= 0 && state.getBlock() != ModBlocks.DOMAIN_BARRIER.get() && state.getBlock() != ModBlocks.DOMAIN_FLOOR.get()) {
-                    // Use setBlock with flag 2 (send to clients) and 16 (no neighbor updates) to prevent falling blocks
                     serverLevel.setBlock(surfacePos, Blocks.AIR.defaultBlockState(), 2 | 16);
-                    
-                    // Increment Dust Meter
                     setDustLevel(getDustLevel() + 1);
  
-                    if (this.getRandom().nextInt(5) == 0) {
+                    if (this.getRandom().nextInt(10) == 0) {
                         PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, 
                                 new SpawnDomainAshPayload(surfacePos.getX() + 0.5, surfacePos.getY() + 0.5, surfacePos.getZ() + 0.5));
                     }
@@ -210,23 +220,21 @@ public class ShrineEntity extends Entity implements GeoEntity {
  
     private void tickCollapsing() {
         if (!isOpen()) {
-            // Layer by layer removal
             int radius = 15;
-            int yLayer = 15 - (collapseTicks / 10); // Remove layers over time
+            int yLayer = 15 - (collapseTicks / 10);
             if (yLayer >= -1) {
                 DomainHandler.handleDomainLayer(this.level(), centerPos, radius, yLayer, true);
             }
         }
  
-        // Stochastic removal for everything else/Visual ash
         ServerLevel serverLevel = (ServerLevel) this.level();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 40; i++) {
             int dx = this.getRandom().nextInt(40) - 20;
             int dy = this.getRandom().nextInt(20) - 2;
             int dz = this.getRandom().nextInt(40) - 20;
             BlockPos targetPos = centerPos.offset(dx, dy, dz);
             
-            if (this.getRandom().nextInt(3) == 0) {
+            if (this.getRandom().nextInt(2) == 0) {
                 PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, 
                         new SpawnDomainAshPayload(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5));
             }
@@ -234,14 +242,10 @@ public class ShrineEntity extends Entity implements GeoEntity {
     }
  
     @Override
-    public boolean hurt(DamageSource source, float amount) {
-        return false;
-    }
+    public boolean hurt(DamageSource source, float amount) { return false; }
  
     @Override
-    public boolean isPushable() {
-        return false;
-    }
+    public boolean isPushable() { return false; }
  
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
@@ -253,9 +257,7 @@ public class ShrineEntity extends Entity implements GeoEntity {
  
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
-        if (compound.hasUUID("OwnerUUID")) {
-            this.ownerUUID = compound.getUUID("OwnerUUID");
-        }
+        if (compound.hasUUID("OwnerUUID")) this.ownerUUID = compound.getUUID("OwnerUUID");
         this.lifeTicks = compound.getInt("LifeTicks");
         this.formingTicks = compound.getInt("FormingTicks");
         this.activeTicks = compound.getInt("ActiveTicks");
@@ -270,9 +272,7 @@ public class ShrineEntity extends Entity implements GeoEntity {
  
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
-        if (this.ownerUUID != null) {
-            compound.putUUID("OwnerUUID", this.ownerUUID);
-        }
+        if (this.ownerUUID != null) compound.putUUID("OwnerUUID", this.ownerUUID);
         compound.putInt("LifeTicks", this.lifeTicks);
         compound.putInt("FormingTicks", this.formingTicks);
         compound.putInt("ActiveTicks", this.activeTicks);
@@ -288,11 +288,8 @@ public class ShrineEntity extends Entity implements GeoEntity {
     }
  
     @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-    }
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {}
  
     @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return this.cache;
-    }
+    public AnimatableInstanceCache getAnimatableInstanceCache() { return this.cache; }
 }

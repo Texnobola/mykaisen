@@ -22,6 +22,7 @@ public class CombatTickHandler {
     public static boolean cooldownsEnabled = true;
     public static final Map<UUID, Integer> abilityCooldowns = new ConcurrentHashMap<>();
     public static final Map<UUID, Float> awakeningMeter = new ConcurrentHashMap<>();
+    public static final Map<UUID, Integer> blackFlashCombos = new ConcurrentHashMap<>();
 
     public static void addAwakening(ServerPlayer player, float amount) {
         UUID uuid = player.getUUID();
@@ -628,6 +629,11 @@ public class CombatTickHandler {
                     net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
             target.hurt(target.damageSources().generic(), 12.0f);
             
+            // Combo increment and sync
+            int combo = blackFlashCombos.getOrDefault(player.getUUID(), 0) + 1;
+            blackFlashCombos.put(player.getUUID(), combo);
+            PacketDistributor.sendToPlayer(player, new SyncBlackFlashComboPayload(combo));
+            
             // Freeze the target in place for the next chain hit (20 ticks = 1 second)
             target.addEffect(new MobEffectInstance(com.my.kaisen.registry.ModEffects.STUN, 20, 0, false, false, false));
             
@@ -647,10 +653,24 @@ public class CombatTickHandler {
             target.hurt(target.damageSources().generic(), damage);
             addAwakening(player, 25.0f); // Massive gain for Black Flash Final
             
+            // Final Combo Hit
+            int combo = blackFlashCombos.getOrDefault(player.getUUID(), 0) + 1;
+            blackFlashCombos.put(player.getUUID(), combo);
+            PacketDistributor.sendToPlayer(player, new SyncBlackFlashComboPayload(combo));
+            
             Vec3 lookVec = player.getLookAngle();
             Vec3 push = new Vec3(lookVec.x * 4.5, 0.6, lookVec.z * 4.5);
             target.setDeltaMovement(push);
             target.hurtMarked = true;
+            
+            // Reset combo after final hit or chain end
+            new java.util.Timer().schedule(new java.util.TimerTask() {
+                @Override
+                public void run() {
+                    blackFlashCombos.remove(player.getUUID());
+                    PacketDistributor.sendToPlayer(player, new SyncBlackFlashComboPayload(0));
+                }
+            }, 3000);
         }
     }
     public static void executeManjiKick(ServerPlayer player) {

@@ -42,7 +42,6 @@ public class FugaProjectileEntity extends Projectile {
         super.tick();
  
         if (this.level().isClientSide) {
-            // Lodestone Trail
             for (int i = 0; i < 2; i++) {
                 WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
                         .setTransparencyData(GenericParticleData.create(0.5f, 0.0f).build())
@@ -77,55 +76,47 @@ public class FugaProjectileEntity extends Projectile {
         LivingEntity shooter = this.getOwner() instanceof LivingEntity ? (LivingEntity) this.getOwner() : null;
  
         if (shooter != null) {
-            // Search for owned ShrineEntity within 300 blocks
             List<ShrineEntity> shrines = serverLevel.getEntitiesOfClass(ShrineEntity.class, this.getBoundingBox().inflate(300.0),
                     (e) -> e.getOwnerUUID() != null && e.getOwnerUUID().equals(shooter.getUUID()));
  
             boolean synergized = false;
             for (ShrineEntity shrine : shrines) {
-                if (shrine.isOpen() && shrine.getCurrentState() == ShrineEntity.DomainState.ACTIVE && shrine.getDustLevel() >= 1000) {
-                    // THERMOBARIC DETONATION (Synergy)
+                if (shrine.isOpen() && shrine.getDustLevel() >= 1000) {
                     synergized = true;
                     
-                    // Reset Dust Level
-                    shrine.setDustLevel(0);
-                    
-                    // Damage everything within the 200m radius of the Shrine
+                    // THERMOBARIC WIPEOUT
                     AABB nukeArea = shrine.getBoundingBox().inflate(200.0);
                     List<LivingEntity> targets = serverLevel.getEntitiesOfClass(LivingEntity.class, nukeArea, (e) -> e != shooter && e.isAlive());
  
                     for (LivingEntity target : targets) {
-                        target.hurt(this.damageSources().onFire(), 50.0F); // Massive Fire Damage
-                        target.igniteForSeconds(20);
+                        // "Turn them into dust"
+                        target.hurt(this.damageSources().onFire(), 500.0F); // Instant Kill
+                        serverLevel.sendParticles(ParticleTypes.LARGE_SMOKE, target.getX(), target.getY() + 1, target.getZ(), 20, 0.5, 1.0, 0.5, 0.05);
+                        serverLevel.sendParticles(ParticleTypes.FLAME, target.getX(), target.getY() + 1, target.getZ(), 10, 0.5, 1.0, 0.5, 0.1);
                     }
  
-                    // Change Shrine state to COLLAPSING
+                    // Collapse Shrine immediately
                     shrine.setState(ShrineEntity.DomainState.COLLAPSING);
+                    shrine.setDustLevel(0);
  
-                    // Trigger Nuke VFX at the Shrine center and send to all players in the dimension
-                    SpawnFugaNukePayload nukePayload = new SpawnFugaNukePayload(shrine.getX(), shrine.getY(), shrine.getZ());
-                    CameraShakePayload shakePayload = new CameraShakePayload(8.0f, 60);
-                    
+                    // Trigger Epic VFX
+                    SpawnFugaNukePayload payload = new SpawnFugaNukePayload(shrine.getX(), shrine.getY(), shrine.getZ());
                     for (ServerPlayer p : serverLevel.players()) {
-                        PacketDistributor.sendToPlayer(p, nukePayload);
-                        PacketDistributor.sendToPlayer(p, shakePayload);
+                        PacketDistributor.sendToPlayer(p, payload);
+                        PacketDistributor.sendToPlayer(p, new CameraShakePayload(10.0f, 100));
                     }
                     break;
                 }
             }
  
             if (!synergized) {
-                // Standard AoE (No open barrier or no shrine)
-                this.level().explode(shooter, this.getX(), this.getY(), this.getZ(), 10.0F, true, Level.ExplosionInteraction.TNT);
+                this.level().explode(shooter, this.getX(), this.getY(), this.getZ(), 12.0F, true, Level.ExplosionInteraction.TNT);
             }
-        } else {
-            this.level().explode(null, this.getX(), this.getY(), this.getZ(), 5.0F, true, Level.ExplosionInteraction.TNT);
         }
  
         this.discard();
     }
  
     @Override
-    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
-    }
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {}
 }

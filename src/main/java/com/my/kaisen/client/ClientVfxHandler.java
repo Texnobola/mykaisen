@@ -1,470 +1,257 @@
 package com.my.kaisen.client;
-
-import com.my.kaisen.network.SpawnBlackFlashPayload;
-import com.my.kaisen.network.SpawnDomainAshPayload;
-import com.my.kaisen.network.SpawnFugaNukePayload;
+ 
+import com.my.kaisen.registry.ModParticles;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.minecraft.world.phys.Vec3;
+import team.lodestar.lodestone.handlers.ScreenshakeHandler;
 import team.lodestar.lodestone.registry.common.particle.LodestoneParticleTypes;
 import team.lodestar.lodestone.systems.particle.builder.WorldParticleBuilder;
-import team.lodestar.lodestone.systems.particle.data.color.ColorParticleData;
 import team.lodestar.lodestone.systems.particle.data.GenericParticleData;
+import team.lodestar.lodestone.systems.particle.data.color.ColorParticleData;
 import team.lodestar.lodestone.systems.particle.data.spin.SpinParticleData;
-
-import team.lodestar.lodestone.systems.particle.render_types.LodestoneWorldParticleRenderType;
-
-import java.awt.Color;
+import team.lodestar.lodestone.systems.screenshake.ScreenshakeInstance;
+ 
+import java.awt.*;
 import java.util.Random;
-
-/**
- * Client-side handler for Lodestone-based visual effects.
- */
+ 
 public class ClientVfxHandler {
-
     private static final Random RANDOM = new Random();
-
-    /**
-     * Receiver for the SpawnBlackFlashPayload.
-     */
-    public static void handleBlackFlashVfx(SpawnBlackFlashPayload payload, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            Level level = Minecraft.getInstance().level;
-            if (level != null) {
-                spawnBlackFlash(level, payload.x(), payload.y(), payload.z());
-            }
-        });
-    }
-
-    /**
-     * Spawns an explosive burst of Lodestone particles (Black and Crimson) with lightning streaks.
-     */
-    public static void spawnBlackFlash(Level level, double x, double y, double z) {
-        // Core Glow
-        for (int i = 0; i < 15; i++) {
-            double vx = (RANDOM.nextDouble() - 0.5) * 0.3;
-            double vy = (RANDOM.nextDouble() - 0.5) * 0.3;
-            double vz = (RANDOM.nextDouble() - 0.5) * 0.3;
-
-            WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
-                    .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(1.5f, 0.0f).build())
-                    .setColorData(ColorParticleData.create(new Color(100, 0, 0), Color.BLACK).build())
-                    .setLifetime(10 + RANDOM.nextInt(10))
-                    .setRandomOffset(0.2)
-                    .addMotion(vx, vy, vz)
-                    .spawn(level, x, y, z);
-        }
-
-        // Lightning Streaks
-        for (int i = 0; i < 20; i++) {
-            double vx = (RANDOM.nextDouble() - 0.5) * 6.0; // Increased velocity
-            double vy = (RANDOM.nextDouble() - 0.5) * 6.0;
-            double vz = (RANDOM.nextDouble() - 0.5) * 6.0;
-
-            WorldParticleBuilder.create(LodestoneParticleTypes.SPARK_PARTICLE)
-                    .setTransparencyData(GenericParticleData.create(1.0f, 1.0f, 0.0f).build()) // Opaque then sharp fade
-                    .setScaleData(GenericParticleData.create(3.0f, 0.0f).build())
-                    .setColorData(ColorParticleData.create(new Color(255, 0, 0), Color.BLACK).build())
-                    .setSpinData(SpinParticleData.create(RANDOM.nextFloat() * 6.28f, RANDOM.nextFloat() * 0.5f).build())
-                    .setLifetime(10 + RANDOM.nextInt(5))
-                    .setRandomOffset(0.1)
-                    .addMotion(vx, vy, vz)
-                    .spawn(level, x, y, z);
-        }
-    }
-
-    /**
-     * Receiver for the SpawnDivergentAuraPayload.
-     */
-    public static void handleDivergentAuraVfx(com.my.kaisen.network.SpawnDivergentAuraPayload payload, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            Level level = Minecraft.getInstance().level;
-            if (level != null) {
-                spawnDivergentAura(level, payload.x(), payload.y(), payload.z());
-            }
-        });
-    }
-
-    /**
-     * Spawns an expanding burst of cursed energy (Bright Cyan to Deep Blue).
-     */
-    public static void spawnDivergentAura(Level level, double x, double y, double z) {
-        for (int i = 0; i < 30; i++) {
-            // Calculate random outward velocity
-            double vx = (RANDOM.nextDouble() - 0.5) * 0.5;
-            double vy = (RANDOM.nextDouble() - 0.5) * 0.5;
-            double vz = (RANDOM.nextDouble() - 0.5) * 0.5;
-
-            WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
-                    .setTransparencyData(GenericParticleData.create(0.8f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(2.0f, 0.0f).build())
-                    .setColorData(ColorParticleData.create(new Color(0, 255, 255), new Color(0, 0, 139)).build())
-                    .setLifetime(20 + RANDOM.nextInt(10))
-                    .setRandomOffset(0.3)
-                    .addMotion(vx, vy, vz)
-                    .spawn(level, x, y, z);
-        }
-    }
-    /**
-     * Receiver for the SpawnCursedStrikesVfxPayload.
-     */
-    public static void handleCursedStrikesVfx(com.my.kaisen.network.SpawnCursedStrikesVfxPayload payload, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            Level level = Minecraft.getInstance().level;
-            if (level != null) {
-                spawnCursedStrikesVfx(level, payload.x(), payload.y(), payload.z());
-            }
-        });
-    }
-
-    /**
-     * Spawns a rapid, tight burst of white and light-blue particles.
-     */
-    public static void spawnCursedStrikesVfx(Level level, double x, double y, double z) {
-        for (int i = 0; i < 8; i++) {
-            double vx = (RANDOM.nextDouble() - 0.5) * 0.4;
-            double vy = (RANDOM.nextDouble() - 0.5) * 0.4;
-            double vz = (RANDOM.nextDouble() - 0.5) * 0.4;
-
-            WorldParticleBuilder.create(LodestoneParticleTypes.SPARK_PARTICLE)
-                    .setTransparencyData(GenericParticleData.create(0.8f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(1.0f, 0.0f).build())
-                    .setColorData(ColorParticleData.create(Color.WHITE, new Color(173, 216, 230)).build())
-                    .setLifetime(5 + RANDOM.nextInt(3))
-                    .setRandomOffset(0.1)
-                    .addMotion(vx, vy, vz)
-                    .spawn(level, x, y, z);
-        }
-    }
-
-    /**
-     * Receiver for the SpawnCrushingBlowVfxPayload.
-     */
-    public static void handleCrushingBlowVfx(com.my.kaisen.network.SpawnCrushingBlowVfxPayload payload, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            Level level = Minecraft.getInstance().level;
-            if (level != null) {
-                spawnCrushingBlowVfx(level, payload.x(), payload.y(), payload.z());
-            }
-        });
-    }
-
-    /**
-     * Spawns a large horizontal ring of smoke/dust and a vertical pillar of red cursed energy.
-     */
-    public static void spawnCrushingBlowVfx(Level level, double x, double y, double z) {
-        // Horizontal Ring
-        for (int i = 0; i < 40; i++) {
-            double angle = RANDOM.nextDouble() * Math.PI * 2;
-            double speed = 0.5 + RANDOM.nextDouble() * 0.5;
-            double vx = Math.cos(angle) * speed;
-            double vz = Math.sin(angle) * speed;
-
-            WorldParticleBuilder.create(LodestoneParticleTypes.SMOKE_PARTICLE)
-                    .setTransparencyData(GenericParticleData.create(0.6f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(2.5f, 4.0f).build())
-                    .setColorData(ColorParticleData.create(new Color(100, 100, 100), new Color(50, 50, 50)).build())
-                    .setLifetime(20 + RANDOM.nextInt(10))
-                    .addMotion(vx, 0.0, vz)
-                    .spawn(level, x, y, z);
-        }
-
-        // Vertical Pillar
-        for (int i = 0; i < 30; i++) {
-            double vy = 0.5 + RANDOM.nextDouble() * 1.5;
-
-            WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
-                    .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(2.0f, 0.0f).build())
-                    .setColorData(ColorParticleData.create(new Color(255, 0, 0), new Color(139, 0, 0)).build())
-                    .setLifetime(15 + RANDOM.nextInt(15))
-                    .setRandomOffset(0.5)
-                    .addMotion(0.0, vy, 0.0)
-                    .spawn(level, x, y, z);
-        }
-    }
-    /**
-     * Receiver for the CameraShakePayload using Lodestone's ScreenShake API.
-     */
-    public static void handleCameraShake(com.my.kaisen.network.CameraShakePayload payload, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            team.lodestar.lodestone.handlers.ScreenshakeHandler.addScreenshake(
-                    team.lodestar.lodestone.systems.screenshake.ScreenshakeBuilder.create()
-                            .setDuration(payload.durationTicks())
-                            .setStrength(payload.intensity())
-                            .build()
-            );
-        });
-    }
-    /**
-     * Receiver for the SpawnAwakeningVfxPayload.
-     */
-    public static void handleAwakeningVfx(final com.my.kaisen.network.SpawnAwakeningVfxPayload payload, final IPayloadContext context) {
-        context.enqueueWork(() -> {
-            Level level = Minecraft.getInstance().level;
-            if (level != null) {
-                spawnAwakeningVfx(level, payload.x(), payload.y(), payload.z());
-            }
-        });
-    }
-
-    /**
-     * Spawns a massive shockwave of dark red and black cursed energy.
-     */
-    public static void spawnAwakeningVfx(Level level, double x, double y, double z) {
-        // Massive shockwave of dark red and black
-        for (int i = 0; i < 60; i++) {
-            double vx = (RANDOM.nextDouble() - 0.5) * 1.5;
-            double vy = (RANDOM.nextDouble() - 0.5) * 0.5;
-            double vz = (RANDOM.nextDouble() - 0.5) * 1.5;
-            
-            Color color = i % 2 == 0 ? new Color(139, 0, 0) : Color.BLACK;
-            
-            WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
-                    .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(4.0f, 0.0f).build())
-                    .setColorData(ColorParticleData.create(color, Color.BLACK).build())
-                    .setLifetime(30 + RANDOM.nextInt(20))
-                    .addMotion(vx, vy, vz)
-                    .spawn(level, x, y, z);
-        }
-    }
-
-    /**
-     * Spawns a continuous, aggressive 'Menacing Red Aura' around a position.
-     */
-    public static void spawnMenacingAura(Level level, double x, double y, double z, double width, double height) {
-        // Crimson Wisp
-        if (RANDOM.nextFloat() < 0.4f) {
-            double angle = RANDOM.nextDouble() * Math.PI * 2;
-            double r = RANDOM.nextDouble() * width;
-            double px = x + Math.cos(angle) * r;
-            double pz = z + Math.sin(angle) * r;
-            double py = y + RANDOM.nextDouble() * height;
-
-            WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
-                    .setTransparencyData(GenericParticleData.create(0.6f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(1.2f, 0.0f).build())
-                    .setColorData(ColorParticleData.create(new Color(220, 20, 60), Color.BLACK).build())
-                    .setLifetime(15 + RANDOM.nextInt(10))
-                    .addMotion(0, 0.08, 0)
-                    .spawn(level, px, py, pz);
-        }
-
-        // Black Smoke
-        if (RANDOM.nextFloat() < 0.3f) {
-            double angle = RANDOM.nextDouble() * Math.PI * 2;
-            double r = RANDOM.nextDouble() * width;
-            double px = x + Math.cos(angle) * r;
-            double pz = z + Math.sin(angle) * r;
-            double py = y + RANDOM.nextDouble() * height;
-
-            WorldParticleBuilder.create(LodestoneParticleTypes.SMOKE_PARTICLE)
-                    .setTransparencyData(GenericParticleData.create(0.4f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(0.8f, 1.5f).build())
-                    .setColorData(ColorParticleData.create(Color.BLACK, new Color(50, 0, 0)).build())
-                    .setLifetime(20 + RANDOM.nextInt(15))
-                    .addMotion(0, 0.04, 0)
-                    .spawn(level, px, py, pz);
-        }
-    }
-
-    /**
-     * Receiver for the SpawnDismantleVfxPayload.
-     */
-    public static void handleDismantleVfx(final com.my.kaisen.network.SpawnDismantleVfxPayload payload, final IPayloadContext context) {
-        context.enqueueWork(() -> {
-            Level level = Minecraft.getInstance().level;
-            if (level != null) {
-                spawnDismantle(level, payload.x(), payload.y(), payload.z(), payload.yRot());
-            }
-        });
-    }
-
-    public static void spawnDismantle(Level level, double x, double y, double z, float yRot) {
-        // Convert yRot to radians for Lodestone spin data.
-        // We negate and adjust to align the crescent texture correctly with the player's view.
-        float initialRotation = (float) Math.toRadians(-yRot);
-
-        WorldParticleBuilder.create(com.my.kaisen.registry.ModParticles.DISMANTLE_SLASH.get())
-                .setRenderType(LodestoneWorldParticleRenderType.TRANSPARENT) // Fixed render type
-                .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
-                .setScaleData(GenericParticleData.create(6.0f, 0.0f).build())
-                .setSpinData(SpinParticleData.create(initialRotation, 0).build())
-                .setLifetime(4)
-                .setRandomMotion(0, 0, 0)
-                .setRandomOffset(0, 0, 0)
-                .addMotion(0, 0, 0)
-                .spawn(level, x, y, z);
-    }
-    /**
-     * Receiver for the SpawnCleaveRushVfxPayload.
-     */
-    public static void handleCleaveRushVfx(final com.my.kaisen.network.SpawnCleaveRushVfxPayload payload, final IPayloadContext context) {
-        context.enqueueWork(() -> {
-            Level level = Minecraft.getInstance().level;
-            if (level != null) {
-                spawnCleaveRushVfx(level, payload.x(), payload.y(), payload.z(), payload.isFinalHit());
-            }
-        });
-    }
-
-    /**
-     * Cleave Rush VFX:
-     * - Regular hits: tight crimson/white slash sparks.
-     * - Final hit: massive dark-red & black explosion of wisps.
-     */
-    public static void spawnCleaveRushVfx(Level level, double x, double y, double z, boolean isFinalHit) {
-        if (!isFinalHit) {
-            // Regular hit – fast crimson slash sparks
-            for (int i = 0; i < 8; i++) {
-                double vx = (RANDOM.nextDouble() - 0.5) * 0.6;
-                double vy = (RANDOM.nextDouble()) * 0.4;
-                double vz = (RANDOM.nextDouble() - 0.5) * 0.6;
-
-                WorldParticleBuilder.create(LodestoneParticleTypes.SPARK_PARTICLE)
-                        .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
-                        .setScaleData(GenericParticleData.create(1.2f, 0.0f).build())
-                        .setColorData(ColorParticleData.create(new Color(220, 20, 60), Color.WHITE).build())
-                        .setLifetime(5 + RANDOM.nextInt(3))
-                        .addMotion(vx, vy, vz)
-                        .spawn(level, x, y, z);
-            }
-        } else {
-            // Final hit – explosive shockwave of dark-red wisps
-            for (int i = 0; i < 50; i++) {
-                double vx = (RANDOM.nextDouble() - 0.5) * 2.0;
-                double vy = (RANDOM.nextDouble()) * 1.5;
-                double vz = (RANDOM.nextDouble() - 0.5) * 2.0;
-
-                Color color = i % 3 == 0 ? new Color(139, 0, 0) : (i % 3 == 1 ? Color.BLACK : Color.WHITE);
-
-                WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
-                        .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
-                        .setScaleData(GenericParticleData.create(3.5f, 0.0f).build())
-                        .setColorData(ColorParticleData.create(color, Color.BLACK).build())
-                        .setLifetime(20 + RANDOM.nextInt(15))
-                        .addMotion(vx, vy, vz)
-                        .spawn(level, x, y, z);
-            }
-
-            // Extra crimson sparks for impact
-            for (int i = 0; i < 20; i++) {
-                double vx = (RANDOM.nextDouble() - 0.5) * 3.0;
-                double vy = (RANDOM.nextDouble()) * 2.0;
-                double vz = (RANDOM.nextDouble() - 0.5) * 3.0;
-
-                WorldParticleBuilder.create(LodestoneParticleTypes.SPARK_PARTICLE)
-                        .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
-                        .setScaleData(GenericParticleData.create(2.0f, 0.0f).build())
-                        .setColorData(ColorParticleData.create(new Color(220, 20, 60), Color.BLACK).build())
-                        .setSpinData(SpinParticleData.create(RANDOM.nextFloat() * 6.28f, RANDOM.nextFloat() * 0.4f).build())
-                        .setLifetime(10 + RANDOM.nextInt(10))
-                        .addMotion(vx, vy, vz)
-                        .spawn(level, x, y, z);
-            }
-        }
-    }
- 
-    /**
-     * Receiver for the SpawnDomainAshPayload.
-     */
-    public static void handleDomainAshVfx(final SpawnDomainAshPayload payload, final IPayloadContext context) {
-        context.enqueueWork(() -> {
-            Level level = Minecraft.getInstance().level;
-            if (level != null) {
-                spawnDomainAsh(level, payload.x(), payload.y(), payload.z());
-            }
-        });
-    }
- 
-    public static void spawnDomainAsh(Level level, double x, double y, double z) {
-        WorldParticleBuilder.create(LodestoneParticleTypes.SMOKE_PARTICLE)
-                .setTransparencyData(GenericParticleData.create(0.8f, 0.0f).build())
-                .setScaleData(GenericParticleData.create(1.0f, 3.5f).build())
-                .setColorData(ColorParticleData.create(new Color(60, 60, 60), Color.BLACK).build())
-                .setLifetime(40 + RANDOM.nextInt(20))
-                .addMotion((RANDOM.nextDouble() - 0.5) * 0.05, 0.05 + RANDOM.nextDouble() * 0.1, (RANDOM.nextDouble() - 0.5) * 0.05)
-                .spawn(level, x, y, z);
-    }
- 
-    /**
-     * Receiver for the SpawnFugaNukePayload.
-     */
-    public static void handleFugaNukeVfx(final SpawnFugaNukePayload payload, final IPayloadContext context) {
-        context.enqueueWork(() -> {
-            Level level = Minecraft.getInstance().level;
-            if (level != null) {
-                spawnFugaNuke(level, payload.x(), payload.y(), payload.z());
-            }
-        });
-    }
  
     public static void spawnFugaNuke(Level level, double x, double y, double z) {
-        // 1. Extreme Screen Shake
-        team.lodestar.lodestone.handlers.ScreenshakeHandler.addScreenshake(
-                team.lodestar.lodestone.systems.screenshake.ScreenshakeBuilder.create()
-                        .setDuration(100)
-                        .setStrength(3.0f)
-                        .build()
-        );
+        // 1. Implosion (Vacuum)
+        for (int i = 0; i < 50; i++) {
+            double rx = (RANDOM.nextDouble() - 0.5) * 10;
+            double ry = (RANDOM.nextDouble() - 0.5) * 10;
+            double rz = (RANDOM.nextDouble() - 0.5) * 10;
+            WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
+                    .setTransparencyData(GenericParticleData.create(0.0f, 0.8f, 0.0f).build())
+                    .setScaleData(GenericParticleData.create(2.0f, 0.0f).build())
+                    .setColorData(ColorParticleData.create(Color.ORANGE, Color.RED).build())
+                    .setLifetime(15)
+                    .setMotion(new Vec3(-rx * 0.2, -ry * 0.2, -rz * 0.2))
+                    .spawn(level, x + rx, y + ry, rz + z);
+        }
  
-        // 2. Play Audio
-        level.playSound(Minecraft.getInstance().player, x, y, z, com.my.kaisen.registry.ModSounds.FUGA_HITS.get(), net.minecraft.sounds.SoundSource.PLAYERS, 15.0F, 0.6F);
- 
-        // 3. Expanding Shockwave (Horizontal Disc)
-        for (int i = 0; i < 500; i++) {
-            double angle = i * (360.0 / 500.0);
-            double rad = Math.toRadians(angle);
-            // High velocity to cover 200 blocks quickly
-            double vx = Math.cos(rad) * 40.0;
-            double vz = Math.sin(rad) * 40.0;
- 
-            WorldParticleBuilder.create(com.my.kaisen.registry.ModParticles.GLOWING_FIRE.get())
-                    .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(20.0f, 40.0f).build())
-                    .setColorData(ColorParticleData.create(new Color(255, 69, 0), Color.YELLOW).build())
+        // 2. Apocalyptic Shockwave (Horizontal Ring)
+        for (int i = 0; i < 360; i += 2) {
+            double rad = Math.toRadians(i);
+            double cos = Math.cos(rad);
+            double sin = Math.sin(rad);
+            WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
+                    .setTransparencyData(GenericParticleData.create(0.8f, 0.0f).build())
+                    .setScaleData(GenericParticleData.create(5.0f, 15.0f).build())
+                    .setColorData(ColorParticleData.create(new Color(255, 60, 0), new Color(50, 10, 0)).build())
                     .setLifetime(40 + RANDOM.nextInt(20))
-                    .addMotion(vx, 0, vz)
-                    .spawn(level, x, y, z);
+                    .setMotion(new Vec3(cos * 2.5, 0.1, sin * 2.5))
+                    .spawn(level, x, y + 0.5, z);
         }
  
-        // 4. Mushroom Cloud (Pillar + Dome)
-        // Vertical Cylinder
-        for (int i = 0; i < 500; i++) {
-            double vx = (RANDOM.nextDouble() - 0.5) * 4.0;
-            double vy = RANDOM.nextDouble() * 15.0;
-            double vz = (RANDOM.nextDouble() - 0.5) * 4.0;
- 
-            WorldParticleBuilder.create(com.my.kaisen.registry.ModParticles.GLOWING_FIRE.get())
-                    .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(12.0f, 25.0f).build())
-                    .setColorData(ColorParticleData.create(Color.WHITE, Color.YELLOW).build())
-                    .setLifetime(80 + RANDOM.nextInt(40))
-                    .addMotion(vx, vy, vz)
-                    .spawn(level, x, y, z);
-        }
- 
-        // Dark Smoke Dome
-        double domeHeight = 60.0;
-        for (int i = 0; i < 800; i++) {
-            double angle = RANDOM.nextDouble() * Math.PI * 2;
-            double r = RANDOM.nextDouble() * 60.0;
-            double vx = Math.cos(angle) * (r / 5.0);
-            double vy = (RANDOM.nextDouble() - 0.1) * 2.0;
-            double vz = Math.sin(angle) * (r / 5.0);
- 
-            Color ashColor = RANDOM.nextBoolean() ? new Color(50, 50, 50) : Color.BLACK;
- 
+        // 3. Mushroom Cloud (Vertical Pillar)
+        for (int i = 0; i < 100; i++) {
             WorldParticleBuilder.create(LodestoneParticleTypes.SMOKE_PARTICLE)
-                    .setTransparencyData(GenericParticleData.create(0.9f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(20.0f, 40.0f).build())
-                    .setColorData(ColorParticleData.create(ashColor, Color.BLACK).build())
-                    .setLifetime(160 + RANDOM.nextInt(80))
-                    .addMotion(vx, vy, vz)
-                    .spawn(level, x, y + domeHeight, z);
+                    .setTransparencyData(GenericParticleData.create(0.6f, 0.0f).build())
+                    .setScaleData(GenericParticleData.create(4.0f, 12.0f).build())
+                    .setColorData(ColorParticleData.create(Color.DARK_GRAY, Color.BLACK).build())
+                    .setLifetime(80 + RANDOM.nextInt(40))
+                    .setMotion(new Vec3((RANDOM.nextDouble() - 0.5) * 0.5, 1.5 + RANDOM.nextDouble(), (RANDOM.nextDouble() - 0.5) * 0.5))
+                    .spawn(level, x, y, z);
         }
+ 
+        // 4. Blinding Flash & Fire Dome
+        for (int i = 0; i < 200; i++) {
+             double theta = RANDOM.nextDouble() * Math.PI;
+             double phi = RANDOM.nextDouble() * 2 * Math.PI;
+             double dx = Math.sin(theta) * Math.cos(phi);
+             double dy = Math.cos(theta);
+             double dz = Math.sin(theta) * Math.sin(phi);
+             
+             WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
+                    .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
+                    .setScaleData(GenericParticleData.create(3.0f, 8.0f).build())
+                    .setColorData(ColorParticleData.create(Color.WHITE, Color.ORANGE).build())
+                    .setLifetime(30 + RANDOM.nextInt(20))
+                    .setMotion(new Vec3(dx * 1.5, Math.abs(dy) * 1.5, dz * 1.5))
+                    .spawn(level, x, y + 2, z);
+        }
+ 
+        ScreenshakeHandler.addScreenshake(new ScreenshakeInstance(100).setIntensity(3.0f, 0.0f));
+    }
+ 
+    public static void spawnBlackFlash(Level level, double x, double y, double z) {
+        // High-contrast lightning
+        for (int i = 0; i < 12; i++) {
+            WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
+                    .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
+                    .setScaleData(GenericParticleData.create(0.5f, 4.0f, 0.0f).build())
+                    .setColorData(ColorParticleData.create(Color.BLACK, Color.RED).build())
+                    .setLifetime(15 + RANDOM.nextInt(10))
+                    .setSpinData(SpinParticleData.create(0.5f).build())
+                    .setMotion(new Vec3((RANDOM.nextDouble() - 0.5) * 2, (RANDOM.nextDouble() - 0.5) * 2, (RANDOM.nextDouble() - 0.5) * 2))
+                    .spawn(level, x, y, z);
+        }
+        
+        // Expansion shockwave (Red)
+        for (int i = 0; i < 360; i += 10) {
+            double rad = Math.toRadians(i);
+            WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
+                    .setTransparencyData(GenericParticleData.create(0.8f, 0.0f).build())
+                    .setScaleData(GenericParticleData.create(2.0f, 0.0f).build())
+                    .setColorData(ColorParticleData.create(Color.RED, Color.BLACK).build())
+                    .setLifetime(10)
+                    .setMotion(new Vec3(Math.cos(rad) * 0.8, 0, Math.sin(rad) * 0.8))
+                    .spawn(level, x, y, z);
+        }
+ 
+        ScreenshakeHandler.addScreenshake(new ScreenshakeInstance(20).setIntensity(1.5f));
+    }
+ 
+    public static void spawnMenacingAura(Level level, double x, double y, double z, double width, double height) {
+        if (RANDOM.nextInt(3) == 0) {
+            WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
+                    .setTransparencyData(GenericParticleData.create(0.4f, 0.0f).build())
+                    .setScaleData(GenericParticleData.create(0.8f, 0.0f).build())
+                    .setColorData(ColorParticleData.create(new Color(50, 0, 0), Color.BLACK).build())
+                    .setLifetime(20)
+                    .setMotion(new Vec3(0, 0.1, 0))
+                    .spawn(level, x + (RANDOM.nextDouble() - 0.5) * width, y + RANDOM.nextDouble() * height, z + (RANDOM.nextDouble() - 0.5) * width);
+    }
+
+    public static void handleBlackFlashVfx(com.my.kaisen.network.SpawnBlackFlashPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
+        ctx.enqueueWork(() -> spawnBlackFlash(Minecraft.getInstance().level, payload.x(), payload.y(), payload.z()));
+    }
+
+    public static void handleDivergentAuraVfx(com.my.kaisen.network.SpawnDivergentAuraPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            Level level = Minecraft.getInstance().level;
+            for (int i = 0; i < 20; i++) {
+                WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
+                        .setTransparencyData(GenericParticleData.create(0.6f, 0.0f).build())
+                        .setScaleData(GenericParticleData.create(0.5f, 2.0f, 0.0f).build())
+                        .setColorData(ColorParticleData.create(new Color(0, 100, 255), Color.BLUE).build())
+                        .setLifetime(20)
+                        .setRandomMotion(0.1)
+                        .spawn(level, payload.x(), payload.y(), payload.z());
+            }
+        });
+    }
+
+    public static void handleCursedStrikesVfx(com.my.kaisen.network.SpawnCursedStrikesVfxPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            Level level = Minecraft.getInstance().level;
+            for (int i = 0; i < 15; i++) {
+                WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
+                        .setTransparencyData(GenericParticleData.create(0.8f, 0.0f).build())
+                        .setScaleData(GenericParticleData.create(0.2f, 0.8f, 0.0f).build())
+                        .setColorData(ColorParticleData.create(Color.BLUE, Color.CYAN).build())
+                        .setLifetime(10)
+                        .setRandomMotion(0.2)
+                        .spawn(level, payload.x(), payload.y(), payload.z());
+            }
+        });
+    }
+
+    public static void handleCrushingBlowVfx(com.my.kaisen.network.SpawnCrushingBlowVfxPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            Level level = Minecraft.getInstance().level;
+            for (int i = 0; i < 30; i++) {
+                WorldParticleBuilder.create(LodestoneParticleTypes.SMOKE_PARTICLE)
+                        .setTransparencyData(GenericParticleData.create(0.5f, 0.0f).build())
+                        .setScaleData(GenericParticleData.create(1.0f, 3.0f).build())
+                        .setColorData(ColorParticleData.create(Color.GRAY, Color.DARK_GRAY).build())
+                        .setLifetime(30)
+                        .setRandomMotion(0.3)
+                        .spawn(level, payload.x(), payload.y(), payload.z());
+            }
+            ScreenshakeHandler.addScreenshake(new ScreenshakeInstance(15).setIntensity(0.5f));
+        });
+    }
+
+    public static void handleCameraShake(com.my.kaisen.network.CameraShakePayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
+        ctx.enqueueWork(() -> ScreenshakeHandler.addScreenshake(new ScreenshakeInstance(payload.duration()).setIntensity(payload.intensity())));
+    }
+
+    public static void handleAwakeningVfx(com.my.kaisen.network.SpawnAwakeningVfxPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            Level level = Minecraft.getInstance().level;
+            for (int i = 0; i < 100; i++) {
+                WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
+                        .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
+                        .setScaleData(GenericParticleData.create(1.0f, 4.0f, 0.0f).build())
+                        .setColorData(ColorParticleData.create(new Color(150, 0, 0), Color.BLACK).build())
+                        .setLifetime(40)
+                        .setRandomMotion(0.5)
+                        .spawn(level, payload.x(), payload.y(), payload.z());
+            }
+            ScreenshakeHandler.addScreenshake(new ScreenshakeInstance(60).setIntensity(2.0f));
+        });
+    }
+
+    public static void handleDismantleVfx(com.my.kaisen.network.SpawnDismantleVfxPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            Level level = Minecraft.getInstance().level;
+            float angle = (float) Math.toRadians(payload.rotation());
+            for (int i = 0; i < 10; i++) {
+                double offset = (i - 5) * 0.2;
+                WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
+                        .setTransparencyData(GenericParticleData.create(0.8f, 0.0f).build())
+                        .setScaleData(GenericParticleData.create(0.1f, 0.3f, 0.0f).build())
+                        .setColorData(ColorParticleData.create(Color.WHITE, Color.LIGHT_GRAY).build())
+                        .setLifetime(5)
+                        .spawn(level, payload.x() + Math.cos(angle) * offset, payload.y(), payload.z() + Math.sin(angle) * offset);
+            }
+        });
+    }
+
+    public static void handleCleaveRushVfx(com.my.kaisen.network.SpawnCleaveRushVfxPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            Level level = Minecraft.getInstance().level;
+            Color color = payload.isFinal() ? Color.RED : Color.WHITE;
+            int count = payload.isFinal() ? 40 : 10;
+            for (int i = 0; i < count; i++) {
+                WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
+                        .setTransparencyData(GenericParticleData.create(0.8f, 0.0f).build())
+                        .setScaleData(GenericParticleData.create(0.2f, 1.0f, 0.0f).build())
+                        .setColorData(ColorParticleData.create(color, Color.BLACK).build())
+                        .setLifetime(15)
+                        .setRandomMotion(0.3)
+                        .spawn(level, payload.x(), payload.y(), payload.z());
+            }
+        });
+    }
+
+    public static void handleDomainAshVfx(com.my.kaisen.network.SpawnDomainAshPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            Level level = Minecraft.getInstance().level;
+            WorldParticleBuilder.create(LodestoneParticleTypes.SMOKE_PARTICLE)
+                    .setTransparencyData(GenericParticleData.create(0.4f, 0.0f).build())
+                    .setScaleData(GenericParticleData.create(0.5f, 2.0f).build())
+                    .setColorData(ColorParticleData.create(Color.DARK_GRAY, Color.BLACK).build())
+                    .setLifetime(40)
+                    .setMotion(new Vec3(0, 0.05, 0))
+                    .spawn(level, payload.x(), payload.y(), payload.z());
+        });
+    }
+
+    public static void handleFugaNukeVfx(com.my.kaisen.network.SpawnFugaNukePayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
+        ctx.enqueueWork(() -> spawnFugaNuke(Minecraft.getInstance().level, payload.x(), payload.y(), payload.z()));
+    }
+
+    public static void handleDomainActivationVfx(com.my.kaisen.network.SpawnDomainActivationVfxPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            Level level = Minecraft.getInstance().level;
+            for (int i = 0; i < 360; i += 5) {
+                double rad = Math.toRadians(i);
+                WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
+                        .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
+                        .setScaleData(GenericParticleData.create(2.0f, 8.0f).build())
+                        .setColorData(ColorParticleData.create(Color.BLACK, new Color(100, 0, 0)).build())
+                        .setLifetime(40)
+                        .setMotion(new Vec3(Math.cos(rad) * 1.2, 0.1, Math.sin(rad) * 1.2))
+                        .spawn(level, payload.x(), payload.y(), payload.z());
+            }
+            ScreenshakeHandler.addScreenshake(new ScreenshakeInstance(60).setIntensity(4.0f));
+        });
     }
 }
-
