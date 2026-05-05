@@ -2,6 +2,7 @@ package com.my.kaisen.client;
 
 import com.my.kaisen.network.SpawnBlackFlashPayload;
 import com.my.kaisen.network.SpawnDomainAshPayload;
+import com.my.kaisen.network.SpawnFugaNukePayload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -386,6 +387,55 @@ public class ClientVfxHandler {
                 .setLifetime(40 + RANDOM.nextInt(20))
                 .addMotion((RANDOM.nextDouble() - 0.5) * 0.05, 0.05 + RANDOM.nextDouble() * 0.1, (RANDOM.nextDouble() - 0.5) * 0.05)
                 .spawn(level, x, y, z);
+    }
+ 
+    /**
+     * Receiver for the SpawnFugaNukePayload.
+     */
+    public static void handleFugaNukeVfx(final SpawnFugaNukePayload payload, final IPayloadContext context) {
+        context.enqueueWork(() -> {
+            Level level = Minecraft.getInstance().level;
+            if (level != null) {
+                spawnFugaNuke(level, payload.x(), payload.y(), payload.z());
+            }
+        });
+    }
+ 
+    public static void spawnFugaNuke(Level level, double x, double y, double z) {
+        // Play impact sound locally
+        level.playSound(Minecraft.getInstance().player, x, y, z, com.my.kaisen.registry.ModSounds.FUGA_HITS.get(), net.minecraft.sounds.SoundSource.PLAYERS, 4.0F, 0.6F);
+ 
+        // Colossal Expanding Sphere
+        for (int i = 0; i < 200; i++) {
+            double vx = (RANDOM.nextDouble() - 0.5) * 4.0;
+            double vy = (RANDOM.nextDouble() - 0.5) * 4.0;
+            double vz = (RANDOM.nextDouble() - 0.5) * 4.0;
+ 
+            WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
+                    .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
+                    .setScaleData(GenericParticleData.create(10.0f, 25.0f).build())
+                    .setColorData(ColorParticleData.create(new Color(255, 200, 50), new Color(255, 50, 0)).build())
+                    .setLifetime(40 + RANDOM.nextInt(20))
+                    .addMotion(vx, vy, vz)
+                    .spawn(level, x, y, z);
+        }
+ 
+        // Massive Rising Mushroom Cloud
+        for (int i = 0; i < 300; i++) {
+            double vx = (RANDOM.nextDouble() - 0.5) * 2.0;
+            double vy = 0.5 + RANDOM.nextDouble() * 4.0;
+            double vz = (RANDOM.nextDouble() - 0.5) * 2.0;
+ 
+            Color smokeColor = RANDOM.nextBoolean() ? new Color(255, 69, 0) : Color.BLACK;
+ 
+            WorldParticleBuilder.create(LodestoneParticleTypes.SMOKE_PARTICLE)
+                    .setTransparencyData(GenericParticleData.create(0.8f, 0.0f).build())
+                    .setScaleData(GenericParticleData.create(5.0f, 15.0f).build())
+                    .setColorData(ColorParticleData.create(smokeColor, Color.BLACK).build())
+                    .setLifetime(80 + RANDOM.nextInt(60))
+                    .addMotion(vx, vy, vz)
+                    .spawn(level, x, y, z);
+        }
     }
 }
 

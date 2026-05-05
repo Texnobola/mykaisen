@@ -145,6 +145,12 @@ public class NetworkHandler {
                 SpawnDomainAshPayload.STREAM_CODEC,
                 com.my.kaisen.client.ClientVfxHandler::handleDomainAshVfx
         );
+ 
+        registrar.playToClient(
+                SpawnFugaNukePayload.TYPE,
+                SpawnFugaNukePayload.STREAM_CODEC,
+                com.my.kaisen.client.ClientVfxHandler::handleFugaNukeVfx
+        );
 
         // Register SyncAwakeningPayload to be sent from Server to Client
         registrar.playToClient(

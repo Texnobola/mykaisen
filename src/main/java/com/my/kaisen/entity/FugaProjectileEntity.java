@@ -1,37 +1,46 @@
 package com.my.kaisen.entity;
-
+ 
+import com.my.kaisen.network.CameraShakePayload;
+import com.my.kaisen.network.SpawnFugaNukePayload;
+import com.my.kaisen.registry.ModSounds;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.network.PacketDistributor;
 import team.lodestar.lodestone.registry.common.particle.LodestoneParticleTypes;
 import team.lodestar.lodestone.systems.particle.builder.WorldParticleBuilder;
 import team.lodestar.lodestone.systems.particle.data.GenericParticleData;
 import team.lodestar.lodestone.systems.particle.data.color.ColorParticleData;
-import java.awt.Color;
+ 
+import java.awt.*;
+import java.util.List;
 import java.util.Random;
-
+ 
 public class FugaProjectileEntity extends Projectile {
     private static final Random RANDOM = new Random();
-
+ 
     public FugaProjectileEntity(EntityType<? extends Projectile> entityType, Level level) {
         super(entityType, level);
     }
-
+ 
     public FugaProjectileEntity(EntityType<? extends Projectile> entityType, LivingEntity shooter, Level level) {
         this(entityType, level);
         this.setOwner(shooter);
         this.setPos(shooter.getX(), shooter.getEyeY() - 0.1, shooter.getZ());
     }
-
+ 
     @Override
     public void tick() {
         super.tick();
-
+ 
         if (this.level().isClientSide) {
             // Lodestone Trail
             for (int i = 0; i < 2; i++) {
@@ -44,88 +53,74 @@ public class FugaProjectileEntity extends Projectile {
                         .spawn(this.level(), this.getX(), this.getY(), this.getZ());
             }
         }
-
+ 
         Vec3 deltaMovement = this.getDeltaMovement();
         HitResult hitResult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
         if (hitResult.getType() != HitResult.Type.MISS) {
             this.onHit(hitResult);
         }
-
+ 
         this.setPos(this.getX() + deltaMovement.x, this.getY() + deltaMovement.y, this.getZ() + deltaMovement.z);
         ProjectileUtil.rotateTowardsMovement(this, 0.5F);
-
+ 
         if (!this.level().isClientSide && this.tickCount > 200) {
             this.discard();
         }
     }
-
+ 
     @Override
     protected void onHit(HitResult result) {
         super.onHit(result);
-        if (this.level().isClientSide) {
-            // LODESTONE CINEMATIC VFX
-            double x = this.getX();
-            double y = this.getY();
-            double z = this.getZ();
-            Level level = this.level();
-
-            // Layer 1: The Core Flash
-            WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
-                    .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(15.0f, 0.0f).build())
-                    .setColorData(ColorParticleData.create(new Color(255, 200, 100), new Color(255, 100, 0)).build())
-                    .setLifetime(15)
-                    .spawn(level, x, y, z);
-
-            // Layer 2: The Shockwave Ring
-            for (int i = 0; i < 60; i++) {
-                double angle = i * 6.0;
-                double rad = Math.toRadians(angle);
-                double vx = Math.cos(rad) * 1.5;
-                double vz = Math.sin(rad) * 1.5;
-
-                WorldParticleBuilder.create(LodestoneParticleTypes.SMOKE_PARTICLE)
-                        .setTransparencyData(GenericParticleData.create(0.8f, 0.0f).build())
-                        .setScaleData(GenericParticleData.create(4.0f, 8.0f).build())
-                        .setColorData(ColorParticleData.create(new Color(100, 100, 100), new Color(50, 50, 50)).build())
-                        .setLifetime(30 + RANDOM.nextInt(20))
-                        .addMotion(vx, 0, vz)
-                        .spawn(level, x, y, z);
-            }
-
-            // Layer 3: The Mushroom Cloud
-            for (int i = 0; i < 100; i++) {
-                double vx = (RANDOM.nextDouble() - 0.5) * 0.8;
-                double vy = 0.5 + RANDOM.nextDouble() * 2.0;
-                double vz = (RANDOM.nextDouble() - 0.5) * 0.8;
-
-                WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
-                        .setTransparencyData(GenericParticleData.create(0.8f, 0.0f).build())
-                        .setScaleData(GenericParticleData.create(3.0f, 6.0f).build())
-                        .setColorData(ColorParticleData.create(new Color(255, 60, 0), Color.BLACK).build())
-                        .setLifetime(40 + RANDOM.nextInt(40))
-                        .addMotion(vx, vy, vz)
-                        .spawn(level, x, y, z);
-            }
-        }
-
-        if (!this.level().isClientSide) {
-            // Play impact sound
-            this.level().playSound(null, this.getX(), this.getY(), this.getZ(), com.my.kaisen.registry.ModSounds.FUGA_HITS.get(), net.minecraft.sounds.SoundSource.NEUTRAL, 2.0F, 1.0F);
-            
-            // Violent Screen Shake for everyone within 40 blocks
-            for (net.minecraft.server.level.ServerPlayer p : ((net.minecraft.server.level.ServerLevel)this.level()).players()) {
-                if (p.distanceToSqr(this) < 40 * 40) {
-                    net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(p, new com.my.kaisen.network.CameraShakePayload(5.0f, 40));
+        if (this.level().isClientSide) return;
+ 
+        ServerLevel serverLevel = (ServerLevel) this.level();
+        LivingEntity shooter = this.getOwner() instanceof LivingEntity ? (LivingEntity) this.getOwner() : null;
+ 
+        if (shooter != null) {
+            // Search for owned ShrineEntity within 300 blocks
+            List<ShrineEntity> shrines = serverLevel.getEntitiesOfClass(ShrineEntity.class, this.getBoundingBox().inflate(300.0),
+                    (e) -> e.getOwnerUUID() != null && e.getOwnerUUID().equals(shooter.getUUID()));
+ 
+            boolean synergized = false;
+            for (ShrineEntity shrine : shrines) {
+                if (shrine.isOpen() && shrine.getCurrentState() == ShrineEntity.DomainState.ACTIVE) {
+                    // THERMOBARIC DETONATION (Synergy)
+                    synergized = true;
+                    
+                    // Damage everything within the 200m radius of the Shrine
+                    AABB nukeArea = shrine.getBoundingBox().inflate(200.0);
+                    List<LivingEntity> targets = serverLevel.getEntitiesOfClass(LivingEntity.class, nukeArea, (e) -> e != shooter && e.isAlive());
+ 
+                    for (LivingEntity target : targets) {
+                        target.hurt(this.damageSources().onFire(), 50.0F); // Massive Fire Damage
+                        target.igniteForSeconds(20);
+                    }
+ 
+                    // Change Shrine state to COLLAPSING
+                    shrine.setState(ShrineEntity.DomainState.COLLAPSING);
+ 
+                    // Trigger Nuke VFX at the Shrine center
+                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(shrine, new SpawnFugaNukePayload(shrine.getX(), shrine.getY(), shrine.getZ()));
+                    
+                    // Huge Recoil Shake for everyone
+                    for (ServerPlayer p : serverLevel.players()) {
+                        PacketDistributor.sendToPlayer(p, new CameraShakePayload(8.0f, 60));
+                    }
+                    break;
                 }
             }
-
-            // 15.0F radius is apocalyptic. 'true' sets everything on fire.
-            this.level().explode(this.getOwner(), this.getX(), this.getY(), this.getZ(), 15.0F, true, Level.ExplosionInteraction.TNT);
-            this.discard();
+ 
+            if (!synergized) {
+                // Standard AoE (No open barrier or no shrine)
+                this.level().explode(shooter, this.getX(), this.getY(), this.getZ(), 10.0F, true, Level.ExplosionInteraction.TNT);
+            }
+        } else {
+            this.level().explode(null, this.getX(), this.getY(), this.getZ(), 5.0F, true, Level.ExplosionInteraction.TNT);
         }
+ 
+        this.discard();
     }
-
+ 
     @Override
     protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
     }

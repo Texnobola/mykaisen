@@ -39,7 +39,9 @@ public class ShrineEntity extends Entity implements GeoEntity {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     private UUID ownerUUID;
     private int lifeTicks = 0;
-    private int stateTicks = 0;
+    private int formingTicks = 0;
+    private int activeTicks = 0;
+    private int collapseTicks = 0;
     private BlockPos centerPos;
  
     public static final int MAX_ACTIVE_TICKS = 1200;
@@ -69,7 +71,6 @@ public class ShrineEntity extends Entity implements GeoEntity {
  
     public void setState(DomainState state) {
         this.entityData.set(STATE, state.ordinal());
-        this.stateTicks = 0;
     }
  
     public DomainState getCurrentState() {
@@ -83,34 +84,38 @@ public class ShrineEntity extends Entity implements GeoEntity {
  
         if (!this.level().isClientSide) {
             lifeTicks++;
-            stateTicks++;
  
-            DomainState state = getCurrentState();
-            
-            if (state == DomainState.FORMING) {
-                if (!isOpen() && stateTicks <= 20) {
-                    // Layer by layer generation
-                    int radius = 15;
-                    int yLayer = stateTicks - 2; // Starts from -1 up to 18 (we stop at 15)
-                    if (yLayer <= radius) {
-                        DomainHandler.handleDomainLayer(this.level(), centerPos, radius, yLayer, false);
+            switch (getCurrentState()) {
+                case FORMING:
+                    formingTicks++;
+                    if (!isOpen() && formingTicks <= 40) {
+                        // Layer by layer generation over 40 ticks
+                        int radius = 15;
+                        int yLayer = (formingTicks / 2) - 1; // 0 to 19
+                        if (yLayer <= radius) {
+                            DomainHandler.handleDomainLayer(this.level(), centerPos, radius, yLayer, false);
+                        }
                     }
-                }
-                if (stateTicks >= 20) {
-                    setState(DomainState.ACTIVE);
-                }
-            } 
-            else if (state == DomainState.ACTIVE) {
-                tickActive();
-                if (stateTicks >= MAX_ACTIVE_TICKS) {
-                    setState(DomainState.COLLAPSING);
-                }
-            } 
-            else if (state == DomainState.COLLAPSING) {
-                tickCollapsing();
-                if (stateTicks >= MAX_COLLAPSE_TICKS) {
-                    this.discard();
-                }
+                    if (formingTicks >= 40) {
+                        setState(DomainState.ACTIVE);
+                    }
+                    break;
+ 
+                case ACTIVE:
+                    activeTicks++;
+                    tickActive();
+                    if (activeTicks >= MAX_ACTIVE_TICKS) {
+                        setState(DomainState.COLLAPSING);
+                    }
+                    break;
+ 
+                case COLLAPSING:
+                    collapseTicks++;
+                    tickCollapsing();
+                    if (collapseTicks >= MAX_COLLAPSE_TICKS) {
+                        this.discard();
+                    }
+                    break;
             }
         }
     }
@@ -131,11 +136,9 @@ public class ShrineEntity extends Entity implements GeoEntity {
             owner.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 10, 1, false, false));
         }
  
-        double radius = isOpen() ? 200.0 : 14.0;
- 
         // Sure-Hit Dismantle Storm (Every 5 ticks)
-        if (stateTicks % 5 == 0) {
-            AABB area = this.getBoundingBox().inflate(radius);
+        if (activeTicks % 5 == 0) {
+            AABB area = this.getBoundingBox().inflate(isOpen() ? 200.0 : 14.0);
             List<LivingEntity> targets = this.level().getEntitiesOfClass(LivingEntity.class, area, 
                     (entity) -> entity.getUUID() != this.ownerUUID && entity.isAlive());
  
@@ -176,7 +179,7 @@ public class ShrineEntity extends Entity implements GeoEntity {
         if (!isOpen()) {
             // Layer by layer removal
             int radius = 15;
-            int yLayer = 15 - (stateTicks / 10); // Remove layers over time
+            int yLayer = 15 - (collapseTicks / 10); // Remove layers over time
             if (yLayer >= -1) {
                 DomainHandler.handleDomainLayer(this.level(), centerPos, radius, yLayer, true);
             }
@@ -219,7 +222,9 @@ public class ShrineEntity extends Entity implements GeoEntity {
             this.ownerUUID = compound.getUUID("OwnerUUID");
         }
         this.lifeTicks = compound.getInt("LifeTicks");
-        this.stateTicks = compound.getInt("StateTicks");
+        this.formingTicks = compound.getInt("FormingTicks");
+        this.activeTicks = compound.getInt("ActiveTicks");
+        this.collapseTicks = compound.getInt("CollapseTicks");
         this.setOpen(compound.getBoolean("IsOpen"));
         this.setState(DomainState.values()[compound.getInt("DomainState")]);
         if (compound.contains("CenterX")) {
@@ -233,7 +238,9 @@ public class ShrineEntity extends Entity implements GeoEntity {
             compound.putUUID("OwnerUUID", this.ownerUUID);
         }
         compound.putInt("LifeTicks", this.lifeTicks);
-        compound.putInt("StateTicks", this.stateTicks);
+        compound.putInt("FormingTicks", this.formingTicks);
+        compound.putInt("ActiveTicks", this.activeTicks);
+        compound.putInt("CollapseTicks", this.collapseTicks);
         compound.putBoolean("IsOpen", this.isOpen());
         compound.putInt("DomainState", getCurrentState().ordinal());
         if (this.centerPos != null) {
