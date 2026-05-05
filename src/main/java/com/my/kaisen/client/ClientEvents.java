@@ -77,14 +77,6 @@ public class ClientEvents {
                     // We just send it, server checks if player is in Rush
                     PacketDistributor.sendToServer(new com.my.kaisen.network.TriggerCleaveNormalPayload());
                 }
-
-                // Cleave Web Trigger (Z + Right Shift)
-                if (KeyBindings.ABILITY_1_KEY.isDown() && com.mojang.blaze3d.platform.InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT_SHIFT)) {
-                    // Short delay/cooldown on client to prevent spamming packets
-                    if (player.tickCount % 20 == 0) {
-                        PacketDistributor.sendToServer(new com.my.kaisen.network.TriggerCleaveWebPayload());
-                    }
-                }
             }
         }
     }

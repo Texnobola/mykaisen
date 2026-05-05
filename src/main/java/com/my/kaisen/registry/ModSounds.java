@@ -98,6 +98,9 @@ public class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> SUKUNA_MOCKING = SOUND_EVENTS.register("sukuna_mocking",
             () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MyKaisen.MODID, "sukuna_mocking")));
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> CLEAVE = SOUND_EVENTS.register("cleave",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MyKaisen.MODID, "cleave")));
+
     public static void register(IEventBus eventBus) {
         SOUND_EVENTS.register(eventBus);
     }

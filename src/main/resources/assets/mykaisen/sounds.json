@@ -172,5 +172,11 @@
     "sounds": [
       "mykaisen:sukuna_mocking"
     ]
+  },
+  "cleave": {
+    "category": "player",
+    "sounds": [
+      "mykaisen:cleave"
+    ]
   }
 }

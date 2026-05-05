@@ -15,8 +15,15 @@ public class InputEvents {
     public static void onClientTick(ClientTickEvent.Post event) {
         // We check input on Post tick to ensure the game has processed inputs for the frame
         if (KeyBindings.ABILITY_1_KEY.consumeClick()) {
-            // Send payload for Cursed Strikes (Ability ID 1)
-            PacketDistributor.sendToServer(new AbilityPayload(1));
+            // Check for Cleave Web (Z + Right Shift)
+            if (net.minecraft.client.Minecraft.getInstance().player != null && 
+                net.minecraft.client.Minecraft.getInstance().player.getPersistentData().getBoolean("is_awakened") && 
+                com.mojang.blaze3d.platform.InputConstants.isKeyDown(net.minecraft.client.Minecraft.getInstance().getWindow().getWindow(), org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT_SHIFT)) {
+                PacketDistributor.sendToServer(new com.my.kaisen.network.TriggerCleaveWebPayload());
+            } else {
+                // Send payload for Cursed Strikes (Ability ID 1)
+                PacketDistributor.sendToServer(new AbilityPayload(1));
+            }
         }
         
         if (KeyBindings.ABILITY_2_KEY.consumeClick()) {

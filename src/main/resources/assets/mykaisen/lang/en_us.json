@@ -11,6 +11,7 @@
   "key.mykaisen.switch_mode": "Switch Combat Mode",
   "key.mykaisen.awaken": "Toggle Awakening",
   "key.mykaisen.domain": "Domain Expansion",
+  "key.mykaisen.cleave": "Cleave Upgrade (R)",
   "entity.mykaisen.shrine": "Malevolent Shrine",
   "subtitles.mykaisen.dash": "Cursed Energy Dash",
   "subtitles.mykaisen.cursed_strikes": "Flurry of strikes",
@@ -37,5 +38,8 @@
   "subtitles.mykaisen.arrow_created": "Arrow created",
   "subtitles.mykaisen.flame_idle": "Flame idling",
   "subtitles.mykaisen.fuga_shoot": "Fuga shot",
-  "subtitles.mykaisen.fuga_hits": "Apocalyptic explosion"
+  "subtitles.mykaisen.fuga_hits": "Apocalyptic explosion",
+  "subtitles.mykaisen.cleave_slash": "Visceral slash",
+  "subtitles.mykaisen.sukuna_mocking": "Sukuna mocks the target",
+  "subtitles.mykaisen.cleave": "Cleave impact"
 }

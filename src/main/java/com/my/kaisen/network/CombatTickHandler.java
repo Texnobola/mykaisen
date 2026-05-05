@@ -748,8 +748,11 @@ public class CombatTickHandler {
                 player.setDeltaMovement(Vec3.ZERO);
                 player.hurtMarked = true;
                 player.level().playSound(null, player.blockPosition(),
-                        net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_STRONG,
-                        net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 0.8F);
+                        com.my.kaisen.registry.ModSounds.CLEAVE.get(),
+                        net.minecraft.sounds.SoundSource.PLAYERS, 1.2F, 1.0F);
+                player.level().playSound(null, player.blockPosition(),
+                        com.my.kaisen.registry.ModSounds.CLEAVE_SLASH.get(),
+                        net.minecraft.sounds.SoundSource.PLAYERS, 1.2F, 1.0F);
 
                 // Play the Grab animation
                 net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
@@ -940,6 +943,7 @@ public class CombatTickHandler {
                 target.hurt(target.damageSources().playerAttack(player), damage);
 
                 if (state.isCleaveMode) {
+                    player.level().playSound(null, target.blockPosition(), com.my.kaisen.registry.ModSounds.CLEAVE.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.5F, 1.0F);
                     player.level().playSound(null, target.blockPosition(), com.my.kaisen.registry.ModSounds.CLEAVE_SLASH.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.5F, 1.0F);
                     PacketDistributor.sendToPlayersTrackingEntityAndSelf(target, new SpawnCleaveVfxPayload(target.getX(), target.getY(0.5), target.getZ(), (float)player.level().random.nextInt(360)));
                 }

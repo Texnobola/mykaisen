@@ -437,8 +437,9 @@ public class AbilityServerHandler {
 
                 // VFX and Sound
                 net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SpawnCleaveWebVfxPayload(center.x, center.y, center.z));
-                level.playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.CLEAVE_SLASH.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.5F, 0.8F);
-                level.playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.SUKUNA_MOCKING.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
+                level.playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.CLEAVE.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.8F, 0.9F);
+                level.playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.CLEAVE_SLASH.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.5F, 1.0F);
+                level.playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.SUKUNA_MOCKING.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.2F, 1.0F);
 
                 // Entity damage (High damage AoE)
                 net.minecraft.world.phys.AABB area = player.getBoundingBox().inflate(radius);
