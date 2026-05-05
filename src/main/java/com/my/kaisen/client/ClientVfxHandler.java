@@ -116,12 +116,13 @@ public class ClientVfxHandler {
                     .setLifetime(20)
                     .setMotion(new Vec3(0, 0.1, 0))
                     .spawn(level, x + (RANDOM.nextDouble() - 0.5) * width, y + RANDOM.nextDouble() * height, z + (RANDOM.nextDouble() - 0.5) * width);
+        }
     }
-
+ 
     public static void handleBlackFlashVfx(com.my.kaisen.network.SpawnBlackFlashPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
         ctx.enqueueWork(() -> spawnBlackFlash(Minecraft.getInstance().level, payload.x(), payload.y(), payload.z()));
     }
-
+ 
     public static void handleDivergentAuraVfx(com.my.kaisen.network.SpawnDivergentAuraPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             Level level = Minecraft.getInstance().level;
@@ -136,7 +137,7 @@ public class ClientVfxHandler {
             }
         });
     }
-
+ 
     public static void handleCursedStrikesVfx(com.my.kaisen.network.SpawnCursedStrikesVfxPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             Level level = Minecraft.getInstance().level;
@@ -151,7 +152,7 @@ public class ClientVfxHandler {
             }
         });
     }
-
+ 
     public static void handleCrushingBlowVfx(com.my.kaisen.network.SpawnCrushingBlowVfxPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             Level level = Minecraft.getInstance().level;
@@ -167,11 +168,11 @@ public class ClientVfxHandler {
             ScreenshakeHandler.addScreenshake(new ScreenshakeInstance(15).setIntensity(0.5f));
         });
     }
-
+ 
     public static void handleCameraShake(com.my.kaisen.network.CameraShakePayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
         ctx.enqueueWork(() -> ScreenshakeHandler.addScreenshake(new ScreenshakeInstance(payload.duration()).setIntensity(payload.intensity())));
     }
-
+ 
     public static void handleAwakeningVfx(com.my.kaisen.network.SpawnAwakeningVfxPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             Level level = Minecraft.getInstance().level;
@@ -187,7 +188,7 @@ public class ClientVfxHandler {
             ScreenshakeHandler.addScreenshake(new ScreenshakeInstance(60).setIntensity(2.0f));
         });
     }
-
+ 
     public static void handleDismantleVfx(com.my.kaisen.network.SpawnDismantleVfxPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             Level level = Minecraft.getInstance().level;
@@ -203,7 +204,7 @@ public class ClientVfxHandler {
             }
         });
     }
-
+ 
     public static void handleCleaveRushVfx(com.my.kaisen.network.SpawnCleaveRushVfxPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             Level level = Minecraft.getInstance().level;
@@ -220,7 +221,7 @@ public class ClientVfxHandler {
             }
         });
     }
-
+ 
     public static void handleDomainAshVfx(com.my.kaisen.network.SpawnDomainAshPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             Level level = Minecraft.getInstance().level;
@@ -233,11 +234,11 @@ public class ClientVfxHandler {
                     .spawn(level, payload.x(), payload.y(), payload.z());
         });
     }
-
+ 
     public static void handleFugaNukeVfx(com.my.kaisen.network.SpawnFugaNukePayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
         ctx.enqueueWork(() -> spawnFugaNuke(Minecraft.getInstance().level, payload.x(), payload.y(), payload.z()));
     }
-
+ 
     public static void handleDomainActivationVfx(com.my.kaisen.network.SpawnDomainActivationVfxPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             Level level = Minecraft.getInstance().level;
