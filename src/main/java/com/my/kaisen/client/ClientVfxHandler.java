@@ -212,7 +212,7 @@ public class ClientVfxHandler {
             float angle = (float) Math.toRadians(payload.yRot());
             for (int i = 0; i < 10; i++) {
                 double offset = (i - 5) * 0.2;
-                WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
+                WorldParticleBuilder.create(com.my.kaisen.registry.ModParticles.DISMANTLE_SLASH.get())
                         .setTransparencyData(GenericParticleData.create(0.8f, 0.0f).build())
                         .setScaleData(GenericParticleData.create(0.1f, 0.3f, 0.0f).build())
                         .setColorData(ColorParticleData.create(Color.WHITE, Color.LIGHT_GRAY).build())
@@ -228,9 +228,9 @@ public class ClientVfxHandler {
             Color color = payload.isFinalHit() ? Color.RED : Color.WHITE;
             int count = payload.isFinalHit() ? 40 : 10;
             for (int i = 0; i < count; i++) {
-                WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
+                WorldParticleBuilder.create(com.my.kaisen.registry.ModParticles.CLEAVE_SLASH.get())
                         .setTransparencyData(GenericParticleData.create(0.8f, 0.0f).build())
-                        .setScaleData(GenericParticleData.create(0.2f, 1.0f, 0.0f).build())
+                        .setScaleData(GenericParticleData.create(0.8f, 2.5f, 0.0f).build())
                         .setColorData(ColorParticleData.create(color, Color.BLACK).build())
                         .setLifetime(15)
                         .setRandomMotion(0.3)
