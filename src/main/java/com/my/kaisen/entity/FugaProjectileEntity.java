@@ -110,7 +110,14 @@ public class FugaProjectileEntity extends Projectile {
             }
  
             if (!synergized) {
-                this.level().explode(shooter, this.getX(), this.getY(), this.getZ(), 12.0F, true, Level.ExplosionInteraction.TNT);
+                // Deal 70 damage to all living entities in the blast radius (8 blocks)
+                AABB area = this.getBoundingBox().inflate(8.0);
+                List<LivingEntity> targets = serverLevel.getEntitiesOfClass(LivingEntity.class, area, (e) -> e != shooter && e.isAlive());
+                for (LivingEntity target : targets) {
+                    target.hurt(this.damageSources().onFire(), 70.0F);
+                }
+
+                this.level().explode(shooter, this.getX(), this.getY(), this.getZ(), 8.0F, true, Level.ExplosionInteraction.TNT);
                 PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, 
                         new com.my.kaisen.network.SpawnFugaVfxPayload(this.getX(), this.getY(), this.getZ()));
             }

@@ -77,7 +77,7 @@ public class CombatTickHandler {
     private static void triggerFatality(ServerPlayer player) {
         // Heavy visuals, reset combo after
         player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§4§lCOMBO 20: BLACK FLASH FATALITY!"));
-        net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new com.my.kaisen.network.SpawnBlackFlashPayload(player.getX(), player.getY() + 1, player.getZ()));
+        net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new com.my.kaisen.network.SpawnBlackFlashFatalityPayload(player.getX(), player.getY() + 1, player.getZ()));
         player.level().playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.BLACK_FLASH.get(), net.minecraft.sounds.SoundSource.PLAYERS, 2.0f, 0.8f);
         
         // AoE damage
@@ -246,11 +246,10 @@ public class CombatTickHandler {
         // -----------------------------------------------------
         if (abilityCooldowns.containsKey(playerId)) {
             Map<Integer, Integer> cooldownMap = abilityCooldowns.get(playerId);
-            cooldownMap.entrySet().removeIf(entry -> {
-                if (entry.getValue() <= 1) return true;
-                entry.setValue(entry.getValue() - 1);
-                return false;
-            });
+            // Safer way to update ConcurrentHashMap while iterating
+            for (Integer id : cooldownMap.keySet()) {
+                cooldownMap.compute(id, (k, v) -> (v == null || v <= 1) ? null : v - 1);
+            }
             if (cooldownMap.isEmpty()) abilityCooldowns.remove(playerId);
         }
 
@@ -370,7 +369,7 @@ public class CombatTickHandler {
 
             // Apply exactly 12 hits over 60 ticks => hit every 5 ticks
             if (ticks % 5 == 0) {
-                target.hurt(target.damageSources().generic(), 7.0f / 12.0f);
+                target.hurt(player.damageSources().playerAttack(player), 7.0f / 12.0f);
                 addAwakening(player, 1.5f); // Reward each hit in the beatdown
                 net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 
                         new SpawnCursedStrikesVfxPayload(target.getX(), target.getY() + target.getBbHeight() / 2, target.getZ()));
@@ -467,12 +466,12 @@ public class CombatTickHandler {
                 if (ticks == 8 || ticks == 18) {
                     player.level().playSound(null, target.blockPosition(), com.my.kaisen.registry.ModSounds.EACH_BLOW_IMPACT.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
                     createCrater((net.minecraft.server.level.ServerLevel) player.level(), target.position(), 4, 10);
-                    target.hurt(target.damageSources().generic(), 3.0f);
+                    target.hurt(player.damageSources().playerAttack(player), 3.0f);
                     addAwakening(player, 5.0f);
                 } else if (ticks == 28) {
                     player.level().playSound(null, target.blockPosition(), com.my.kaisen.registry.ModSounds.GROUND_BREAKING.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
                     createCrater((net.minecraft.server.level.ServerLevel) player.level(), target.position(), 10, 15);
-                    target.hurt(target.damageSources().generic(), 4.0f);
+                    target.hurt(player.damageSources().playerAttack(player), 4.0f);
                     addAwakening(player, 10.0f);
                     
                     net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 
@@ -538,7 +537,7 @@ public class CombatTickHandler {
                     );
                     
                     for (LivingEntity t : hitEntities) {
-                        t.hurt(t.damageSources().generic(), 6.0f);
+                        t.hurt(player.damageSources().playerAttack(player), 6.0f);
                         addAwakening(player, 10.0f);
                         // Launch them outwards and up
                         Vec3 diff = t.position().subtract(player.position());
@@ -650,12 +649,12 @@ public class CombatTickHandler {
                     player.level().playSound(null, target.blockPosition(),
                             com.my.kaisen.registry.ModSounds.BODY_HIT_DF.get(),
                             net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
-                    target.hurt(target.damageSources().generic(), 6.0f);
+                    target.hurt(player.damageSources().playerAttack(player), 6.0f);
                 } else if (state.ticks == 25) {
                     player.level().playSound(null, target.blockPosition(),
                             com.my.kaisen.registry.ModSounds.DIVERGENT_FIST_HIT.get(),
                             net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
-                    target.hurt(target.damageSources().magic(), 10.0f);
+                    target.hurt(player.damageSources().playerAttack(player), 10.0f);
                     addAwakening(player, 10.0f);
                     
                     Vec3 lookVec = player.getLookAngle();
@@ -721,7 +720,7 @@ public class CombatTickHandler {
             player.level().playSound(null, target.blockPosition(),
                     com.my.kaisen.registry.ModSounds.BLACK_FLASH.get(),
                     net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
-            target.hurt(target.damageSources().generic(), 12.0f);
+            target.hurt(player.damageSources().playerAttack(player), 12.0f);
             
             // Combo increment and sync
             int combo = blackFlashCombos.getOrDefault(player.getUUID(), 0) + 1;
@@ -744,7 +743,7 @@ public class CombatTickHandler {
             player.level().playSound(null, target.blockPosition(),
                     com.my.kaisen.registry.ModSounds.BLACK_FLASH_FINAL.get(),
                     net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
-            target.hurt(target.damageSources().generic(), damage);
+            target.hurt(player.damageSources().playerAttack(player), damage);
             addAwakening(player, 25.0f); // Massive gain for Black Flash Final
             
             // Final Combo Hit
@@ -770,7 +769,7 @@ public class CombatTickHandler {
     public static void executeManjiKick(ServerPlayer player) {
         UUID playerId = player.getUUID();
         
-        if (cooldownsEnabled && abilityCooldowns.containsKey(playerId)) return;
+        if (cooldownsEnabled && isOnCooldown(playerId, 4)) return;
         
         activeManjiKicks.put(playerId, 20); // 1 second stance duration
         
@@ -898,8 +897,8 @@ public class CombatTickHandler {
         RushState state = activeRushes.get(playerId);
         state.ticks++;
 
-        // Failsafe
-        if (state.ticks > 60) {
+        // Failsafe: Increased to 150 to allow for Cleave phase (which sets ticks to 100)
+        if (state.ticks > 150) {
             activeRushes.remove(playerId);
             return;
         }

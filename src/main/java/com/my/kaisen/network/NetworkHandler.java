@@ -95,6 +95,12 @@ public class NetworkHandler {
                 (payload, ctx) -> com.my.kaisen.client.ClientVfxHandler.handleBlackFlashVfx(payload, ctx)
         );
 
+        registrar.playToClient(
+                SpawnBlackFlashFatalityPayload.TYPE,
+                SpawnBlackFlashFatalityPayload.STREAM_CODEC,
+                (payload, ctx) -> com.my.kaisen.client.ClientVfxHandler.handleBlackFlashFatalityVfx(payload, ctx)
+        );
+
         // Register SpawnDivergentAuraPayload to be sent from Server to Client (Lodestone VFX trigger)
         registrar.playToClient(
                 SpawnDivergentAuraPayload.TYPE,

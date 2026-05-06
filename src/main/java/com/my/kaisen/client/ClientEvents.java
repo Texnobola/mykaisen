@@ -50,8 +50,7 @@ public class ClientEvents {
             net.minecraft.world.entity.player.Player player = event.getEntity();
             
             // Domain Charge Logic (5 Seconds = 100 Ticks)
-            // Domain Charge Logic (5 Seconds = 100 Ticks)
-            if (KeyBindings.ABILITY_4_KEY.isDown()) {
+            if (player.getPersistentData().getBoolean("is_awakened") && KeyBindings.ABILITY_4_KEY.isDown()) {
                 domainChargeTicks++;
                 if (domainChargeTicks == 100) {
                     PacketDistributor.sendToServer(new com.my.kaisen.network.TriggerDomainPayload(player.isShiftKeyDown()));
@@ -76,6 +75,11 @@ public class ClientEvents {
                 if (KeyBindings.ABILITY_R_KEY.consumeClick()) {
                     // We just send it, server checks if player is in Rush
                     PacketDistributor.sendToServer(new com.my.kaisen.network.TriggerCleaveNormalPayload());
+                }
+
+                // Cleave Web Trigger (Shift + G)
+                if (KeyBindings.AWAKEN_KEY.consumeClick() && player.isShiftKeyDown()) {
+                    PacketDistributor.sendToServer(new com.my.kaisen.network.TriggerCleaveWebPayload());
                 }
             }
         }

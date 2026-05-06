@@ -70,13 +70,13 @@ public class ShrineOverlay implements LayeredDraw.Layer {
         int height = mc.getWindow().getGuiScaledHeight();
 
         // Shake logic: more intense as combo grows
-        float shakeIntensity = Math.min(10.0f, absoluteCombo / 2.0f);
+        float shakeIntensity = (float) Math.min(25.0, absoluteCombo * 1.5);
         double offsetX = (mc.level.random.nextDouble() - 0.5) * shakeIntensity;
         double offsetY = (mc.level.random.nextDouble() - 0.5) * shakeIntensity;
 
         String text = absoluteCombo + " HIT COMBO!";
         guiGraphics.pose().pushPose();
-        float scale = 3.0f + (absoluteCombo / 20.0f); // Scales up to 4.0 at 20 combo
+        float scale = 3.5f + (absoluteCombo / 10.0f); // Scales up to 5.5 at 20 combo
         
         guiGraphics.pose().translate(width - 150 + offsetX, height / 2.0 + offsetY, 0);
         guiGraphics.pose().scale(scale, scale, scale);

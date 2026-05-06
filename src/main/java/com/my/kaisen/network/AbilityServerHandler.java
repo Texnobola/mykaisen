@@ -75,7 +75,7 @@ public class AbilityServerHandler {
                         // Start Charge-Up (65 ticks = 3.25 seconds)
                         CombatTickHandler.fugaChargeTicks.put(player.getUUID(), 65);
 
-                            CombatTickHandler.setCooldown(player.getUUID(), abilityId, 200); // 10 seconds cooldown
+                            CombatTickHandler.setCooldown(player.getUUID(), abilityId, 1200); // 60 seconds cooldown
                     }
                 } else if (abilityId == 3) {
                     if (!isAwakened) {
@@ -128,7 +128,7 @@ public class AbilityServerHandler {
                     // Spawn new Shrine
                     com.my.kaisen.entity.ShrineEntity shrine = com.my.kaisen.util.DomainHandler.spawnShrine(player.level(), player.blockPosition(), player, payload.isOpenBarrier());
                     
-                    CombatTickHandler.setCooldown(player.getUUID(), 6, 400); // 20 seconds for activation
+                    CombatTickHandler.setCooldown(player.getUUID(), 6, 2400); // 120 seconds for activation
                     
                     // Play Animation
                     net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 
@@ -213,8 +213,8 @@ public class AbilityServerHandler {
     private static void executeCursedStrikesDash(ServerPlayer player) {
         java.util.UUID playerId = player.getUUID();
         // Combo chaining must happen before this if applicable
-        if (CombatTickHandler.isOnCooldown(playerId, 4)) return;
-        CombatTickHandler.setCooldown(playerId, 4, 160); // 8 seconds
+        if (CombatTickHandler.isOnCooldown(playerId, 1)) return;
+        CombatTickHandler.setCooldown(playerId, 1, 160); // 8 seconds
 
         if (player.onGround()) {
             // Grounded logic: Propel player forward roughly 3 blocks
@@ -335,7 +335,7 @@ public class AbilityServerHandler {
         }
         
         java.util.UUID playerId = player.getUUID();
-        if (CombatTickHandler.isOnCooldown(playerId, 2)) return;
+        if (CombatTickHandler.isOnCooldown(playerId, 3)) return;
 
         Vec3 lookVec = player.getLookAngle();
         Vec3 frontCenter = player.position().add(lookVec.scale(1.5));
@@ -356,7 +356,7 @@ public class AbilityServerHandler {
             CombatTickHandler.activeDivergentFists.put(player.getUUID(), newState);
             
             if (CombatTickHandler.cooldownsEnabled) {
-                CombatTickHandler.setCooldown(playerId, 2, 100); // 5 seconds
+                CombatTickHandler.setCooldown(playerId, 3, 200); // 10 seconds
             }
 
             player.level().playSound(null, player.blockPosition(),
@@ -403,10 +403,10 @@ public class AbilityServerHandler {
             if (context.player() instanceof ServerPlayer player) {
                 if (CombatTickHandler.activeRushes.containsKey(player.getUUID())) {
                     CombatTickHandler.RushState state = CombatTickHandler.activeRushes.get(player.getUUID());
-                    if (state.ticks >= 21) { // Slam phase
-                        state.isCleaveMode = true;
-                        player.level().playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.SUKUNA_MOCKING.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
-                    }
+                    // Broadened window: can activate any time during the rush sequence
+                    state.isCleaveMode = true;
+                    player.level().playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.SUKUNA_MOCKING.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
+                    player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§4CLEAVE ACTIVATED!"));
                 }
             }
         });
@@ -445,7 +445,7 @@ public class AbilityServerHandler {
                 net.minecraft.world.phys.AABB area = player.getBoundingBox().inflate(radius);
                 java.util.List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, area, e -> e != player && e.isAlive());
                 for (LivingEntity target : targets) {
-                    target.hurt(target.damageSources().playerAttack(player), 40.0F);
+                    target.hurt(target.damageSources().playerAttack(player), 20.0F);
                     net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(target, new SpawnCleaveVfxPayload(target.getX(), target.getY(0.5), target.getZ(), (float)level.random.nextInt(360)));
                 }
 

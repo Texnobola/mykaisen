@@ -102,20 +102,95 @@ public class ClientVfxHandler {
     public static void spawnBlackFlash(Level level, double x, double y, double z) {
         if (level == null) return;
         
-        blackFlashFlashTicks = 6; // ~0.3s
-        blackFlashColorType = level.random.nextBoolean() ? 0 : 1;
+        blackFlashFlashTicks = 8; // Sharp pulse
+        blackFlashColorType = 0; // Black and Red
 
-        for (int i = 0; i < 360; i += 10) {
-            double rad = Math.toRadians(i);
+        // 1. Central "Void" Implosion
+        for (int i = 0; i < 40; i++) {
             WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
                     .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(2.5f, 10.0f, 0.0f).build()) // Much larger
-                    .setColorData(ColorParticleData.create(Color.BLACK, i % 20 == 0 ? Color.WHITE : Color.RED).build())
-                    .setLifetime(25 + RANDOM.nextInt(15))
-                    .setMotion(new Vec3(Math.cos(rad) * 1.5, 0.2, Math.sin(rad) * 1.5))
+                    .setScaleData(GenericParticleData.create(3.0f, 0.0f).build())
+                    .setColorData(ColorParticleData.create(Color.BLACK, Color.RED).build())
+                    .setLifetime(10 + RANDOM.nextInt(5))
+                    .setRandomMotion(0.4)
                     .spawn(level, x, y, z);
         }
-        addScreenshake(60, 6.0f); // Massive shake
+
+        // 2. High-Intensity Lightning Branches
+        for (int i = 0; i < 50; i++) {
+            double angle = RANDOM.nextDouble() * 360;
+            double pitch = (RANDOM.nextDouble() - 0.5) * 180;
+            double speed = 0.8 + RANDOM.nextDouble() * 1.5;
+            
+            Vec3 dir = Vec3.directionFromRotation((float)pitch, (float)angle).scale(speed);
+            
+            WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
+                    .setTransparencyData(GenericParticleData.create(0.8f, 0.0f).build())
+                    .setScaleData(GenericParticleData.create(0.4f, 0.0f).build())
+                    .setColorData(ColorParticleData.create(Color.BLACK, Color.RED).build())
+                    .setLifetime(4 + RANDOM.nextInt(4))
+                    .setMotion(dir)
+                    .spawn(level, x, y, z);
+        }
+
+        // 3. Sharp Expanding Shockwave
+        for (int i = 0; i < 360; i += 5) {
+            double rad = Math.toRadians(i);
+            WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
+                    .setTransparencyData(GenericParticleData.create(0.6f, 0.0f).build())
+                    .setScaleData(GenericParticleData.create(1.0f, 8.0f, 0.0f).build())
+                    .setColorData(ColorParticleData.create(Color.BLACK, Color.RED).build())
+                    .setLifetime(15)
+                    .setMotion(new Vec3(Math.cos(rad) * 2.0, 0.0, Math.sin(rad) * 2.0))
+                    .spawn(level, x, y, z);
+        }
+
+        addScreenshake(40, 4.0f);
+    }
+
+    public static void spawnBlackFlashFatality(Level level, double x, double y, double z) {
+        if (level == null) return;
+        
+        blackFlashFlashTicks = 15; // Longer, flickering pulse
+        blackFlashColorType = 1; // Black, Grey, White cycle
+
+        // 1. Massive Lightning Eruption
+        for (int i = 0; i < 150; i++) {
+            double angle = RANDOM.nextDouble() * 360;
+            double pitch = (RANDOM.nextDouble() - 0.5) * 360;
+            double speed = 1.5 + RANDOM.nextDouble() * 3.0;
+            
+            Vec3 dir = Vec3.directionFromRotation((float)pitch, (float)angle).scale(speed);
+            
+            WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
+                    .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
+                    .setScaleData(GenericParticleData.create(0.6f, 1.5f, 0.0f).build())
+                    .setColorData(ColorParticleData.create(Color.BLACK, RANDOM.nextBoolean() ? Color.RED : Color.WHITE).build())
+                    .setLifetime(8 + RANDOM.nextInt(8))
+                    .setMotion(dir)
+                    .spawn(level, x, y, z);
+        }
+
+        // 2. Converging Energy Spheres
+        for (int i = 0; i < 30; i++) {
+            double rx = (RANDOM.nextDouble() - 0.5) * 10;
+            double ry = (RANDOM.nextDouble() - 0.5) * 10;
+            double rz = (RANDOM.nextDouble() - 0.5) * 10;
+            WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
+                    .setTransparencyData(GenericParticleData.create(0.0f, 1.0f, 0.0f).build())
+                    .setScaleData(GenericParticleData.create(2.0f, 0.0f).build())
+                    .setColorData(ColorParticleData.create(Color.WHITE, Color.BLACK).build())
+                    .setLifetime(10)
+                    .setMotion(new Vec3(-rx * 0.15, -ry * 0.15, -rz * 0.15))
+                    .spawn(level, x + rx, y + ry, z + rz);
+        }
+
+        // 3. Extreme Screenshake
+        addScreenshake(100, 10.0f);
+    }
+
+    public static void handleBlackFlashFatalityVfx(com.my.kaisen.network.SpawnBlackFlashFatalityPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
+        ctx.enqueueWork(() -> spawnBlackFlashFatality(Minecraft.getInstance().level, payload.x(), payload.y(), payload.z()));
     }
  
     public static void spawnMenacingAura(Level level, double x, double y, double z, double width, double height) {

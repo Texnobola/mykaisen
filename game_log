@@ -4,19 +4,19 @@ Prism Launcher version: 9.4 (official)
 Launched instance in online mode
 
 login.microsoftonline.com resolves to:
-    [40.126.35.129, 40.126.35.87, 40.126.35.18, 40.126.35.86, 20.190.163.21, 40.126.35.81, 40.126.35.19, 40.126.35.145]
+    [20.190.147.7, 20.190.177.147, 20.190.147.0, 20.190.147.6, 20.190.147.12, 20.190.177.22, 20.190.147.8, 20.190.177.148]
 
 
 session.minecraft.net resolves to:
-    [150.171.109.34]
+    [13.107.226.67, 13.107.253.67]
 
 
 textures.minecraft.net resolves to:
-    [150.171.109.36]
+    [150.171.109.34]
 
 
 api.mojang.com resolves to:
-    [150.171.109.34]
+    [150.171.109.35]
 
 
 Minecraft folder is:
@@ -37,10 +37,10 @@ Native path:
   C:/Users/dev/AppData/Roaming/PrismLauncher/instances/MyKaisen/natives
 
 Traits:
+traits FirstThreadOnMacOS
+traits feature:is_quick_play_singleplayer
 traits XR:Initial
 traits feature:is_quick_play_multiplayer
-traits feature:is_quick_play_singleplayer
-traits FirstThreadOnMacOS
 
 Libraries:
   C:/Users/dev/AppData/Roaming/PrismLauncher/libraries/org/lwjgl/lwjgl-freetype-natives-windows-arm64/3.3.3/lwjgl-freetype-natives-windows-arm64-3.3.3.jar
@@ -180,13 +180,13 @@ Java Arguments:
 [-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump, -Xms512m, -Xmx4096m, -Duser.language=en]
 
 
-Minecraft process ID: 13476
+Minecraft process ID: 21480
 
 
 JVM info: Microsoft - 21.0.7 - 21.0.7+6-LTS
 java.net.preferIPv4Stack=true
-Current Time: 06/05/2026 01:01:25
-Created Temporary Directory: C:\Users\dev\AppData\Local\Temp\neoforge_installer10359698517749170593
+Current Time: 06/05/2026 18:49:36
+Created Temporary Directory: C:\Users\dev\AppData\Local\Temp\neoforge_installer1153854784881101671
   Extracting: /data/client.lzma
 Building Processors
 ===============================================================================
@@ -226,40 +226,40 @@ Processor: net.neoforged.installertools:binarypatcher
     C:\Users\dev\AppData\Roaming\PrismLauncher\libraries\net\minecraft\client\1.21.1-20240808.144430\client-1.21.1-20240808.144430-srg.jar Validated: a4827225b3c07662ca68b03ea20d11433a0c0488
     C:\Users\dev\AppData\Roaming\PrismLauncher\libraries\net\neoforged\neoforge\21.1.228\neoforge-21.1.228-client.jar Validated: b174c6786dd1a29685b5a752b957f0681bd3f18b
   Cache Hit!
-[01:01:30.444] [main/INFO] [Launcher/MODLAUNCHER]: ModLauncher running: args [--username, VaviYT, --version, 1.21.1, --gameDir, C:/Users/dev/AppData/Roaming/PrismLauncher/instances/MyKaisen/minecraft, --assetsDir, C:/Users/dev/AppData/Roaming/PrismLauncher/assets, --assetIndex, 17, --uuid, <PROFILE ID>, --accessToken, ❄❄❄❄❄❄❄❄, --userType, offline, --versionType, release, --fml.neoForgeVersion, 21.1.228, --fml.fmlVersion, 4.0.42, --fml.mcVersion, 1.21.1, --fml.neoFormVersion, 20240808.144430, --launchTarget, forgeclient, --width, 854, --height, 480] 
-[01:01:30.459] [main/INFO] [Launcher/MODLAUNCHER]: JVM identified as Microsoft OpenJDK 64-Bit Server VM 21.0.7+6-LTS 
-[01:01:30.468] [main/INFO] [Launcher/MODLAUNCHER]: ModLauncher 11.0.5+main.901c6ea8 starting: java version 21.0.7 by Microsoft; OS Windows 11 arch amd64 version 10.0 
-[01:01:30.965] [main/INFO] [loading.ImmediateWindowHandler/]: Loading ImmediateWindowProvider fmlearlywindow 
-[01:01:31.241] [main/INFO] [EARLYDISPLAY/]: Trying GL version 4.6 
-[01:01:34.453] [main/INFO] [EARLYDISPLAY/]: Requested GL version 4.6 got version 4.6 
-[01:01:34.643] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.7 Source=union:/C:/Users/dev/AppData/Roaming/PrismLauncher/libraries/net/fabricmc/sponge-mixin/0.15.2+mixin.0.8.7/sponge-mixin-0.15.2+mixin.0.8.7.jar%23175!/ Service=ModLauncher Env=CLIENT 
-[01:01:35.096] [pool-2-thread-1/INFO] [EARLYDISPLAY/]: GL info: Intel(R) UHD Graphics GL version 4.6.0 - Build 32.0.101.7076, Intel 
-[01:01:35.629] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "client-1.21.1-20240808.144430-srg.jar" [locator: production client provider +net.neoforged:neoforge:21.1.228:client] 
-[01:01:35.724] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "neoforge-21.1.228-universal.jar" [locator: PathBasedLocator[name=neoforge, paths=[C:\Users\dev\AppData\Roaming\PrismLauncher\libraries\net\neoforged\neoforge\21.1.228\neoforge-21.1.228-universal.jar]], reader: mod manifest] 
-[01:01:35.789] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "appleskin-neoforge-mc1.21-3.0.9.jar" [locator: {mods folder locator at C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\mods}, reader: mod manifest] 
-[01:01:35.813] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "architectury-13.0.8-neoforge.jar" [locator: {mods folder locator at C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\mods}, reader: mod manifest] 
-[01:01:35.832] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "curios-neoforge-9.5.1+1.21.1.jar" [locator: {mods folder locator at C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\mods}, reader: mod manifest] 
-[01:01:35.853] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "entityculling-neoforge-1.10.1-mc1.21.1.jar" [locator: {mods folder locator at C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\mods}, reader: mod manifest] 
-[01:01:35.896] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "ferritecore-7.0.3-neoforge.jar" [locator: {mods folder locator at C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\mods}, reader: mod manifest] 
-[01:01:35.917] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "geckolib-neoforge-1.21.1-4.8.4.jar" [locator: {mods folder locator at C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\mods}, reader: mod manifest] 
-[01:01:35.935] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "Jade-1.21.1-NeoForge-15.10.5.jar" [locator: {mods folder locator at C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\mods}, reader: mod manifest] 
-[01:01:35.960] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "Kleiders Custom Renderer API 7.2.0 1.21.1.jar" [locator: {mods folder locator at C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\mods}, reader: mod manifest] 
-[01:01:35.986] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "lodestone-1.21.1-1.8.2.jar" [locator: {mods folder locator at C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\mods}, reader: mod manifest] 
-[01:01:36.005] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "mykaisen-1.0.0.jar" [locator: {mods folder locator at C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\mods}, reader: mod manifest] 
-[01:01:36.026] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "player-animation-lib-forge-2.0.4+1.21.1.jar" [locator: {mods folder locator at C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\mods}, reader: mod manifest] 
-[01:01:36.043] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "Quick Skin - NeoForge - 1.21.1-2.6.2.4.jar" [locator: {mods folder locator at C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\mods}, reader: mod manifest] 
-[01:01:36.061] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "sodium-neoforge-0.6.13+mc1.21.1.jar" [locator: {mods folder locator at C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\mods}, reader: mod manifest] 
-[01:01:36.532] [main/INFO] [loading.moddiscovery.locators.JarInJarDependencyLocator/]: Found 9 dependencies adding them to mods collection 
-[01:01:36.533] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "fabric-rendering-data-attachment-v1-0.3.48+73761d2e19.jar" [parent: sodium-neoforge-0.6.13+mc1.21.1.jar, locator: jarinjar, reader: mod manifest] 
-[01:01:36.533] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found gamelibrary file "mixinextras-neoforge-0.5.3.jar" [parent: neoforge-21.1.228-universal.jar, locator: jarinjar, reader: mod manifest] 
-[01:01:36.533] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "fabric-renderer-api-v1-3.4.0+9c40919e19.jar" [parent: sodium-neoforge-0.6.13+mc1.21.1.jar, locator: jarinjar, reader: mod manifest] 
-[01:01:36.534] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "TRender-1.0.12-1.21.1-neoforge-SNAPSHOT.jar" [parent: entityculling-neoforge-1.10.1-mc1.21.1.jar, locator: jarinjar, reader: mod manifest] 
-[01:01:36.535] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "fabric-api-base-0.4.42+d1308ded19.jar" [parent: sodium-neoforge-0.6.13+mc1.21.1.jar, locator: jarinjar, reader: mod manifest] 
-[01:01:36.535] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found library file "net.caffeinemc.sodium-neoforge-0.6.13+mc1.21.1-service.jar" [parent: sodium-neoforge-0.6.13+mc1.21.1.jar, locator: jarinjar, reader: mod manifest] 
-[01:01:36.535] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found library file "net.neoforged.neoforge-coremods-21.1.228.jar" [parent: neoforge-21.1.228-universal.jar, locator: jarinjar, reader: mod manifest] 
-[01:01:36.536] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "TRansition-1.0.17-1.21.1-neoforge-SNAPSHOT.jar" [parent: entityculling-neoforge-1.10.1-mc1.21.1.jar, locator: jarinjar, reader: mod manifest] 
-[01:01:36.536] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "fabric-block-view-api-v2-1.0.10+9afaaf8c19.jar" [parent: sodium-neoforge-0.6.13+mc1.21.1.jar, locator: jarinjar, reader: mod manifest] 
-[01:01:36.539] [main/INFO] [loading.moddiscovery.ModDiscoverer/]: 
+[18:49:42.739] [main/INFO] [Launcher/MODLAUNCHER]: ModLauncher running: args [--username, VaviYT, --version, 1.21.1, --gameDir, C:/Users/dev/AppData/Roaming/PrismLauncher/instances/MyKaisen/minecraft, --assetsDir, C:/Users/dev/AppData/Roaming/PrismLauncher/assets, --assetIndex, 17, --uuid, <PROFILE ID>, --accessToken, ❄❄❄❄❄❄❄❄, --userType, offline, --versionType, release, --fml.neoForgeVersion, 21.1.228, --fml.fmlVersion, 4.0.42, --fml.mcVersion, 1.21.1, --fml.neoFormVersion, 20240808.144430, --launchTarget, forgeclient, --width, 854, --height, 480] 
+[18:49:42.762] [main/INFO] [Launcher/MODLAUNCHER]: JVM identified as Microsoft OpenJDK 64-Bit Server VM 21.0.7+6-LTS 
+[18:49:42.768] [main/INFO] [Launcher/MODLAUNCHER]: ModLauncher 11.0.5+main.901c6ea8 starting: java version 21.0.7 by Microsoft; OS Windows 11 arch amd64 version 10.0 
+[18:49:43.369] [main/INFO] [loading.ImmediateWindowHandler/]: Loading ImmediateWindowProvider fmlearlywindow 
+[18:49:43.784] [main/INFO] [EARLYDISPLAY/]: Trying GL version 4.6 
+[18:49:46.312] [main/INFO] [EARLYDISPLAY/]: Requested GL version 4.6 got version 4.6 
+[18:49:46.499] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.7 Source=union:/C:/Users/dev/AppData/Roaming/PrismLauncher/libraries/net/fabricmc/sponge-mixin/0.15.2+mixin.0.8.7/sponge-mixin-0.15.2+mixin.0.8.7.jar%23175!/ Service=ModLauncher Env=CLIENT 
+[18:49:46.874] [pool-2-thread-1/INFO] [EARLYDISPLAY/]: GL info: Intel(R) UHD Graphics GL version 4.6.0 - Build 32.0.101.7076, Intel 
+[18:49:47.148] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "client-1.21.1-20240808.144430-srg.jar" [locator: production client provider +net.neoforged:neoforge:21.1.228:client] 
+[18:49:47.239] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "neoforge-21.1.228-universal.jar" [locator: PathBasedLocator[name=neoforge, paths=[C:\Users\dev\AppData\Roaming\PrismLauncher\libraries\net\neoforged\neoforge\21.1.228\neoforge-21.1.228-universal.jar]], reader: mod manifest] 
+[18:49:47.275] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "appleskin-neoforge-mc1.21-3.0.9.jar" [locator: {mods folder locator at C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\mods}, reader: mod manifest] 
+[18:49:47.292] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "architectury-13.0.8-neoforge.jar" [locator: {mods folder locator at C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\mods}, reader: mod manifest] 
+[18:49:47.313] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "curios-neoforge-9.5.1+1.21.1.jar" [locator: {mods folder locator at C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\mods}, reader: mod manifest] 
+[18:49:47.344] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "entityculling-neoforge-1.10.1-mc1.21.1.jar" [locator: {mods folder locator at C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\mods}, reader: mod manifest] 
+[18:49:47.384] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "ferritecore-7.0.3-neoforge.jar" [locator: {mods folder locator at C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\mods}, reader: mod manifest] 
+[18:49:47.409] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "geckolib-neoforge-1.21.1-4.8.4.jar" [locator: {mods folder locator at C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\mods}, reader: mod manifest] 
+[18:49:47.428] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "Jade-1.21.1-NeoForge-15.10.5.jar" [locator: {mods folder locator at C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\mods}, reader: mod manifest] 
+[18:49:47.443] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "Kleiders Custom Renderer API 7.2.0 1.21.1.jar" [locator: {mods folder locator at C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\mods}, reader: mod manifest] 
+[18:49:47.459] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "lodestone-1.21.1-1.8.2.jar" [locator: {mods folder locator at C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\mods}, reader: mod manifest] 
+[18:49:47.482] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "mykaisen-1.0.0.jar" [locator: {mods folder locator at C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\mods}, reader: mod manifest] 
+[18:49:47.502] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "player-animation-lib-forge-2.0.4+1.21.1.jar" [locator: {mods folder locator at C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\mods}, reader: mod manifest] 
+[18:49:47.515] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "Quick Skin - NeoForge - 1.21.1-2.6.2.4.jar" [locator: {mods folder locator at C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\mods}, reader: mod manifest] 
+[18:49:47.531] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "sodium-neoforge-0.6.13+mc1.21.1.jar" [locator: {mods folder locator at C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\mods}, reader: mod manifest] 
+[18:49:47.886] [main/INFO] [loading.moddiscovery.locators.JarInJarDependencyLocator/]: Found 9 dependencies adding them to mods collection 
+[18:49:47.886] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "fabric-rendering-data-attachment-v1-0.3.48+73761d2e19.jar" [parent: sodium-neoforge-0.6.13+mc1.21.1.jar, locator: jarinjar, reader: mod manifest] 
+[18:49:47.886] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found gamelibrary file "mixinextras-neoforge-0.5.3.jar" [parent: neoforge-21.1.228-universal.jar, locator: jarinjar, reader: mod manifest] 
+[18:49:47.888] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "fabric-renderer-api-v1-3.4.0+9c40919e19.jar" [parent: sodium-neoforge-0.6.13+mc1.21.1.jar, locator: jarinjar, reader: mod manifest] 
+[18:49:47.888] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "TRender-1.0.12-1.21.1-neoforge-SNAPSHOT.jar" [parent: entityculling-neoforge-1.10.1-mc1.21.1.jar, locator: jarinjar, reader: mod manifest] 
+[18:49:47.888] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "fabric-api-base-0.4.42+d1308ded19.jar" [parent: sodium-neoforge-0.6.13+mc1.21.1.jar, locator: jarinjar, reader: mod manifest] 
+[18:49:47.888] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found library file "net.caffeinemc.sodium-neoforge-0.6.13+mc1.21.1-service.jar" [parent: sodium-neoforge-0.6.13+mc1.21.1.jar, locator: jarinjar, reader: mod manifest] 
+[18:49:47.889] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found library file "net.neoforged.neoforge-coremods-21.1.228.jar" [parent: neoforge-21.1.228-universal.jar, locator: jarinjar, reader: mod manifest] 
+[18:49:47.889] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "TRansition-1.0.17-1.21.1-neoforge-SNAPSHOT.jar" [parent: entityculling-neoforge-1.10.1-mc1.21.1.jar, locator: jarinjar, reader: mod manifest] 
+[18:49:47.889] [main/INFO] [loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "fabric-block-view-api-v2-1.0.10+9afaaf8c19.jar" [parent: sodium-neoforge-0.6.13+mc1.21.1.jar, locator: jarinjar, reader: mod manifest] 
+[18:49:47.895] [main/INFO] [loading.moddiscovery.ModDiscoverer/]: 
      Mod List:
 		Name Version (Mod Id)
 
@@ -284,366 +284,313 @@ Processor: net.neoforged.installertools:binarypatcher
 		Sodium 0.6.13+mc1.21.1 (sodium)
 		TRansition 1.0.17 (transition)
 		TRender 1.0.12 (trender) 
-[01:01:38.589] [main/INFO] [mixin/]: Compatibility level set to JAVA_21 
-[01:01:38.732] [main/INFO] [LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgeclient' with arguments [--version, 1.21.1, --gameDir, C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft, --assetsDir, C:\Users\dev\AppData\Roaming\PrismLauncher\assets, --uuid, <PROFILE ID>, --username, VaviYT, --assetIndex, 17, --accessToken, ❄❄❄❄❄❄❄❄, --userType, offline, --versionType, release, --width, 854, --height, 480] 
-[01:01:38.870] [main/WARN] [mixin/]: Reference map 'entityculling.refmap.mixins.json' for entityculling.mixins.json could not be read. If this is a development environment you can ignore this message 
-[01:01:38.875] [main/WARN] [mixin/]: Reference map 'geckolib.refmap.json' for geckolib.mixins.json could not be read. If this is a development environment you can ignore this message 
-[01:01:39.012] [main/WARN] [mixin/]: Reference map '${refmap_target}refmap.json' for ferritecore.predicates.mixin.json could not be read. If this is a development environment you can ignore this message 
-[01:01:39.027] [main/WARN] [mixin/]: Reference map '${refmap_target}refmap.json' for ferritecore.fastmap.mixin.json could not be read. If this is a development environment you can ignore this message 
-[01:01:39.036] [main/WARN] [mixin/]: Reference map '${refmap_target}refmap.json' for ferritecore.mrl.mixin.json could not be read. If this is a development environment you can ignore this message 
-[01:01:39.037] [main/WARN] [mixin/]: Reference map '${refmap_target}refmap.json' for ferritecore.dedupmultipart.mixin.json could not be read. If this is a development environment you can ignore this message 
-[01:01:39.042] [main/WARN] [mixin/]: Reference map '${refmap_target}refmap.json' for ferritecore.blockstatecache.mixin.json could not be read. If this is a development environment you can ignore this message 
-[01:01:39.045] [main/WARN] [mixin/]: Reference map '${refmap_target}refmap.json' for ferritecore.dedupbakedquad.mixin.json could not be read. If this is a development environment you can ignore this message 
-[01:01:39.046] [main/WARN] [mixin/]: Reference map '${refmap_target}refmap.json' for ferritecore.threaddetec.mixin.json could not be read. If this is a development environment you can ignore this message 
-[01:01:39.048] [main/WARN] [mixin/]: Reference map '${refmap_target}refmap.json' for ferritecore.modelsides.mixin.json could not be read. If this is a development environment you can ignore this message 
-[01:01:39.049] [main/WARN] [mixin/]: Reference map '${refmap_target}refmap.json' for ferritecore.datacomponents.mixin.json could not be read. If this is a development environment you can ignore this message 
-[01:01:39.050] [main/WARN] [mixin/]: Reference map '${refmap_target}refmap.json' for ferritecore.accessors.mixin.json could not be read. If this is a development environment you can ignore this message 
-[01:01:39.082] [main/INFO] [Sodium/]: Loaded configuration file for Sodium: 43 options available, 0 override(s) found 
-[01:01:39.093] [main/WARN] [mixin/]: Reference map 'lodestone.refmap.json' for lodestone.mixins.json could not be read. If this is a development environment you can ignore this message 
-[01:01:39.094] [main/WARN] [mixin/]: Reference map 'curios.refmap.json' for curios.neoforge.mixins.json could not be read. If this is a development environment you can ignore this message 
-[01:01:39.094] [main/WARN] [mixin/]: Reference map 'curios.refmap.json' for curios.mixins.json could not be read. If this is a development environment you can ignore this message 
-[01:01:41.808] [main/INFO] [MixinExtras|Service/]: Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.5.3). 
+[18:49:49.683] [main/INFO] [mixin/]: Compatibility level set to JAVA_21 
+[18:49:49.838] [main/INFO] [LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgeclient' with arguments [--version, 1.21.1, --gameDir, C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft, --assetsDir, C:\Users\dev\AppData\Roaming\PrismLauncher\assets, --uuid, <PROFILE ID>, --username, VaviYT, --assetIndex, 17, --accessToken, ❄❄❄❄❄❄❄❄, --userType, offline, --versionType, release, --width, 854, --height, 480] 
+[18:49:49.946] [main/WARN] [mixin/]: Reference map 'entityculling.refmap.mixins.json' for entityculling.mixins.json could not be read. If this is a development environment you can ignore this message 
+[18:49:49.951] [main/WARN] [mixin/]: Reference map 'geckolib.refmap.json' for geckolib.mixins.json could not be read. If this is a development environment you can ignore this message 
+[18:49:50.113] [main/WARN] [mixin/]: Reference map '${refmap_target}refmap.json' for ferritecore.predicates.mixin.json could not be read. If this is a development environment you can ignore this message 
+[18:49:50.128] [main/WARN] [mixin/]: Reference map '${refmap_target}refmap.json' for ferritecore.fastmap.mixin.json could not be read. If this is a development environment you can ignore this message 
+[18:49:50.135] [main/WARN] [mixin/]: Reference map '${refmap_target}refmap.json' for ferritecore.mrl.mixin.json could not be read. If this is a development environment you can ignore this message 
+[18:49:50.148] [main/WARN] [mixin/]: Reference map '${refmap_target}refmap.json' for ferritecore.dedupmultipart.mixin.json could not be read. If this is a development environment you can ignore this message 
+[18:49:50.165] [main/WARN] [mixin/]: Reference map '${refmap_target}refmap.json' for ferritecore.blockstatecache.mixin.json could not be read. If this is a development environment you can ignore this message 
+[18:49:50.181] [main/WARN] [mixin/]: Reference map '${refmap_target}refmap.json' for ferritecore.dedupbakedquad.mixin.json could not be read. If this is a development environment you can ignore this message 
+[18:49:50.195] [main/WARN] [mixin/]: Reference map '${refmap_target}refmap.json' for ferritecore.threaddetec.mixin.json could not be read. If this is a development environment you can ignore this message 
+[18:49:50.206] [main/WARN] [mixin/]: Reference map '${refmap_target}refmap.json' for ferritecore.modelsides.mixin.json could not be read. If this is a development environment you can ignore this message 
+[18:49:50.219] [main/WARN] [mixin/]: Reference map '${refmap_target}refmap.json' for ferritecore.datacomponents.mixin.json could not be read. If this is a development environment you can ignore this message 
+[18:49:50.220] [main/WARN] [mixin/]: Reference map '${refmap_target}refmap.json' for ferritecore.accessors.mixin.json could not be read. If this is a development environment you can ignore this message 
+[18:49:50.394] [main/INFO] [Sodium/]: Loaded configuration file for Sodium: 43 options available, 0 override(s) found 
+[18:49:50.418] [main/WARN] [mixin/]: Reference map 'lodestone.refmap.json' for lodestone.mixins.json could not be read. If this is a development environment you can ignore this message 
+[18:49:50.420] [main/WARN] [mixin/]: Reference map 'curios.refmap.json' for curios.neoforge.mixins.json could not be read. If this is a development environment you can ignore this message 
+[18:49:50.432] [main/WARN] [mixin/]: Reference map 'curios.refmap.json' for curios.mixins.json could not be read. If this is a development environment you can ignore this message 
+[18:49:54.535] [main/INFO] [MixinExtras|Service/]: Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.5.3). 
 WARN StatusConsoleListener Advanced terminal features are not available in this environment
-[01:01:46] [Datafixer Bootstrap/INFO] [mojang/DataFixerBuilder]: 229 Datafixer optimizations took 675 milliseconds
-[01:01:55] [main/WARN] [minecraft/Main]: Unrecognized user type: offline
-[01:01:56] [Render thread/WARN] [minecraft/VanillaPackResourcesBuilder]: Assets URL 'union:/C:/Users/dev/AppData/Roaming/PrismLauncher/libraries/net/minecraft/client/1.21.1-20240808.144430/client-1.21.1-20240808.144430-srg.jar%23201!/assets/.mcassetsroot' uses unexpected schema
-[01:01:56] [Render thread/WARN] [minecraft/VanillaPackResourcesBuilder]: Assets URL 'union:/C:/Users/dev/AppData/Roaming/PrismLauncher/libraries/net/minecraft/client/1.21.1-20240808.144430/client-1.21.1-20240808.144430-srg.jar%23201!/data/.mcassetsroot' uses unexpected schema
-[01:01:56] [Render thread/INFO] [mojang/YggdrasilAuthenticationService]: Environment: Environment[sessionHost=https://sessionserver.mojang.com, servicesHost=https://api.minecraftservices.com, name=PROD]
-[01:01:56] [Render thread/INFO] [minecraft/Minecraft]: Setting user: VaviYT
-[01:01:56] [Render thread/INFO] [minecraft/Minecraft]: Backend library: LWJGL version 3.3.3+5
-[01:01:56] [Render thread/INFO] [mojang/Window]: OpenGL Vendor: Intel
-[01:01:56] [Render thread/INFO] [mojang/Window]: OpenGL Renderer: Intel(R) UHD Graphics
-[01:01:56] [Render thread/INFO] [mojang/Window]: OpenGL Version: 4.6.0 - Build 32.0.101.7076
+[18:49:58] [Datafixer Bootstrap/INFO] [mojang/DataFixerBuilder]: 229 Datafixer optimizations took 930 milliseconds
+[18:50:07] [main/WARN] [minecraft/Main]: Unrecognized user type: offline
+[18:50:08] [Render thread/WARN] [minecraft/VanillaPackResourcesBuilder]: Assets URL 'union:/C:/Users/dev/AppData/Roaming/PrismLauncher/libraries/net/minecraft/client/1.21.1-20240808.144430/client-1.21.1-20240808.144430-srg.jar%23201!/assets/.mcassetsroot' uses unexpected schema
+[18:50:08] [Render thread/WARN] [minecraft/VanillaPackResourcesBuilder]: Assets URL 'union:/C:/Users/dev/AppData/Roaming/PrismLauncher/libraries/net/minecraft/client/1.21.1-20240808.144430/client-1.21.1-20240808.144430-srg.jar%23201!/data/.mcassetsroot' uses unexpected schema
+[18:50:08] [Render thread/INFO] [mojang/YggdrasilAuthenticationService]: Environment: Environment[sessionHost=https://sessionserver.mojang.com, servicesHost=https://api.minecraftservices.com, name=PROD]
+[18:50:08] [Render thread/INFO] [minecraft/Minecraft]: Setting user: VaviYT
+[18:50:08] [Render thread/INFO] [minecraft/Minecraft]: Backend library: LWJGL version 3.3.3+5
+[18:50:08] [Render thread/INFO] [mojang/Window]: OpenGL Vendor: Intel
+[18:50:08] [Render thread/INFO] [mojang/Window]: OpenGL Renderer: Intel(R) UHD Graphics
+[18:50:08] [Render thread/INFO] [mojang/Window]: OpenGL Version: 4.6.0 - Build 32.0.101.7076
 [LibGui] Initializing Client...
-[01:01:57] [modloading-worker-0/INFO] [ne.ne.ne.co.NeoForgeMod/NEOFORGE-MOD]: NeoForge mod loading, version 21.1.228, for MC 1.21.1
-[01:02:01] [Render thread/INFO] [minecraft/ReloadableResourceManager]: Reloading ResourceManager: vanilla, mod_resources, mod/sodium, mod/entityculling, mod/mykaisen, mod/fabric_renderer_api_v1, mod/fabric_api_base, mod/jade, mod/geckolib, mod/architectury, mod/appleskin, mod/playeranimator, mod/ferritecore, mod/transition, mod/fabric_rendering_data_attachment_v1, mod/trender, mod/lodestone, mod/curios, mod/quickskin, mod/neoforge, mod/kleiders_custom_renderer, mod/fabric_block_view_api_v2
-[01:02:01] [Worker-Main-2/INFO] [co.my.ka.MyKaisen/]: HELLO FROM COMMON SETUP
-[01:02:01] [Worker-Main-1/INFO] [minecraft/UnihexProvider]: Found unifont_all_no_pua-15.1.05.hex, loading
-[01:02:01] [Worker-Main-7/INFO] [minecraft/UnihexProvider]: Found unifont_jp_patch-15.1.05.hex, loading
-[01:02:04] [Worker-Main-9/WARN] [minecraft/ModelBakery]: Unable to load model: 'mykaisen:item/sukuna_tattoo' referenced from: mykaisen:item/sukuna_tattoo: java.io.FileNotFoundException: mykaisen:models/item/sukuna_tattoo.json
-[01:02:06] [Worker-Main-6/INFO] [sn.ja.Jade/]: Start loading plugin from snownee.jade.addon.vanilla.VanillaPlugin
-[01:02:06] [Worker-Main-6/INFO] [sn.ja.Jade/]: Start loading plugin from snownee.jade.addon.universal.UniversalPlugin
-[01:02:06] [Worker-Main-6/INFO] [sn.ja.Jade/]: Start loading plugin from snownee.jade.addon.debug.DebugPlugin
-[01:02:06] [Worker-Main-6/INFO] [sn.ja.Jade/]: Start loading plugin from snownee.jade.addon.core.CorePlugin
-[01:02:06] [Worker-Main-6/INFO] [sn.ja.Jade/]: Start loading plugin from snownee.jade.addon.access.AccessibilityPlugin
-[01:02:07] [Render thread/WARN] [minecraft/SoundEngine]: Missing sound for event: minecraft:item.goat_horn.play
-[01:02:07] [Render thread/WARN] [minecraft/SoundEngine]: Missing sound for event: minecraft:entity.goat.screaming.horn_break
-[01:02:07] [Render thread/INFO] [mojang/Library]: OpenAL initialized on device OpenAL Soft on Speakers (Realtek(R) Audio)
-[01:02:07] [Render thread/INFO] [minecraft/SoundEngine]: Sound engine started
-[01:02:07] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 1024x512x4 minecraft:textures/atlas/blocks.png-atlas
-[01:02:07] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 256x256x4 minecraft:textures/atlas/signs.png-atlas
-[01:02:07] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 512x512x4 minecraft:textures/atlas/banner_patterns.png-atlas
-[01:02:07] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 512x512x4 minecraft:textures/atlas/shield_patterns.png-atlas
-[01:02:07] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 1024x1024x4 minecraft:textures/atlas/armor_trims.png-atlas
-[01:02:07] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 128x64x4 minecraft:textures/atlas/decorated_pot.png-atlas
-[01:02:07] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 256x256x4 minecraft:textures/atlas/chest.png-atlas
-[01:02:07] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 512x256x4 minecraft:textures/atlas/shulker_boxes.png-atlas
-[01:02:07] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 512x256x4 minecraft:textures/atlas/beds.png-atlas
-[01:02:07] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 512x512x0 minecraft:textures/atlas/particles.png-atlas
-[01:02:07] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 512x512x0 minecraft:textures/atlas/paintings.png-atlas
-[01:02:07] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 256x128x0 minecraft:textures/atlas/mob_effects.png-atlas
-[01:02:07] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 64x64x0 minecraft:textures/atlas/map_decorations.png-atlas
-[01:02:07] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 1024x512x0 minecraft:textures/atlas/gui.png-atlas
-[01:02:07] [Render thread/WARN] [minecraft/ShaderInstance]: Shader rendertype_entity_translucent_emissive could not find sampler named Sampler2 in the specified shader program.
-[01:02:08] [Render thread/INFO] [te.lo.lo.LodestoneLib/]: Registering shaders for mod: lodestone
-[01:02:08] [Render thread/INFO] [te.lo.lo.LodestoneLib/]: Loaded geometry program: lodestone:nineslice/nine_slice
-[01:02:08] [Render thread/INFO] [te.lo.lo.LodestoneLib/]: Loaded geometry program: lodestone:nineslice/distorted/distorted_nine_slice_texture
-[01:02:08] [Render thread/WARN] [de.ko.pl.mi.PlayerAnimationRegistry/]: [WARNING FOR MOD DEVS] Animation player_animation/bite.json is in wrong directory: "player_animation", please place it in "player_animations".
-[01:02:08] [Render thread/INFO] [ne.ne.ne.cl.en.an.js.AnimationLoader/]: Loaded 0 entity animations
-[01:02:14] [Render thread/INFO] [minecraft/RecipeManager]: Loaded 1290 recipes
-[01:02:14] [Render thread/INFO] [minecraft/AdvancementTree]: Loaded 1399 advancements
-[01:02:14] [Render thread/INFO] [Curios API/]: Loaded 10 curio slots
-[01:02:14] [Render thread/INFO] [Curios API/]: Loaded 1 curio entities
-[01:02:15] [Server thread/INFO] [minecraft/IntegratedServer]: Starting integrated minecraft server version 1.21.1
-[01:02:15] [Server thread/INFO] [minecraft/MinecraftServer]: Generating keypair
-[01:02:17] [Server thread/INFO] [minecraft/MinecraftServer]: Preparing start region for dimension minecraft:overworld
-[01:02:18] [Render thread/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
-[01:02:18] [Render thread/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
-[01:02:18] [Server thread/INFO] [ne.ne.ne.se.pe.PermissionAPI/]: Successfully initialized permission handler neoforge:default_handler
-[01:02:18] [Render thread/INFO] [minecraft/LoggerChunkProgressListener]: Time elapsed: 831 ms
-[01:02:18] [Server thread/INFO] [co.my.ka.MyKaisen/]: HELLO from server starting
-[01:02:18] [Server thread/INFO] [minecraft/IntegratedServer]: Changing view distance to 8, from 10
-[01:02:18] [Server thread/INFO] [minecraft/IntegratedServer]: Changing simulation distance to 8, from 0
-[01:02:20] [Server thread/INFO] [minecraft/PlayerList]: VaviYT[local:E:fde77828] logged in with entity id 120 at (-2.7345241938816605, 71.0, 56.447552510447345)
-[01:02:20] [Server thread/INFO] [minecraft/MinecraftServer]: VaviYT joined the game
-[01:02:20] [Render thread/INFO] [ChunkBuilder/]: Started 6 worker threads
-[01:02:20] [Render thread/INFO] [QuickSkin-CPM/]: forceReRegisterSkins called for 5f9f1ae6-1f60-394a-8df4-ad0b314988bf
-[01:02:20] [Render thread/INFO] [sn.ja.Jade/]: Received config from the server: 
-[01:02:20] [Render thread/INFO] [minecraft/AdvancementTree]: Loaded 72 advancements
-[01:02:21] [Server thread/INFO] [minecraft/IntegratedServer]: Saving and pausing game...
-[01:02:21] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[New World]'/minecraft:overworld
-[01:02:21] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[New World]'/minecraft:the_end
-[01:02:21] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[New World]'/minecraft:the_nether
-[01:02:44] [Server thread/INFO] [minecraft/MinecraftServer]: VaviYT has made the advancement [Stone Age]
-[01:02:44] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] VaviYT has made the advancement [Stone Age]
-[01:02:44] [Render thread/INFO] [minecraft/AdvancementTree]: Loaded 86 advancements
-[01:03:02] [Render thread/INFO] [minecraft/AdvancementTree]: Loaded 95 advancements
-[01:03:11] [Server thread/INFO] [minecraft/MinecraftServer]: [VaviYT: Ability cooldowns are now OFF]
-[01:03:11] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Ability cooldowns are now OFF
-[01:03:18] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:18] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:18] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:18] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:18] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:18] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:19] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:19] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:19] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:19] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:19] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:19] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:19] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:19] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:19] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:19] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:19] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:19] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:19] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:19] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:19] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:19] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:19] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:19] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:19] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:19] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:20] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:20] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:20] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:20] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:20] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:20] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:20] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:20] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:20] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:20] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:20] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:20] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:20] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:20] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:20] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:20] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:20] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:20] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:20] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:20] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:21] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:21] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:21] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:21] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:21] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:21] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:21] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:21] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:21] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:21] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:21] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:21] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:21] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:21] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:21] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:21] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:21] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:21] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:21] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:21] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:22] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:22] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:22] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:22] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:22] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:22] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:22] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:22] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:22] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:22] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:22] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:22] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:22] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:22] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:22] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:22] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:22] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:22] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:22] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:22] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:23] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:23] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:23] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:23] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:23] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:23] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:23] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:23] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:23] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:23] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:23] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:23] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:23] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:23] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:23] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:23] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:23] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:23] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:23] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:24] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:24] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:24] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:24] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:24] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:24] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:24] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:24] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:24] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:24] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:24] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:24] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:24] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:24] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:24] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:24] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:24] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:24] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:24] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:24] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:24] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:25] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:25] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:25] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:25] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:25] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:25] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:25] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:25] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:25] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:25] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:25] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:25] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:26] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:26] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:26] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:26] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:28] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:28] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:28] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:28] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:28] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:28] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:28] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:28] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:28] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:28] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:28] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:28] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:28] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:28] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:28] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:28] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:29] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:29] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:29] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:29] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:29] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:29] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:29] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:29] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:29] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:29] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:29] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:29] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:29] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:29] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:29] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:29] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:29] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:29] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:29] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:29] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:30] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:30] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:30] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:30] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:30] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:30] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:30] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:30] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:30] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:30] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:31] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:31] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:31] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:31] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:31] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:31] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:31] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:31] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:31] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:31] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:31] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:31] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:31] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:31] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:31] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:31] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:31] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:31] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:31] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:31] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:32] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:32] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:32] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:32] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:32] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:32] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:32] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:32] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:32] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:32] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:32] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:32] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:32] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:32] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:32] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:32] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:32] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:03:32] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Hold Ability 4 (V) to manifest Malevolent Shrine...
-[01:04:20] [Server thread/INFO] [minecraft/MinecraftServer]: [VaviYT: Summoned new Iron Golem]
-[01:04:20] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Summoned new Iron Golem
-[01:04:25] [Server thread/INFO] [minecraft/IntegratedServer]: Saving and pausing game...
-[01:04:25] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[New World]'/minecraft:overworld
-[01:04:25] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[New World]'/minecraft:the_end
-[01:04:25] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[New World]'/minecraft:the_nether
-[01:05:05] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Your Awakening has expired.
-[01:05:19] [Render thread/INFO] [minecraft/AdvancementTree]: Loaded 96 advancements
-[01:05:25] [Server thread/INFO] [minecraft/MinecraftServer]: [VaviYT: Removed 35 item(s) from player VaviYT]
-[01:05:25] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Removed 35 item(s) from player VaviYT
-[01:05:33] [Render thread/INFO] [minecraft/AdvancementTree]: Loaded 97 advancements
-[01:05:51] [Render thread/INFO] [minecraft/AdvancementTree]: Loaded 97 advancements
-[01:05:57] [Server thread/INFO] [minecraft/MinecraftServer]: [VaviYT: Summoned new Iron Golem]
-[01:05:57] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Summoned new Iron Golem
-[01:06:05] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Your Awakening meter is FULL! Press G to Awaken.
-[01:06:08] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] You have AWAKENED! Your moveset has changed.
-[01:06:37] [Server thread/INFO] [minecraft/IntegratedServer]: Saving and pausing game...
-[01:06:37] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[New World]'/minecraft:overworld
-[01:06:37] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[New World]'/minecraft:the_end
-[01:06:37] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[New World]'/minecraft:the_nether
-[01:06:38] [Server thread/INFO] [minecraft/ServerGamePacketListenerImpl]: VaviYT lost connection: Disconnected
-[01:06:38] [Server thread/INFO] [minecraft/MinecraftServer]: VaviYT left the game
-[01:06:38] [Server thread/INFO] [minecraft/ServerCommonPacketListenerImpl]: Stopping singleplayer server as player logged out
-[01:06:38] [Server thread/INFO] [minecraft/MinecraftServer]: Stopping server
-[01:06:38] [Server thread/INFO] [minecraft/MinecraftServer]: Saving players
-[01:06:38] [Server thread/INFO] [minecraft/MinecraftServer]: Saving worlds
-[01:06:38] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[New World]'/minecraft:overworld
-[01:06:39] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[New World]'/minecraft:the_end
-[01:06:39] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[New World]'/minecraft:the_nether
-[01:06:39] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (New World (35)): All chunks are saved
-[01:06:39] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved
-[01:06:39] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
-[01:06:39] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage: All dimensions are saved
-[01:06:39] [Render thread/INFO] [ChunkBuilder/]: Stopping worker threads
-[01:06:41] [Render thread/INFO] [te.lo.lo.LodestoneLib/]: Shutting down Lodestone
-Shutting down culling task!
-[01:06:41] [Render thread/INFO] [minecraft/Minecraft]: Stopping!
-[01:06:41] [Render thread/INFO] [te.lo.lo.LodestoneLib/]: Closed geometry program: lodestone:nineslice/nine_slice
-[01:06:41] [Render thread/INFO] [te.lo.lo.LodestoneLib/]: Closed geometry program: lodestone:nineslice/distorted/distorted_nine_slice_texture
-Process exited with code 0.
-Clipboard copy at: 06 May 2026 01:06:45 +0500
+[18:50:09] [modloading-worker-0/INFO] [ne.ne.ne.co.NeoForgeMod/NEOFORGE-MOD]: NeoForge mod loading, version 21.1.228, for MC 1.21.1
+[18:50:13] [Render thread/INFO] [minecraft/ReloadableResourceManager]: Reloading ResourceManager: vanilla, mod_resources, mod/sodium, mod/entityculling, mod/mykaisen, mod/fabric_renderer_api_v1, mod/fabric_api_base, mod/jade, mod/geckolib, mod/architectury, mod/appleskin, mod/playeranimator, mod/ferritecore, mod/transition, mod/fabric_rendering_data_attachment_v1, mod/trender, mod/lodestone, mod/curios, mod/quickskin, mod/neoforge, mod/kleiders_custom_renderer, mod/fabric_block_view_api_v2
+[18:50:13] [Worker-Main-4/INFO] [co.my.ka.MyKaisen/]: HELLO FROM COMMON SETUP
+[18:50:13] [Worker-Main-7/INFO] [minecraft/UnihexProvider]: Found unifont_jp_patch-15.1.05.hex, loading
+[18:50:13] [Worker-Main-1/INFO] [minecraft/UnihexProvider]: Found unifont_all_no_pua-15.1.05.hex, loading
+[18:50:18] [Worker-Main-9/INFO] [sn.ja.Jade/]: Start loading plugin from snownee.jade.addon.vanilla.VanillaPlugin
+[18:50:19] [Worker-Main-9/INFO] [sn.ja.Jade/]: Start loading plugin from snownee.jade.addon.universal.UniversalPlugin
+[18:50:19] [Worker-Main-9/INFO] [sn.ja.Jade/]: Start loading plugin from snownee.jade.addon.debug.DebugPlugin
+[18:50:19] [Worker-Main-9/INFO] [sn.ja.Jade/]: Start loading plugin from snownee.jade.addon.core.CorePlugin
+[18:50:19] [Worker-Main-9/INFO] [sn.ja.Jade/]: Start loading plugin from snownee.jade.addon.access.AccessibilityPlugin
+[18:50:19] [Render thread/WARN] [minecraft/SoundEngine]: Missing sound for event: minecraft:item.goat_horn.play
+[18:50:19] [Render thread/WARN] [minecraft/SoundEngine]: Missing sound for event: minecraft:entity.goat.screaming.horn_break
+[18:50:19] [Render thread/INFO] [mojang/Library]: OpenAL initialized on device OpenAL Soft on Speakers (Realtek(R) Audio)
+[18:50:19] [Render thread/INFO] [minecraft/SoundEngine]: Sound engine started
+[18:50:19] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 1024x512x4 minecraft:textures/atlas/blocks.png-atlas
+[18:50:19] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 256x256x4 minecraft:textures/atlas/signs.png-atlas
+[18:50:19] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 512x512x4 minecraft:textures/atlas/shield_patterns.png-atlas
+[18:50:19] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 512x512x4 minecraft:textures/atlas/banner_patterns.png-atlas
+[18:50:19] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 1024x1024x4 minecraft:textures/atlas/armor_trims.png-atlas
+[18:50:19] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 128x64x4 minecraft:textures/atlas/decorated_pot.png-atlas
+[18:50:19] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 256x256x4 minecraft:textures/atlas/chest.png-atlas
+[18:50:19] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 512x256x4 minecraft:textures/atlas/beds.png-atlas
+[18:50:19] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 512x256x4 minecraft:textures/atlas/shulker_boxes.png-atlas
+[18:50:20] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 512x512x0 minecraft:textures/atlas/particles.png-atlas
+[18:50:20] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 512x512x0 minecraft:textures/atlas/paintings.png-atlas
+[18:50:20] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 256x128x0 minecraft:textures/atlas/mob_effects.png-atlas
+[18:50:20] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 64x64x0 minecraft:textures/atlas/map_decorations.png-atlas
+[18:50:20] [Render thread/INFO] [minecraft/TextureAtlas]: Created: 1024x512x0 minecraft:textures/atlas/gui.png-atlas
+[18:50:20] [Render thread/WARN] [minecraft/ShaderInstance]: Shader rendertype_entity_translucent_emissive could not find sampler named Sampler2 in the specified shader program.
+[18:50:20] [Render thread/INFO] [te.lo.lo.LodestoneLib/]: Registering shaders for mod: lodestone
+[18:50:20] [Render thread/INFO] [te.lo.lo.LodestoneLib/]: Loaded geometry program: lodestone:nineslice/nine_slice
+[18:50:20] [Render thread/INFO] [te.lo.lo.LodestoneLib/]: Loaded geometry program: lodestone:nineslice/distorted/distorted_nine_slice_texture
+[18:50:20] [Render thread/WARN] [de.ko.pl.mi.PlayerAnimationRegistry/]: [WARNING FOR MOD DEVS] Animation player_animation/bite.json is in wrong directory: "player_animation", please place it in "player_animations".
+[18:50:20] [Render thread/INFO] [ne.ne.ne.cl.en.an.js.AnimationLoader/]: Loaded 0 entity animations
+[18:51:14] [Render thread/INFO] [minecraft/RecipeManager]: Loaded 1290 recipes
+[18:51:15] [Render thread/INFO] [minecraft/AdvancementTree]: Loaded 1399 advancements
+[18:51:16] [Render thread/INFO] [Curios API/]: Loaded 10 curio slots
+[18:51:16] [Render thread/INFO] [Curios API/]: Loaded 1 curio entities
+[18:51:21] [Server thread/INFO] [minecraft/IntegratedServer]: Starting integrated minecraft server version 1.21.1
+[18:51:21] [Server thread/INFO] [minecraft/MinecraftServer]: Generating keypair
+[18:51:22] [Server thread/INFO] [minecraft/MinecraftServer]: Preparing start region for dimension minecraft:overworld
+[18:51:22] [Render thread/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 2%
+[18:51:22] [Server thread/INFO] [ne.ne.ne.se.pe.PermissionAPI/]: Successfully initialized permission handler neoforge:default_handler
+[18:51:22] [Render thread/INFO] [minecraft/LoggerChunkProgressListener]: Time elapsed: 282 ms
+[18:51:22] [Server thread/INFO] [co.my.ka.MyKaisen/]: HELLO from server starting
+[18:51:23] [Server thread/INFO] [minecraft/IntegratedServer]: Changing view distance to 8, from 10
+[18:51:23] [Server thread/INFO] [minecraft/IntegratedServer]: Changing simulation distance to 8, from 0
+[18:51:23] [Server thread/INFO] [minecraft/PlayerList]: VaviYT[local:E:88855c52] logged in with entity id 1 at (-3.5, -60.0, 2.5)
+[18:51:24] [Server thread/INFO] [minecraft/MinecraftServer]: VaviYT joined the game
+[18:51:24] [Render thread/INFO] [ChunkBuilder/]: Started 6 worker threads
+[18:51:25] [Render thread/INFO] [QuickSkin-CPM/]: forceReRegisterSkins called for 5f9f1ae6-1f60-394a-8df4-ad0b314988bf
+[18:51:25] [Render thread/INFO] [sn.ja.Jade/]: Received config from the server: 
+[18:51:25] [Render thread/INFO] [minecraft/AdvancementTree]: Loaded 2 advancements
+[18:51:30] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] Only Sukuna can use Cleave Web.
+[18:51:33] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] You have chosen the Sorcerer path.
+[18:51:41] [Server thread/INFO] [minecraft/MinecraftServer]: VaviYT has made the advancement [Monster Hunter]
+[18:51:41] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] VaviYT has made the advancement [Monster Hunter]
+[18:51:41] [Render thread/INFO] [minecraft/AdvancementTree]: Loaded 41 advancements
+[18:51:48] [Render thread/INFO] [minecraft/ChatComponent]: [System] [CHAT] COMBO 20: BLACK FLASH FATALITY!
+[18:52:00] [Server thread/ERROR] [ne.ne.bu.EventBus/EVENTBUS]: Exception caught during firing event: null
+	Index: 1
+	Listeners:
+		0: net.neoforged.bus.EventListenerFactory$event/0x0000000800ebf000@632026b0
+		1: net.neoforged.bus.EventListenerFactory$onPlayerTick/0x0000000800ea4800@2e69d7c9
+		2: net.neoforged.bus.EventListenerFactory$onPlayerTick/0x0000000800eae000@5a4f528b
+		3: net.neoforged.bus.EventListenerFactory$onClientPlayerTick/0x0000000800f02c00@3181f61e
+java.lang.UnsupportedOperationException
+	at java.base/java.util.AbstractMap$SimpleImmutableEntry.setValue(AbstractMap.java:824)
+	at TRANSFORMER/mykaisen@1.0.0/com.my.kaisen.network.CombatTickHandler.lambda$onPlayerTick$2(CombatTickHandler.java:251)
+	at java.base/java.util.concurrent.ConcurrentHashMap.removeEntryIf(ConcurrentHashMap.java:1640)
+	at java.base/java.util.concurrent.ConcurrentHashMap$EntrySetView.removeIf(ConcurrentHashMap.java:4839)
+	at TRANSFORMER/mykaisen@1.0.0/com.my.kaisen.network.CombatTickHandler.onPlayerTick(CombatTickHandler.java:249)
+	at MC-BOOTSTRAP/net.neoforged.bus/net.neoforged.bus.EventBus.post(EventBus.java:360)
+	at MC-BOOTSTRAP/net.neoforged.bus/net.neoforged.bus.EventBus.post(EventBus.java:328)
+	at TRANSFORMER/neoforge@21.1.228/net.neoforged.neoforge.event.EventHooks.firePlayerTickPost(EventHooks.java:980)
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.world.entity.player.Player.tick(Player.java:332)
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.level.ServerPlayer.doTick(ServerPlayer.java:556)
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.network.ServerGamePacketListenerImpl.tick(ServerGamePacketListenerImpl.java:260)
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.network.Connection.tick(Connection.java:412)
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.network.ServerConnectionListener.tick(ServerConnectionListener.java:159)
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.tickChildren(MinecraftServer.java:1051)
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.tickServer(MinecraftServer.java:917)
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.client.server.IntegratedServer.tickServer(IntegratedServer.java:110)
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.runServer(MinecraftServer.java:707)
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.lambda$spin$2(MinecraftServer.java:267)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+
+[18:52:00] [Server thread/ERROR] [minecraft/MinecraftServer]: Encountered an unexpected exception
+net.minecraft.ReportedException: Ticking player
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.network.ServerConnectionListener.tick(ServerConnectionListener.java:162) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.tickChildren(MinecraftServer.java:1051) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:classloading,pl:accesstransformer:B}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.tickServer(MinecraftServer.java:917) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:classloading,pl:accesstransformer:B}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.client.server.IntegratedServer.tickServer(IntegratedServer.java:110) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:classloading,pl:runtimedistcleaner:A}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.runServer(MinecraftServer.java:707) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:classloading,pl:accesstransformer:B}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.lambda$spin$2(MinecraftServer.java:267) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:classloading,pl:accesstransformer:B}
+	at java.base/java.lang.Thread.run(Thread.java:1583) [?:?] {re:mixin}
+Caused by: java.lang.UnsupportedOperationException
+	at java.base/java.util.AbstractMap$SimpleImmutableEntry.setValue(AbstractMap.java:824) ~[?:?] {}
+	at TRANSFORMER/mykaisen@1.0.0/com.my.kaisen.network.CombatTickHandler.lambda$onPlayerTick$2(CombatTickHandler.java:251) ~[mykaisen-1.0.0.jar%23212!/:?] {re:classloading}
+	at java.base/java.util.concurrent.ConcurrentHashMap.removeEntryIf(ConcurrentHashMap.java:1640) ~[?:?] {re:mixin}
+	at java.base/java.util.concurrent.ConcurrentHashMap$EntrySetView.removeIf(ConcurrentHashMap.java:4839) ~[?:?] {}
+	at TRANSFORMER/mykaisen@1.0.0/com.my.kaisen.network.CombatTickHandler.onPlayerTick(CombatTickHandler.java:249) ~[mykaisen-1.0.0.jar%23212!/:?] {re:classloading}
+	at MC-BOOTSTRAP/net.neoforged.bus/net.neoforged.bus.EventBus.post(EventBus.java:360) ~[bus-8.0.5.jar%23164!/:?] {}
+	at MC-BOOTSTRAP/net.neoforged.bus/net.neoforged.bus.EventBus.post(EventBus.java:328) ~[bus-8.0.5.jar%23164!/:?] {}
+	at TRANSFORMER/neoforge@21.1.228/net.neoforged.neoforge.event.EventHooks.firePlayerTickPost(EventHooks.java:980) ~[neoforge-21.1.228-universal.jar%23202!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.world.entity.player.Player.tick(Player.java:332) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:mixin,pl:accesstransformer:B,re:computing_frames,pl:accesstransformer:B,re:classloading,pl:accesstransformer:B,pl:mixin:A}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.level.ServerPlayer.doTick(ServerPlayer.java:556) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:computing_frames,pl:accesstransformer:B,re:classloading,pl:accesstransformer:B}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.network.ServerGamePacketListenerImpl.tick(ServerGamePacketListenerImpl.java:260) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.network.Connection.tick(Connection.java:412) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.network.ServerConnectionListener.tick(ServerConnectionListener.java:159) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:classloading}
+	... 6 more
+[18:52:00] [Server thread/FATAL] [ne.ne.ne.co.NeoForgeMod/]: Preparing crash report with UUID 9d34af6c-bba8-4ac9-a58c-3eff683d6158
+[18:52:00] [Server thread/ERROR] [minecraft/MinecraftServer]: This crash report has been saved to: C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\crash-reports\crash-2026-05-06_18.52.00-server.txt
+[18:52:00] [Server thread/INFO] [minecraft/MinecraftServer]: Stopping server
+[18:52:00] [Server thread/INFO] [minecraft/MinecraftServer]: Saving players
+[18:52:00] [Render thread/FATAL] [ne.ne.ne.co.NeoForgeMod/]: Preparing crash report with UUID bb225173-129a-4175-92a9-15693b3f427f
+---- Minecraft Crash Report ----
+// Would you like a cupcake?
+
+Time: 2026-05-06 18:52:00
+Description: Ticking player
+
+java.lang.UnsupportedOperationException: null
+	at java.base/java.util.AbstractMap$SimpleImmutableEntry.setValue(AbstractMap.java:824) ~[?:?] {}
+	at TRANSFORMER/mykaisen@1.0.0/com.my.kaisen.network.CombatTickHandler.lambda$onPlayerTick$2(CombatTickHandler.java:251) ~[mykaisen-1.0.0.jar%23212!/:?] {re:classloading}
+	at java.base/java.util.concurrent.ConcurrentHashMap.removeEntryIf(ConcurrentHashMap.java:1640) ~[?:?] {re:mixin}
+	at java.base/java.util.concurrent.ConcurrentHashMap$EntrySetView.removeIf(ConcurrentHashMap.java:4839) ~[?:?] {}
+	at TRANSFORMER/mykaisen@1.0.0/com.my.kaisen.network.CombatTickHandler.onPlayerTick(CombatTickHandler.java:249) ~[mykaisen-1.0.0.jar%23212!/:?] {re:classloading}
+	at MC-BOOTSTRAP/net.neoforged.bus/net.neoforged.bus.EventBus.post(EventBus.java:360) ~[bus-8.0.5.jar%23164!/:?] {}
+	at MC-BOOTSTRAP/net.neoforged.bus/net.neoforged.bus.EventBus.post(EventBus.java:328) ~[bus-8.0.5.jar%23164!/:?] {}
+	at TRANSFORMER/neoforge@21.1.228/net.neoforged.neoforge.event.EventHooks.firePlayerTickPost(EventHooks.java:980) ~[neoforge-21.1.228-universal.jar%23202!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.world.entity.player.Player.tick(Player.java:332) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:mixin,pl:accesstransformer:B,re:computing_frames,pl:accesstransformer:B,re:classloading,pl:accesstransformer:B,pl:mixin:A}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.level.ServerPlayer.doTick(ServerPlayer.java:556) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:computing_frames,pl:accesstransformer:B,re:classloading,pl:accesstransformer:B}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.network.ServerGamePacketListenerImpl.tick(ServerGamePacketListenerImpl.java:260) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.network.Connection.tick(Connection.java:412) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.network.ServerConnectionListener.tick(ServerConnectionListener.java:159) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.tickChildren(MinecraftServer.java:1051) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:classloading,pl:accesstransformer:B}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.tickServer(MinecraftServer.java:917) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:classloading,pl:accesstransformer:B}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.client.server.IntegratedServer.tickServer(IntegratedServer.java:110) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:classloading,pl:runtimedistcleaner:A}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.runServer(MinecraftServer.java:707) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:classloading,pl:accesstransformer:B}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.lambda$spin$2(MinecraftServer.java:267) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:classloading,pl:accesstransformer:B}
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[?:?] {re:mixin}
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Thread: Render thread
+Stacktrace:
+	at java.base/java.util.AbstractMap$SimpleImmutableEntry.setValue(AbstractMap.java:824) ~[?:?] {}
+	at TRANSFORMER/mykaisen@1.0.0/com.my.kaisen.network.CombatTickHandler.lambda$onPlayerTick$2(CombatTickHandler.java:251) ~[mykaisen-1.0.0.jar%23212!/:?] {re:classloading}
+	at java.base/java.util.concurrent.ConcurrentHashMap.removeEntryIf(ConcurrentHashMap.java:1640) ~[?:?] {re:mixin}
+	at java.base/java.util.concurrent.ConcurrentHashMap$EntrySetView.removeIf(ConcurrentHashMap.java:4839) ~[?:?] {}
+	at TRANSFORMER/mykaisen@1.0.0/com.my.kaisen.network.CombatTickHandler.onPlayerTick(CombatTickHandler.java:249) ~[mykaisen-1.0.0.jar%23212!/:?] {re:classloading}
+	at MC-BOOTSTRAP/net.neoforged.bus/net.neoforged.bus.EventBus.post(EventBus.java:360) ~[bus-8.0.5.jar%23164!/:?] {}
+	at MC-BOOTSTRAP/net.neoforged.bus/net.neoforged.bus.EventBus.post(EventBus.java:328) ~[bus-8.0.5.jar%23164!/:?] {}
+	at TRANSFORMER/neoforge@21.1.228/net.neoforged.neoforge.event.EventHooks.firePlayerTickPost(EventHooks.java:980) ~[neoforge-21.1.228-universal.jar%23202!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.world.entity.player.Player.tick(Player.java:332) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:mixin,pl:accesstransformer:B,re:computing_frames,pl:accesstransformer:B,re:classloading,pl:accesstransformer:B,pl:mixin:A}
+-- Player being ticked --
+Details:
+	Entity Type: minecraft:player (net.minecraft.server.level.ServerPlayer)
+	Entity ID: 1
+	Entity Name: VaviYT
+	Entity's Exact location: -52.09, -59.80, 44.68
+	Entity's Block location: World: (-53,-60,44), Section: (at 11,4,12 in -4,-4,2; chunk contains blocks -64,-64,32 to -49,319,47), Region: (-1,0; contains chunks -32,0 to -1,31, blocks -512,-64,0 to -1,319,511)
+	Entity's Momentum: -0.75, 0.12, -0.77
+	Entity's Passengers: []
+	Entity's Vehicle: null
+Stacktrace:
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.level.ServerPlayer.doTick(ServerPlayer.java:556) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:computing_frames,pl:accesstransformer:B,re:classloading,pl:accesstransformer:B}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.network.ServerGamePacketListenerImpl.tick(ServerGamePacketListenerImpl.java:260) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.network.Connection.tick(Connection.java:412) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.network.ServerConnectionListener.tick(ServerConnectionListener.java:159) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.tickChildren(MinecraftServer.java:1051) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:classloading,pl:accesstransformer:B}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.tickServer(MinecraftServer.java:917) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:classloading,pl:accesstransformer:B}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.client.server.IntegratedServer.tickServer(IntegratedServer.java:110) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:classloading,pl:runtimedistcleaner:A}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.runServer(MinecraftServer.java:707) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:classloading,pl:accesstransformer:B}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.lambda$spin$2(MinecraftServer.java:267) ~[client-1.21.1-20240808.144430-srg.jar%23201!/:?] {re:classloading,pl:accesstransformer:B}
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[?:?] {re:mixin}
+
+
+-- System Details --
+Details:
+	Minecraft Version: 1.21.1
+	Minecraft Version ID: 1.21.1
+	Operating System: Windows 11 (amd64) version 10.0
+	Java Version: 21.0.7, Microsoft
+	Java VM Version: OpenJDK 64-Bit Server VM (mixed mode), Microsoft
+	Memory: 127788184 bytes (121 MiB) / 601882624 bytes (574 MiB) up to 4294967296 bytes (4096 MiB)
+	CPUs: 12
+	Processor Vendor: GenuineIntel
+	Processor Name: 13th Gen Intel(R) Core(TM) i5-13420H
+	Identifier: Intel64 Family 6 Model 186 Stepping 2
+	Microarchitecture: Raptor Lake
+	Frequency (GHz): 2.61
+	Number of physical packages: 1
+	Number of physical CPUs: 8
+	Number of logical CPUs: 12
+	Graphics card #0 name: Intel(R) UHD Graphics
+	Graphics card #0 vendor: Intel Corporation
+	Graphics card #0 VRAM (MiB): 2048.00
+	Graphics card #0 deviceId: VideoController1
+	Graphics card #0 versionInfo: 32.0.101.7076
+	Memory slot #0 capacity (MiB): 2048.00
+	Memory slot #0 clockSpeed (GHz): 6.40
+	Memory slot #0 type: Unknown
+	Memory slot #1 capacity (MiB): 2048.00
+	Memory slot #1 clockSpeed (GHz): 6.40
+	Memory slot #1 type: Unknown
+	Memory slot #2 capacity (MiB): 2048.00
+	Memory slot #2 clockSpeed (GHz): 6.40
+	Memory slot #2 type: Unknown
+	Memory slot #3 capacity (MiB): 2048.00
+	Memory slot #3 clockSpeed (GHz): 6.40
+	Memory slot #3 type: Unknown
+	Virtual memory max (MiB): 25931.56
+	Virtual memory used (MiB): 19043.09
+	Swap memory total (MiB): 18046.70
+	Swap memory used (MiB): 3030.64
+	Space in storage for jna.tmpdir (MiB): <path not set>
+	Space in storage for org.lwjgl.system.SharedLibraryExtractPath (MiB): <path not set>
+	Space in storage for io.netty.native.workdir (MiB): <path not set>
+	Space in storage for java.io.tmpdir (MiB): available: 24886.88, total: 487433.00
+	Space in storage for workdir (MiB): available: 24886.88, total: 487433.00
+	JVM Flags: 3 total; -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump -Xms512m -Xmx4096m
+	Server Running: true
+	Player Count: 1 / 8; [ServerPlayer['VaviYT'/1, l='ServerLevel[New World]', x=-52.09, y=-59.80, z=44.68]]
+	Active Data Packs: vanilla, mod_data, mod/sodium, mod/entityculling (incompatible), mod/mykaisen, mod/fabric_renderer_api_v1, mod/fabric_api_base, mod/jade (incompatible), mod/geckolib, mod/architectury (incompatible), mod/appleskin (incompatible), mod/playeranimator, mod/ferritecore (incompatible), mod/transition (incompatible), mod/fabric_rendering_data_attachment_v1, mod/trender (incompatible), mod/lodestone (incompatible), mod/curios (incompatible), mod/quickskin (incompatible), mod/neoforge, mod/kleiders_custom_renderer, mod/fabric_block_view_api_v2
+	Available Data Packs: bundle, trade_rebalance, vanilla, mod/appleskin (incompatible), mod/architectury (incompatible), mod/curios (incompatible), mod/entityculling (incompatible), mod/fabric_api_base, mod/fabric_block_view_api_v2, mod/fabric_renderer_api_v1, mod/fabric_rendering_data_attachment_v1, mod/ferritecore (incompatible), mod/geckolib, mod/jade (incompatible), mod/kleiders_custom_renderer, mod/lodestone (incompatible), mod/mykaisen, mod/neoforge, mod/playeranimator, mod/quickskin (incompatible), mod/sodium, mod/transition (incompatible), mod/trender (incompatible), mod_data
+	Enabled Feature Flags: minecraft:vanilla
+	World Generation: Stable
+	World Seed: -703265467541649815
+	Type: Integrated Server (map_client.txt)
+	Is Modded: Definitely; Client brand changed to 'neoforge'; Server brand changed to 'neoforge'
+	Launched Version: 1.21.1
+	ModLauncher: 11.0.5+main.901c6ea8
+	ModLauncher launch target: forgeclient
+	ModLauncher services: 
+		sponge-mixin-0.15.2+mixin.0.8.7.jar mixin PLUGINSERVICE 
+		loader-4.0.42.jar slf4jfixer PLUGINSERVICE 
+		loader-4.0.42.jar runtime_enum_extender PLUGINSERVICE 
+		at-modlauncher-10.0.1.jar accesstransformer PLUGINSERVICE 
+		loader-4.0.42.jar runtimedistcleaner PLUGINSERVICE 
+		modlauncher-11.0.5.jar mixin TRANSFORMATIONSERVICE 
+		modlauncher-11.0.5.jar fml TRANSFORMATIONSERVICE 
+	FML Language Providers: 
+		javafml@4.0
+		lowcodefml@4.0
+		minecraft@4.0
+	Mod List: 
+		appleskin-neoforge-mc1.21-3.0.9.jar               |AppleSkin                     |appleskin                     |3.0.9+mc1.21        |Manifest: NOSIGNATURE
+		architectury-13.0.8-neoforge.jar                  |Architectury                  |architectury                  |13.0.8              |Manifest: NOSIGNATURE
+		curios-neoforge-9.5.1+1.21.1.jar                  |Curios API                    |curios                        |9.5.1+1.21.1        |Manifest: NOSIGNATURE
+		entityculling-neoforge-1.10.1-mc1.21.1.jar        |EntityCulling                 |entityculling                 |1.10.1              |Manifest: NOSIGNATURE
+		ferritecore-7.0.3-neoforge.jar                    |Ferrite Core                  |ferritecore                   |7.0.3               |Manifest: 41:ce:50:66:d1:a0:05:ce:a1:0e:02:85:9b:46:64:e0:bf:2e:cf:60:30:9a:fe:0c:27:e0:63:66:9a:84:ce:8a
+		fabric-api-base-0.4.42+d1308ded19.jar             |Forgified Fabric API Base     |fabric_api_base               |0.4.42+d1308ded19   |Manifest: NOSIGNATURE
+		fabric-block-view-api-v2-1.0.10+9afaaf8c19.jar    |Forgified Fabric BlockView API|fabric_block_view_api_v2      |1.0.10+9afaaf8c19   |Manifest: NOSIGNATURE
+		fabric-renderer-api-v1-3.4.0+9c40919e19.jar       |Forgified Fabric Renderer API |fabric_renderer_api_v1        |3.4.0+9c40919e19    |Manifest: NOSIGNATURE
+		fabric-rendering-data-attachment-v1-0.3.48+73761d2|Forgified Fabric Rendering Dat|fabric_rendering_data_attachme|0.3.48+73761d2e19   |Manifest: NOSIGNATURE
+		geckolib-neoforge-1.21.1-4.8.4.jar                |GeckoLib 4                    |geckolib                      |4.8.4               |Manifest: NOSIGNATURE
+		Jade-1.21.1-NeoForge-15.10.5.jar                  |Jade                          |jade                          |15.10.5+neoforge    |Manifest: NOSIGNATURE
+		Kleiders Custom Renderer API 7.2.0 1.21.1.jar     |Kleiders Custom Renderer      |kleiders_custom_renderer      |7.2.0               |Manifest: NOSIGNATURE
+		lodestone-1.21.1-1.8.2.jar                        |Lodestone                     |lodestone                     |1.8.2               |Manifest: NOSIGNATURE
+		client-1.21.1-20240808.144430-srg.jar             |Minecraft                     |minecraft                     |1.21.1              |Manifest: a1:d4:5e:04:4f:d3:d6:e0:7b:37:97:cf:77:b0:de:ad:4a:47:ce:8c:96:49:5f:0a:cf:8c:ae:b2:6d:4b:8a:3f
+		mykaisen-1.0.0.jar                                |My Kaisen                     |mykaisen                      |1.0.0               |Manifest: NOSIGNATURE
+		neoforge-21.1.228-universal.jar                   |NeoForge                      |neoforge                      |21.1.228            |Manifest: NOSIGNATURE
+		player-animation-lib-forge-2.0.4+1.21.1.jar       |Player Animator               |playeranimator                |2.0.4+1.21.1        |Manifest: NOSIGNATURE
+		Quick Skin - NeoForge - 1.21.1-2.6.2.4.jar        |QuickSkin                     |quickskin                     |2.6.2.4             |Manifest: NOSIGNATURE
+		sodium-neoforge-0.6.13+mc1.21.1.jar               |Sodium                        |sodium                        |0.6.13+mc1.21.1     |Manifest: NOSIGNATURE
+		TRansition-1.0.17-1.21.1-neoforge-SNAPSHOT.jar    |TRansition                    |transition                    |1.0.17              |Manifest: NOSIGNATURE
+		TRender-1.0.12-1.21.1-neoforge-SNAPSHOT.jar       |TRender                       |trender                       |1.0.12              |Manifest: NOSIGNATURE
+	Crash Report UUID: bb225173-129a-4175-92a9-15693b3f427f
+	FML: 4.0.42
+	NeoForge: 21.1.228
+#@!@# Game crashed! Crash report saved to: #@!@# C:\Users\dev\AppData\Roaming\PrismLauncher\instances\MyKaisen\minecraft\crash-reports\crash-2026-05-06_18.52.00-server.txt
+WARN StatusConsoleListener Unable to register Log4j shutdown hook because JVM is shutting down. Using SimpleLogger
+Process exited with code -1.
+Clipboard copy at: 06 May 2026 18:52:07 +0500
