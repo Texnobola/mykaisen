@@ -31,6 +31,9 @@ import java.util.Optional;
  
 public class ClientVfxHandler {
     private static final Random RANDOM = new Random();
+    private static int absoluteCombo = 0;
+    private static int blackFlashFlashTicks = 0;
+    private static int blackFlashColorType = 0; // 0 for B-R, 1 for B-G-W
  
     private static void addScreenshake(int duration, float intensity) {
         ScreenshakeHandler.addScreenshake(new ScreenshakeInstance(duration, intensity, intensity, 0f, Easing.LINEAR, Easing.SINE_OUT, 1.0f, Optional.empty()));
@@ -97,31 +100,22 @@ public class ClientVfxHandler {
     }
  
     public static void spawnBlackFlash(Level level, double x, double y, double z) {
-        // High-contrast lightning
-        for (int i = 0; i < 12; i++) {
-            WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
-                    .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(0.5f, 4.0f, 0.0f).build())
-                    .setColorData(ColorParticleData.create(Color.BLACK, Color.RED).build())
-                    .setLifetime(15 + RANDOM.nextInt(10))
-                    .setSpinData(SpinParticleData.create(0.5f).build())
-                    .setMotion(new Vec3((RANDOM.nextDouble() - 0.5) * 2, (RANDOM.nextDouble() - 0.5) * 2, (RANDOM.nextDouble() - 0.5) * 2))
-                    .spawn(level, x, y, z);
-        }
+        if (level == null) return;
         
-        // Expansion shockwave (Red)
+        blackFlashFlashTicks = 6; // ~0.3s
+        blackFlashColorType = level.random.nextBoolean() ? 0 : 1;
+
         for (int i = 0; i < 360; i += 10) {
             double rad = Math.toRadians(i);
             WorldParticleBuilder.create(LodestoneParticleTypes.WISP_PARTICLE)
-                    .setTransparencyData(GenericParticleData.create(0.8f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(2.0f, 0.0f).build())
-                    .setColorData(ColorParticleData.create(Color.RED, Color.BLACK).build())
-                    .setLifetime(10)
-                    .setMotion(new Vec3(Math.cos(rad) * 0.8, 0, Math.sin(rad) * 0.8))
+                    .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
+                    .setScaleData(GenericParticleData.create(2.5f, 10.0f, 0.0f).build()) // Much larger
+                    .setColorData(ColorParticleData.create(Color.BLACK, i % 20 == 0 ? Color.WHITE : Color.RED).build())
+                    .setLifetime(25 + RANDOM.nextInt(15))
+                    .setMotion(new Vec3(Math.cos(rad) * 1.5, 0.2, Math.sin(rad) * 1.5))
                     .spawn(level, x, y, z);
         }
- 
-        addScreenshake(20, 1.5f);
+        addScreenshake(60, 6.0f); // Massive shake
     }
  
     public static void spawnMenacingAura(Level level, double x, double y, double z, double width, double height) {
@@ -138,6 +132,28 @@ public class ClientVfxHandler {
  
     public static void handleBlackFlashVfx(com.my.kaisen.network.SpawnBlackFlashPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
         ctx.enqueueWork(() -> spawnBlackFlash(Minecraft.getInstance().level, payload.x(), payload.y(), payload.z()));
+    }
+
+    public static void handleSyncCombo(com.my.kaisen.network.SyncComboPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext context) {
+        context.enqueueWork(() -> {
+            absoluteCombo = payload.combo();
+        });
+    }
+
+    public static int getAbsoluteCombo() {
+        return absoluteCombo;
+    }
+
+    public static void renderBlackFlashOverlay(net.minecraft.client.gui.GuiGraphics guiGraphics, int width, int height) {
+        if (blackFlashFlashTicks > 0) {
+            int color = 0xAA000000; // Black
+            if (blackFlashFlashTicks % 2 == 0) {
+                color = (blackFlashColorType == 0) ? 0xAAFF0000 : 0xAAFFFFFF; // Red or White
+            }
+            
+            guiGraphics.fill(0, 0, width, height, color);
+            blackFlashFlashTicks--;
+        }
     }
  
     public static void handleDivergentAuraVfx(com.my.kaisen.network.SpawnDivergentAuraPayload payload, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {

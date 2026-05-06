@@ -21,6 +21,8 @@ public class CombatTickHandler {
 
     public static boolean cooldownsEnabled = true;
     public static final Map<UUID, Map<Integer, Integer>> abilityCooldowns = new ConcurrentHashMap<>();
+    public static final Map<UUID, Integer> absoluteComboCount = new ConcurrentHashMap<>();
+    public static final Map<UUID, Integer> absoluteComboTimer = new ConcurrentHashMap<>();
     public static final Map<UUID, Float> awakeningMeter = new ConcurrentHashMap<>();
     public static final Map<UUID, Integer> blackFlashCombos = new ConcurrentHashMap<>();
 
@@ -57,7 +59,38 @@ public class CombatTickHandler {
         abilityCooldowns.computeIfAbsent(playerId, k -> new java.util.concurrent.ConcurrentHashMap<>()).put(abilityId, ticks);
     }
 
-    // Thread-safe maps for tracking dash and beatdown states
+    public static void incrementCombo(ServerPlayer player) {
+        UUID uuid = player.getUUID();
+        int count = absoluteComboCount.getOrDefault(uuid, 0) + 1;
+        absoluteComboCount.put(uuid, count);
+        absoluteComboTimer.put(uuid, 60); // 3 seconds reset
+        
+        // Sync to client
+        net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, new com.my.kaisen.network.SyncComboPayload(count));
+        
+        // Fatality at 20
+        if (count == 20) {
+            triggerFatality(player);
+        }
+    }
+
+    private static void triggerFatality(ServerPlayer player) {
+        // Heavy visuals, reset combo after
+        player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§4§lCOMBO 20: BLACK FLASH FATALITY!"));
+        net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new com.my.kaisen.network.SpawnBlackFlashPayload(player.getX(), player.getY() + 1, player.getZ()));
+        player.level().playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.BLACK_FLASH.get(), net.minecraft.sounds.SoundSource.PLAYERS, 2.0f, 0.8f);
+        
+        // AoE damage
+        player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(6.0)).forEach(e -> {
+            if (e != player) {
+                e.hurt(player.damageSources().magic(), 35.0f);
+                e.setDeltaMovement(e.getDeltaMovement().add(0, 1.2, 0));
+                e.hurtMarked = true;
+            }
+        });
+        
+        absoluteComboCount.put(player.getUUID(), 0);
+    }
     public static final Map<UUID, Integer> activeDashes = new ConcurrentHashMap<>();
     public static final Map<UUID, BeatdownState> activeBeatdowns = new ConcurrentHashMap<>();
     public static final Map<UUID, Integer> dropkickStates = new ConcurrentHashMap<>();
@@ -219,6 +252,19 @@ public class CombatTickHandler {
                 return false;
             });
             if (cooldownMap.isEmpty()) abilityCooldowns.remove(playerId);
+        }
+
+        // Combo Reset Logic (3 seconds = 60 ticks)
+        if (absoluteComboTimer.containsKey(playerId)) {
+            int ticks = absoluteComboTimer.get(playerId);
+            if (ticks <= 1) {
+                absoluteComboTimer.remove(playerId);
+                absoluteComboCount.remove(playerId);
+                // Sync to client
+                net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, new com.my.kaisen.network.SyncComboPayload(0));
+            } else {
+                absoluteComboTimer.put(playerId, ticks - 1);
+            }
         }
 
         if (activeManjiKicks.containsKey(playerId)) {
@@ -636,6 +682,12 @@ public class CombatTickHandler {
     
     private static void executeBlackFlash(ServerPlayer player, DivergentFistState state) {
         LivingEntity target = state.target;
+        UUID playerId = player.getUUID();
+
+        // Bypass Cooldown for Divergent Fist (Ability 3) on successful Black Flash
+        if (abilityCooldowns.containsKey(playerId)) {
+            abilityCooldowns.get(playerId).remove(3);
+        }
         
         // Trigger Black Flash Lodestone VFX at the target's center-of-mass on all nearby clients
         net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(

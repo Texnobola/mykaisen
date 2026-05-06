@@ -21,8 +21,12 @@ public class ShrineOverlay implements LayeredDraw.Layer {
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
         if (player == null || mc.level == null) return;
- 
-        renderBlackFlashCombo(guiGraphics, mc);
+
+        int width = mc.getWindow().getGuiScaledWidth();
+        int height = mc.getWindow().getGuiScaledHeight();
+
+        ClientVfxHandler.renderBlackFlashOverlay(guiGraphics, width, height);
+        renderAbsoluteCombo(guiGraphics, mc);
  
         // Domain Charge Countdown
         int chargeTicks = ClientEvents.getDomainChargeTicks();
@@ -58,19 +62,29 @@ public class ShrineOverlay implements LayeredDraw.Layer {
         guiGraphics.pose().popPose();
     }
  
-    private void renderBlackFlashCombo(GuiGraphics guiGraphics, Minecraft mc) {
-        if (blackFlashCombo <= 0) return;
- 
+    private void renderAbsoluteCombo(GuiGraphics guiGraphics, Minecraft mc) {
+        int absoluteCombo = ClientVfxHandler.getAbsoluteCombo();
+        if (absoluteCombo <= 0) return;
+
         int width = mc.getWindow().getGuiScaledWidth();
         int height = mc.getWindow().getGuiScaledHeight();
- 
-        String text = blackFlashCombo + " HIT COMBO!";
+
+        // Shake logic: more intense as combo grows
+        float shakeIntensity = Math.min(10.0f, absoluteCombo / 2.0f);
+        double offsetX = (mc.level.random.nextDouble() - 0.5) * shakeIntensity;
+        double offsetY = (mc.level.random.nextDouble() - 0.5) * shakeIntensity;
+
+        String text = absoluteCombo + " HIT COMBO!";
         guiGraphics.pose().pushPose();
-        float scale = 3.0f;
-        // Retro placement: Side of the screen
-        guiGraphics.pose().translate(width - 100, height / 2.0, 0);
+        float scale = 3.0f + (absoluteCombo / 20.0f); // Scales up to 4.0 at 20 combo
+        
+        guiGraphics.pose().translate(width - 150 + offsetX, height / 2.0 + offsetY, 0);
         guiGraphics.pose().scale(scale, scale, scale);
-        guiGraphics.drawCenteredString(mc.font, Component.literal(text).withStyle(net.minecraft.ChatFormatting.RED).withStyle(net.minecraft.ChatFormatting.ITALIC).withStyle(net.minecraft.ChatFormatting.BOLD), 0, 0, 0xFFFFFF);
+        
+        // Color shifts to bright yellow/red as it gets higher
+        int color = absoluteCombo >= 15 ? 0xFFFF00 : 0xFF3333;
+        
+        guiGraphics.drawCenteredString(mc.font, Component.literal(text).withStyle(net.minecraft.ChatFormatting.BOLD).withStyle(net.minecraft.ChatFormatting.ITALIC), 0, 0, color);
         guiGraphics.pose().popPose();
     }
  

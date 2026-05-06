@@ -248,5 +248,11 @@ public class NetworkHandler {
                 SpawnCleaveWebVfxPayload.STREAM_CODEC,
                 com.my.kaisen.client.ClientVfxHandler::handleCleaveWebVfx
         );
+        
+        registrar.playToClient(
+                SyncComboPayload.TYPE,
+                SyncComboPayload.STREAM_CODEC,
+                com.my.kaisen.client.ClientVfxHandler::handleSyncCombo
+        );
     }
 }

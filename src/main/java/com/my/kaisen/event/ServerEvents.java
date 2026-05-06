@@ -22,10 +22,18 @@ public class ServerEvents {
             player.getInventory().add(new net.minecraft.world.item.ItemStack(com.my.kaisen.registry.ModItems.CHARACTER_CHOOSER.get()));
         }
 
-        // Sync awakening status on join
-        if (player instanceof ServerPlayer serverPlayer && player.getPersistentData().getBoolean("is_awakened")) {
-            net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(serverPlayer, 
-                    new com.my.kaisen.network.SyncAwakeningPayload(player.getId(), true));
+        // Sync character data on join
+        if (player instanceof ServerPlayer serverPlayer) {
+            int charId = player.getPersistentData().getInt("mykaisen_character");
+            net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(serverPlayer, new com.my.kaisen.network.SyncCharacterPayload(charId));
+            
+            boolean battleMode = !player.getPersistentData().contains("mykaisen_battle_mode") || player.getPersistentData().getBoolean("mykaisen_battle_mode");
+            net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(serverPlayer, new com.my.kaisen.network.SyncBattleModePayload(battleMode));
+
+            if (player.getPersistentData().getBoolean("is_awakened")) {
+                net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(serverPlayer, 
+                        new com.my.kaisen.network.SyncAwakeningPayload(player.getId(), true));
+            }
         }
     }
 
@@ -35,10 +43,20 @@ public class ServerEvents {
         net.minecraft.nbt.CompoundTag newData = event.getEntity().getPersistentData();
 
         if (oldData.contains("mykaisen_character")) {
-            newData.putInt("mykaisen_character", oldData.getInt("mykaisen_character"));
+            int charId = oldData.getInt("mykaisen_character");
+            newData.putInt("mykaisen_character", charId);
+            // Sync to client
+            if (event.getEntity() instanceof ServerPlayer sp) {
+                net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(sp, new com.my.kaisen.network.SyncCharacterPayload(charId));
+            }
         }
         if (oldData.contains("mykaisen_battle_mode")) {
-            newData.putBoolean("mykaisen_battle_mode", oldData.getBoolean("mykaisen_battle_mode"));
+            boolean battleMode = oldData.getBoolean("mykaisen_battle_mode");
+            newData.putBoolean("mykaisen_battle_mode", battleMode);
+            // Sync to client
+            if (event.getEntity() instanceof ServerPlayer sp) {
+                net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(sp, new com.my.kaisen.network.SyncBattleModePayload(battleMode));
+            }
         }
         if (oldData.contains("mykaisen_first_join")) {
             newData.putBoolean("mykaisen_first_join", oldData.getBoolean("mykaisen_first_join"));
@@ -62,12 +80,28 @@ public class ServerEvents {
     }
 
     @SubscribeEvent
+    public static void onLivingDeath(net.neoforged.neoforge.event.entity.living.LivingDeathEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            // Reset awakening on death
+            com.my.kaisen.network.CombatTickHandler.awakeningMeter.remove(player.getUUID());
+            player.getPersistentData().putBoolean("is_awakened", false);
+            net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 
+                    new com.my.kaisen.network.SyncAwakeningPayload(player.getId(), false));
+        }
+    }
+
+    @SubscribeEvent
     public static void onRegisterCommands(RegisterCommandsEvent event) {
         ToggleCooldownsCommand.register(event.getDispatcher());
     }
 
     @SubscribeEvent
     public static void onLivingDamage(net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent event) {
+        if (event.getSource().getEntity() instanceof ServerPlayer attacker) {
+            // Absolute Combo Counter
+            com.my.kaisen.network.CombatTickHandler.incrementCombo(attacker);
+        }
+
         if (event.getEntity() instanceof ServerPlayer player) {
             // Prevent self-damage from abilities for Sorcerers
             if (player.getPersistentData().getInt("mykaisen_character") == 1) {
