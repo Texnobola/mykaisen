@@ -312,12 +312,12 @@ public class ClientVfxHandler {
             Level level = Minecraft.getInstance().level;
             if (level == null) return;
             
-            // Slice effect
+            // Slice effect - Sharper and Larger to show "real texture"
             WorldParticleBuilder.create(com.my.kaisen.registry.ModParticles.CLEAVE_SLASH.get())
-                    .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(2.5f, 0.0f).build())
+                    .setTransparencyData(GenericParticleData.create(1.0f, 0.8f, 0.0f).build())
+                    .setScaleData(GenericParticleData.create(5.0f, 5.0f, 0.0f).build()) // Big and sharp
                     .setSpinData(SpinParticleData.create(payload.rotation(), payload.rotation()).build())
-                    .setLifetime(10)
+                    .setLifetime(8)
                     .spawn(level, payload.x(), payload.y(), payload.z());
         });
     }
@@ -330,9 +330,9 @@ public class ClientVfxHandler {
             // Massive central spiderweb pattern (Visualizes the web from the reference)
             WorldParticleBuilder.create(com.my.kaisen.registry.ModParticles.CLEAVE_WEB.get())
                     .setTransparencyData(GenericParticleData.create(1.0f, 0.0f).build())
-                    .setScaleData(GenericParticleData.create(1.0f, 16.0f, 0.0f).build()) // Sudden expansion
-                    .setLifetime(30)
-                    .spawn(level, payload.x(), payload.y() + 0.2, payload.z());
+                    .setScaleData(GenericParticleData.create(14.0f, 14.0f, 0.0f).build()) // Huge and static
+                    .setLifetime(40)
+                    .spawn(level, payload.x(), payload.y() + 0.1, payload.z());
 
             // Secondary faint web for depth
             WorldParticleBuilder.create(com.my.kaisen.registry.ModParticles.CLEAVE_WEB.get())

@@ -5,6 +5,7 @@ import com.my.kaisen.registry.ModSounds;
 import com.my.kaisen.util.DomainHandler;
 import com.my.kaisen.network.SpawnDomainAshPayload;
 import com.my.kaisen.network.SpawnDismantleVfxPayload;
+import com.my.kaisen.network.SpawnCleaveVfxPayload;
 import java.util.Optional;
 import java.util.Random;
 import net.minecraft.core.BlockPos;
@@ -191,13 +192,15 @@ public class ShrineEntity extends Entity implements GeoEntity {
                 }
 
                 ServerLevel serverLevel = (ServerLevel) this.level();
-                if (activeTicks % 6 == 0) {
-                    serverLevel.playSound(null, target.getX(), target.getY(), target.getZ(), ModSounds.DISMANTLE_SLASH.get(), net.minecraft.sounds.SoundSource.NEUTRAL, 1.0F, 1.0F);
-                }
-                
-                // Visual Barrage
+                // Visual Barrage - CLEAVE for entities
                 PacketDistributor.sendToPlayersTrackingEntityAndSelf(target, 
-                        new SpawnDismantleVfxPayload(target.getX(), target.getY() + target.getBbHeight()/2, target.getZ(), (float)Math.random() * 360f));
+                        new SpawnCleaveVfxPayload(target.getX(), target.getY() + target.getBbHeight()/2, target.getZ(), (float)Math.random() * 360f));
+                
+                // Sound - CLEAVE for entities
+                if (activeTicks % 6 == 0) {
+                    serverLevel.playSound(null, target.getX(), target.getY(), target.getZ(), ModSounds.CLEAVE.get(), net.minecraft.sounds.SoundSource.NEUTRAL, 1.0F, 1.0F);
+                    serverLevel.playSound(null, target.getX(), target.getY(), target.getZ(), ModSounds.CLEAVE_SLASH.get(), net.minecraft.sounds.SoundSource.NEUTRAL, 0.8F, 1.0F);
+                }
                 
                 // Real carnage: Shoot actual dismantle projectiles randomly
                 if (this.getRandom().nextInt(5) == 0) {
@@ -237,6 +240,8 @@ public class ShrineEntity extends Entity implements GeoEntity {
                     if (i % 5 == 0) setDustLevel(getDustLevel() + 1);
                     
                     if (this.getRandom().nextInt(10) == 0) {
+                        PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, 
+                                new SpawnDismantleVfxPayload(surfacePos.getX() + 0.5, surfacePos.getY() + 0.5, surfacePos.getZ() + 0.5, (float)this.getRandom().nextInt(360)));
                         PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, 
                                 new SpawnDomainAshPayload(surfacePos.getX() + 0.5, surfacePos.getY() + 0.5, surfacePos.getZ() + 0.5));
                     }

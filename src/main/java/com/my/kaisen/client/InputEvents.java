@@ -17,7 +17,7 @@ public class InputEvents {
         if (KeyBindings.ABILITY_1_KEY.consumeClick()) {
             // Check for Cleave Web (Z + Right Shift)
             // We only check for Right Shift here; the server will validate Awakening and Character status.
-            if (com.mojang.blaze3d.platform.InputConstants.isKeyDown(net.minecraft.client.Minecraft.getInstance().getWindow().getWindow(), org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT_SHIFT)) {
+            if (com.mojang.blaze3d.platform.InputConstants.isKeyDown(net.minecraft.client.Minecraft.getInstance().getWindow().getWindow(), org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT_SHIFT)) {
                 PacketDistributor.sendToServer(new com.my.kaisen.network.TriggerCleaveWebPayload());
             } else {
                 // Send payload for Cursed Strikes / Dismantle (Ability ID 1)
