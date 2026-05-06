@@ -63,13 +63,11 @@ public class DomainHandler {
 
         com.my.kaisen.entity.ShrineEntity shrine = new com.my.kaisen.entity.ShrineEntity(com.my.kaisen.registry.ModEntities.SHRINE.get(), level);
         
-        float yaw = caster.getYRot();
-        double rad = Math.toRadians(yaw);
-        double offsetX = Math.sin(rad) * 2.5;
-        double offsetZ = -Math.cos(rad) * 2.5;
+        net.minecraft.world.phys.Vec3 look = caster.getLookAngle();
+        net.minecraft.world.phys.Vec3 backPos = caster.position().subtract(look.scale(5.0));
         
-        shrine.setPos(center.getX() + 0.5 + offsetX, center.getY() + (isOpen ? 0 : 0.5), center.getZ() + 0.5 + offsetZ);
-        shrine.setYRot(yaw);
+        shrine.setPos(backPos.x, caster.getY() + (isOpen ? 0 : 0.5), backPos.z);
+        shrine.setYRot(caster.getYRot());
         shrine.setOwner(caster);
         shrine.setOpen(isOpen);
         level.addFreshEntity(shrine);

@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CombatTickHandler {
 
     public static boolean cooldownsEnabled = true;
-    public static final Map<UUID, Integer> abilityCooldowns = new ConcurrentHashMap<>();
+    public static final Map<UUID, Map<Integer, Integer>> abilityCooldowns = new ConcurrentHashMap<>();
     public static final Map<UUID, Float> awakeningMeter = new ConcurrentHashMap<>();
     public static final Map<UUID, Integer> blackFlashCombos = new ConcurrentHashMap<>();
 
@@ -44,6 +44,17 @@ public class CombatTickHandler {
         if (next >= 100.0f && current < 100.0f) {
             player.sendSystemMessage(net.minecraft.network.chat.Component.literal("Your Awakening meter is FULL! Press G to Awaken."));
         }
+    }
+
+    public static boolean isOnCooldown(UUID playerId, int abilityId) {
+        if (!cooldownsEnabled) return false;
+        if (!abilityCooldowns.containsKey(playerId)) return false;
+        return abilityCooldowns.get(playerId).containsKey(abilityId);
+    }
+
+    public static void setCooldown(UUID playerId, int abilityId, int ticks) {
+        if (!cooldownsEnabled) return;
+        abilityCooldowns.computeIfAbsent(playerId, k -> new java.util.concurrent.ConcurrentHashMap<>()).put(abilityId, ticks);
     }
 
     // Thread-safe maps for tracking dash and beatdown states
@@ -200,13 +211,14 @@ public class CombatTickHandler {
         // -----------------------------------------------------
         // 0. Cooldown Logic & Timers
         // -----------------------------------------------------
-        if (cooldownsEnabled && abilityCooldowns.containsKey(playerId)) {
-            int currentCooldown = abilityCooldowns.get(playerId);
-            if (currentCooldown > 0) {
-                abilityCooldowns.put(playerId, currentCooldown - 1);
-            } else {
-                abilityCooldowns.remove(playerId);
-            }
+        if (abilityCooldowns.containsKey(playerId)) {
+            Map<Integer, Integer> cooldownMap = abilityCooldowns.get(playerId);
+            cooldownMap.entrySet().removeIf(entry -> {
+                if (entry.getValue() <= 1) return true;
+                entry.setValue(entry.getValue() - 1);
+                return false;
+            });
+            if (cooldownMap.isEmpty()) abilityCooldowns.remove(playerId);
         }
 
         if (activeManjiKicks.containsKey(playerId)) {

@@ -108,7 +108,7 @@ public class ServerEvents {
                     target.hurt(player.damageSources().playerAttack(player), 8.5F);
                     
                     if (com.my.kaisen.network.CombatTickHandler.cooldownsEnabled) {
-                        com.my.kaisen.network.CombatTickHandler.abilityCooldowns.put(player.getUUID(), 400); // 20-second cooldown
+                        com.my.kaisen.network.CombatTickHandler.setCooldown(player.getUUID(), 4, 400); // 20-second cooldown
                     }
                     
                     // Leftward horizontal knockback

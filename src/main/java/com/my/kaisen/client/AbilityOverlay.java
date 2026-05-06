@@ -21,7 +21,6 @@ public class AbilityOverlay implements LayeredDraw.Layer {
         if (charId != 1) return;
 
         boolean isAwakened = player.getPersistentData().getBoolean("is_awakened");
-        int globalCooldown = CombatTickHandler.abilityCooldowns.getOrDefault(player.getUUID(), 0);
         
         // Ability HUD Layout (Bottom Right)
         int x = width - 150;
@@ -32,9 +31,16 @@ public class AbilityOverlay implements LayeredDraw.Layer {
             new String[]{"Cursed Strikes", "Crushing Blow", "Divergent Fist", "Manji Kick"};
             
         String[] keys = new String[]{"Z", "X", "C", "V"};
-        
+
         for (int i = 0; i < 4; i++) {
             int slotY = y + (i * 26);
+            int abilityId = i + 1;
+            if (isAwakened && i == 3) abilityId = 6; // Domain ID
+
+            int cooldown = 0;
+            if (CombatTickHandler.abilityCooldowns.containsKey(player.getUUID())) {
+                cooldown = CombatTickHandler.abilityCooldowns.get(player.getUUID()).getOrDefault(abilityId, 0);
+            }
             
             // Outer Glow/Frame
             guiGraphics.fill(x - 1, slotY - 1, x + 141, slotY + 23, 0xFF440000);
@@ -47,16 +53,18 @@ public class AbilityOverlay implements LayeredDraw.Layer {
             guiGraphics.drawCenteredString(mc.font, keys[i], x + 10, slotY + 7, 0xFFFF00);
             
             // Name
-            int textColor = globalCooldown > 0 ? 0x777777 : (isAwakened ? 0xFF5555 : 0xFFFFFF);
+            int textColor = cooldown > 0 ? 0x777777 : (isAwakened ? 0xFF5555 : 0xFFFFFF);
             guiGraphics.drawString(mc.font, names[i], x + 25, slotY + 7, textColor);
             
             // Cooldown Overlay
-            if (globalCooldown > 0) {
-                int cdWidth = (int)((globalCooldown / 40.0f) * 140);
+            if (cooldown > 0) {
+                // Approximate max cooldowns for visualization (3s, 5s, 8s, 10s etc)
+                float maxCd = abilityId == 6 ? 400f : 160f;
+                int cdWidth = (int)((cooldown / maxCd) * 140);
                 guiGraphics.fill(x, slotY + 20, x + Math.min(140, cdWidth), slotY + 22, 0xFFFF0000);
                 
-                if (globalCooldown > 20) {
-                    String time = (globalCooldown / 20) + "s";
+                if (cooldown > 20) {
+                    String time = (cooldown / 20) + "s";
                     guiGraphics.drawString(mc.font, time, x + 120, slotY + 7, 0xFF0000);
                 }
             }

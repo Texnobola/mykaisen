@@ -36,7 +36,7 @@ public class AbilityServerHandler {
                         executeCursedStrikesDash(player);
                     } else {
                         // Dismantle: Fast hitscan attack
-                        if (CombatTickHandler.cooldownsEnabled && CombatTickHandler.abilityCooldowns.containsKey(player.getUUID())) return;
+                    if (CombatTickHandler.isOnCooldown(player.getUUID(), abilityId)) return;
 
                         // Animation — grounded vs airborne variant
                         boolean onGround = player.onGround();
@@ -57,9 +57,7 @@ public class AbilityServerHandler {
                         M1ComboHandler.comboShots.put(player.getUUID(), 5);
                         M1ComboHandler.comboTicks.put(player.getUUID(), 0);
 
-                        if (CombatTickHandler.cooldownsEnabled) {
-                            CombatTickHandler.abilityCooldowns.put(player.getUUID(), 60); // 3 seconds
-                        }
+                            CombatTickHandler.setCooldown(player.getUUID(), abilityId, 60); // 3 seconds
                     }
                 } else if (abilityId == 2) {
                     if (!isAwakened) {
@@ -67,7 +65,7 @@ public class AbilityServerHandler {
                         executeCrushingBlow(player);
                     } else {
                         // Ability 2 (Awakened): Open (Fuga)
-                        if (CombatTickHandler.cooldownsEnabled && CombatTickHandler.abilityCooldowns.containsKey(player.getUUID())) return;
+                        if (CombatTickHandler.isOnCooldown(player.getUUID(), abilityId)) return;
 
                         // Play Fuga Animation
                         net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
@@ -77,25 +75,21 @@ public class AbilityServerHandler {
                         // Start Charge-Up (65 ticks = 3.25 seconds)
                         CombatTickHandler.fugaChargeTicks.put(player.getUUID(), 65);
 
-                        if (CombatTickHandler.cooldownsEnabled) {
-                            CombatTickHandler.abilityCooldowns.put(player.getUUID(), 200); // 10 seconds cooldown
-                        }
+                            CombatTickHandler.setCooldown(player.getUUID(), abilityId, 200); // 10 seconds cooldown
                     }
                 } else if (abilityId == 3) {
                     if (!isAwakened) {
                         // Ability 3: Divergent Fist / Black Flash
                         executeDivergentFist(player);
-                    } else if (abilityId == 3) {
+                    } else {
                         // Ability 3 (Awakened): Rush (Kick-up Slam-down)
                         // Triggered by R during Phase 3 for Cleave transition
-                        if (CombatTickHandler.cooldownsEnabled && CombatTickHandler.abilityCooldowns.containsKey(player.getUUID())) return;
+                        if (CombatTickHandler.isOnCooldown(player.getUUID(), abilityId)) return;
                         if (CombatTickHandler.activeRushes.containsKey(player.getUUID())) return;
 
                         CombatTickHandler.activeRushes.put(player.getUUID(), new CombatTickHandler.RushState());
 
-                        if (CombatTickHandler.cooldownsEnabled) {
-                            CombatTickHandler.abilityCooldowns.put(player.getUUID(), 160); // 8 seconds
-                        }
+                            CombatTickHandler.setCooldown(player.getUUID(), abilityId, 160); // 8 seconds
 
                         player.level().playSound(null, player.blockPosition(),
                                 net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_SWEEP,
@@ -121,15 +115,20 @@ public class AbilityServerHandler {
                 java.util.List<com.my.kaisen.entity.ShrineEntity> existingShrines = player.level().getEntitiesOfClass(com.my.kaisen.entity.ShrineEntity.class, player.getBoundingBox().inflate(300.0),
                         (e) -> e.getOwnerUUID() != null && e.getOwnerUUID().equals(player.getUUID()));
 
+                if (CombatTickHandler.isOnCooldown(player.getUUID(), 6)) return;
+
                 if (!existingShrines.isEmpty()) {
                     for (com.my.kaisen.entity.ShrineEntity existing : existingShrines) {
                         if (existing.getCurrentState() != com.my.kaisen.entity.ShrineEntity.DomainState.COLLAPSING) {
                             existing.setState(com.my.kaisen.entity.ShrineEntity.DomainState.COLLAPSING);
+                            CombatTickHandler.setCooldown(player.getUUID(), 6, 200); // 10 seconds
                         }
                     }
                 } else {
                     // Spawn new Shrine
                     com.my.kaisen.entity.ShrineEntity shrine = com.my.kaisen.util.DomainHandler.spawnShrine(player.level(), player.blockPosition(), player, payload.isOpenBarrier());
+                    
+                    CombatTickHandler.setCooldown(player.getUUID(), 6, 400); // 20 seconds for activation
                     
                     // Play Animation
                     net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, 
@@ -214,11 +213,8 @@ public class AbilityServerHandler {
     private static void executeCursedStrikesDash(ServerPlayer player) {
         java.util.UUID playerId = player.getUUID();
         // Combo chaining must happen before this if applicable
-        if (CombatTickHandler.cooldownsEnabled && CombatTickHandler.abilityCooldowns.containsKey(playerId)) return;
-
-        if (CombatTickHandler.cooldownsEnabled) {
-            CombatTickHandler.abilityCooldowns.put(playerId, 160); // 8 seconds
-        }
+        if (CombatTickHandler.isOnCooldown(playerId, 4)) return;
+        CombatTickHandler.setCooldown(playerId, 4, 160); // 8 seconds
 
         if (player.onGround()) {
             // Grounded logic: Propel player forward roughly 3 blocks
@@ -259,7 +255,7 @@ public class AbilityServerHandler {
 
     private static void executeCrushingBlow(ServerPlayer player) {
         java.util.UUID playerId = player.getUUID();
-        if (CombatTickHandler.cooldownsEnabled && CombatTickHandler.abilityCooldowns.containsKey(playerId)) return;
+        if (CombatTickHandler.isOnCooldown(playerId, 2)) return;
 
         if (player.onGround()) {
             // Grounded logic
@@ -284,9 +280,7 @@ public class AbilityServerHandler {
                 
                 CombatTickHandler.activeCrushingBlows.put(player.getUUID(), new CombatTickHandler.CrushingBlowState(target, 0));
                 
-                if (CombatTickHandler.cooldownsEnabled) {
-                    CombatTickHandler.abilityCooldowns.put(playerId, 200); // 10 seconds
-                }
+                CombatTickHandler.setCooldown(playerId, 2, 200); // 10 seconds
 
                 player.level().playSound(null, player.blockPosition(), com.my.kaisen.registry.ModSounds.SWING_BACK.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
                 net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new PlayAnimationPayload("crushing_blow", player.getId()));
@@ -317,9 +311,7 @@ public class AbilityServerHandler {
             if (hitResult != null && hitResult.getEntity() instanceof net.minecraft.world.entity.LivingEntity hitTarget) {
                 target = hitTarget;
                 
-                if (CombatTickHandler.cooldownsEnabled) {
-                    CombatTickHandler.abilityCooldowns.put(playerId, 200); // 10 seconds
-                }
+                    CombatTickHandler.setCooldown(playerId, 2, 200); // 10 seconds
             }
             
             CombatTickHandler.airCrushingBlows.put(player.getUUID(), new CombatTickHandler.AirCrushingState(target, 0));
@@ -343,7 +335,7 @@ public class AbilityServerHandler {
         }
         
         java.util.UUID playerId = player.getUUID();
-        if (CombatTickHandler.cooldownsEnabled && CombatTickHandler.abilityCooldowns.containsKey(playerId)) return;
+        if (CombatTickHandler.isOnCooldown(playerId, 2)) return;
 
         Vec3 lookVec = player.getLookAngle();
         Vec3 frontCenter = player.position().add(lookVec.scale(1.5));
@@ -364,7 +356,7 @@ public class AbilityServerHandler {
             CombatTickHandler.activeDivergentFists.put(player.getUUID(), newState);
             
             if (CombatTickHandler.cooldownsEnabled) {
-                CombatTickHandler.abilityCooldowns.put(playerId, 100); // 5 seconds
+                CombatTickHandler.setCooldown(playerId, 2, 100); // 5 seconds
             }
 
             player.level().playSound(null, player.blockPosition(),
@@ -480,9 +472,7 @@ public class AbilityServerHandler {
                 }
                 
                 // Cooldown
-                if (CombatTickHandler.cooldownsEnabled) {
-                    CombatTickHandler.abilityCooldowns.put(player.getUUID(), 360); // 18 seconds
-                }
+                    CombatTickHandler.setCooldown(player.getUUID(), 5, 360); // ID 5 for Cleave Web
             }
         });
     }

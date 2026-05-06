@@ -45,6 +45,7 @@ public class ShrineEntity extends Entity implements GeoEntity {
  
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     private UUID ownerUUID;
+    private net.minecraft.world.entity.player.Player owner;
     private int lifeTicks = 0;
     private int formingTicks = 0;
     private int activeTicks = 0;
@@ -186,9 +187,9 @@ public class ShrineEntity extends Entity implements GeoEntity {
                 float healthBefore = target.getHealth();
                 target.hurt(this.damageSources().magic(), 4.0F); // Buffed Damage
                 
-                // If killed, increment dust
+                // If killed, increment dust (Slower now)
                 if (!target.isAlive() || target.getHealth() < healthBefore) {
-                     setDustLevel(getDustLevel() + 10); // More dust for kills
+                     setDustLevel(getDustLevel() + 2); 
                 }
 
                 ServerLevel serverLevel = (ServerLevel) this.level();
@@ -237,7 +238,7 @@ public class ShrineEntity extends Entity implements GeoEntity {
                 net.minecraft.world.level.block.state.BlockState state = serverLevel.getBlockState(surfacePos);
                 if (!state.isAir() && state.getDestroySpeed(serverLevel, surfacePos) >= 0 && state.getBlock() != ModBlocks.DOMAIN_BARRIER.get() && state.getBlock() != ModBlocks.DOMAIN_FLOOR.get()) {
                     serverLevel.setBlock(surfacePos, Blocks.AIR.defaultBlockState(), 2 | 16);
-                    if (i % 5 == 0) setDustLevel(getDustLevel() + 1);
+                    if (i % 20 == 0) setDustLevel(getDustLevel() + 1);
                     
                     if (this.getRandom().nextInt(10) == 0) {
                         PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, 
@@ -249,10 +250,20 @@ public class ShrineEntity extends Entity implements GeoEntity {
             }
         } else {
             // Night Vision for close-barrier (Owner gets it)
-            if (owner != null) {
-                owner.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 100, 0, false, false));
+            net.minecraft.world.entity.player.Player domainOwner = getOwner();
+            if (domainOwner != null) {
+                domainOwner.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 200, 0, false, false));
             }
         }
+    }
+
+    public net.minecraft.world.entity.player.Player getOwner() {
+        if (owner != null && !owner.isRemoved()) return owner;
+        java.util.Optional<java.util.UUID> uuid = this.entityData.get(OWNER_UUID);
+        if (uuid.isPresent()) {
+            this.owner = this.level().getPlayerByUUID(uuid.get());
+        }
+        return owner;
     }
  
     private void tickCollapsing() {
