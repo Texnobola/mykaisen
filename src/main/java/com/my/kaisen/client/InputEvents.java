@@ -50,5 +50,10 @@ public class InputEvents {
             PacketDistributor.sendToServer(new com.my.kaisen.network.AwakenPayload());
         }
 
+        if (KeyBindings.ABILITY_R_KEY.consumeClick()) {
+            // Send payload to trigger Cleave Upgrade during Rush
+            PacketDistributor.sendToServer(new com.my.kaisen.network.TriggerCleaveNormalPayload());
+        }
+
     }
 }

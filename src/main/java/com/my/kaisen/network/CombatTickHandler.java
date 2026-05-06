@@ -91,6 +91,7 @@ public class CombatTickHandler {
         public int ticks = 0;
         public LivingEntity target = null;
         public boolean isCleaveMode = false;
+        public boolean hasGrabbed = false;
     }
     
     private static void createCrater(net.minecraft.server.level.ServerLevel level, Vec3 pos, int minBlocks, int maxBlocks) {
@@ -937,47 +938,97 @@ public class CombatTickHandler {
             player.setDeltaMovement(Vec3.ZERO);
             player.hurtMarked = true;
 
-            if (target.onGround()) {
-                // Final impact damage
-                float damage = state.isCleaveMode ? 60.0F : 5.0F;
-                target.hurt(target.damageSources().playerAttack(player), damage);
+            if (state.ticks < 100) {
+                if (target.onGround()) {
+                    if (state.isCleaveMode) {
+                        // Start the Hand-Grab Sequence (Phase 5)
+                        state.ticks = 100;
+                        state.hasGrabbed = true;
+                        
+                        // Sound & Animation
+                        player.level().playSound(null, target.blockPosition(), com.my.kaisen.registry.ModSounds.CLEAVE.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.5F, 1.0F);
+                        player.level().playSound(null, target.blockPosition(), com.my.kaisen.registry.ModSounds.CLEAVE_SLASH.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.5F, 1.0F);
+                        
+                        net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                                player, new PlayAnimationPayload("cleave_rush", player.getId())
+                        );
 
-                if (state.isCleaveMode) {
-                    player.level().playSound(null, target.blockPosition(), com.my.kaisen.registry.ModSounds.CLEAVE.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.5F, 1.0F);
-                    player.level().playSound(null, target.blockPosition(), com.my.kaisen.registry.ModSounds.CLEAVE_SLASH.get(), net.minecraft.sounds.SoundSource.PLAYERS, 1.5F, 1.0F);
-                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(target, new SpawnCleaveVfxPayload(target.getX(), target.getY(0.5), target.getZ(), (float)player.level().random.nextInt(360)));
+                        // Stun target
+                        target.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 40, 10, false, false));
+                        target.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.BLINDNESS, 40, 0, false, false));
+                    } else {
+                        // Normal Impact Damage
+                        target.hurt(target.damageSources().playerAttack(player), 12.0F);
+                        
+                        // Impact Crater
+                        if (player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+                            createCrater(serverLevel, target.position(), 8, 14);
+                            serverLevel.sendParticles(net.minecraft.core.particles.ParticleTypes.EXPLOSION, target.getX(), target.getY(), target.getZ(), 1, 0, 0, 0, 0);
+                        }
+
+                        // VFX and Sound
+                        net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                                player, new SpawnCleaveRushVfxPayload(target.getX(), target.getY(0.5), target.getZ(), true)
+                        );
+                        net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                                player, new CameraShakePayload(0.5f, 15)
+                        );
+
+                        player.level().playSound(null, target.blockPosition(),
+                                net.minecraft.sounds.SoundEvents.GENERIC_EXPLODE.value(),
+                                net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.2F);
+                        
+                        activeRushes.remove(playerId);
+                    }
+                }
+            } else {
+                // ----------------------------------------------------------------
+                // Phase 5 – Cleave Grab (ticks 100-120)
+                // ----------------------------------------------------------------
+                // Pin target to hand
+                Vec3 look = player.getLookAngle();
+                Vec3 right = new Vec3(-look.z, 0, look.x).normalize();
+                Vec3 pinPos = player.getEyePosition()
+                        .add(look.scale(1.0))
+                        .add(right.scale(0.4));
+                target.teleportTo(pinPos.x, pinPos.y - target.getEyeHeight() * 0.5, pinPos.z);
+                target.setDeltaMovement(Vec3.ZERO);
+                target.hurtMarked = true;
+
+                // Shredding damage
+                if (state.ticks % 2 == 0) {
+                    target.hurt(target.damageSources().playerAttack(player), 4.0F);
+                    net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                            player, new SpawnCleaveRushVfxPayload(target.getX(), target.getY(0.5), target.getZ(), false)
+                    );
                 }
 
-                // Crater + VFX
-                if (player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
-                    createCrater(serverLevel, target.position(), 8, 14);
+                if (state.ticks >= 120) {
+                    // Final Blow
+                    target.hurt(target.damageSources().playerAttack(player), 25.0F);
+                    
+                    Vec3 lookVec = player.getLookAngle();
+                    target.setDeltaMovement(new Vec3(lookVec.x * 2.5, 0.6, lookVec.z * 2.5));
+                    target.hurtMarked = true;
 
-                    // Dust shockwave – server-side vanilla particles as fallback
-                    serverLevel.sendParticles(
-                            net.minecraft.core.particles.ParticleTypes.EXPLOSION_EMITTER,
-                            target.getX(), target.getY(), target.getZ(), 3, 0.5, 0.0, 0.5, 0.0
+                    // Crater and VFX
+                    if (player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+                        createCrater(serverLevel, target.position(), 12, 18);
+                    }
+
+                    net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                            player, new SpawnCleaveRushVfxPayload(target.getX(), target.getY(0.5), target.getZ(), true)
                     );
-                    serverLevel.sendParticles(
-                            net.minecraft.core.particles.ParticleTypes.CLOUD,
-                            target.getX(), target.getY(), target.getZ(), 30, 1.5, 0.2, 1.5, 0.05
+                    net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                            player, new CameraShakePayload(0.8f, 25)
                     );
+
+                    player.level().playSound(null, target.blockPosition(),
+                            net.minecraft.sounds.SoundEvents.GENERIC_EXPLODE.value(),
+                            net.minecraft.sounds.SoundSource.PLAYERS, 1.5F, 0.8F);
+
+                    activeRushes.remove(playerId);
                 }
-
-                // Lodestone VFX payload for blood/dust effect
-                net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
-                        player, new SpawnCleaveRushVfxPayload(target.getX(), target.getY(0.5), target.getZ(), true)
-                );
-
-                // Heavy screen shake
-                net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntityAndSelf(
-                        player, new CameraShakePayload(0.7f, 25)
-                );
-
-                player.level().playSound(null, target.blockPosition(),
-                        net.minecraft.sounds.SoundEvents.GENERIC_EXPLODE.value(),
-                        net.minecraft.sounds.SoundSource.PLAYERS, 1.5F, 0.8F);
-
-                activeRushes.remove(playerId);
             }
         }
     }

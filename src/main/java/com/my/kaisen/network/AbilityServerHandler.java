@@ -85,15 +85,16 @@ public class AbilityServerHandler {
                     if (!isAwakened) {
                         // Ability 3: Divergent Fist / Black Flash
                         executeDivergentFist(player);
-                    } else {
-                        // Cleave Rush: Gap-closer → Grab (Stick to Hand) → Multi-Cleave → Explosion
+                    } else if (abilityId == 3) {
+                        // Ability 3 (Awakened): Rush (Kick-up Slam-down)
+                        // Triggered by R during Phase 3 for Cleave transition
                         if (CombatTickHandler.cooldownsEnabled && CombatTickHandler.abilityCooldowns.containsKey(player.getUUID())) return;
-                        if (CombatTickHandler.activeCleaveRushes.containsKey(player.getUUID())) return;
+                        if (CombatTickHandler.activeRushes.containsKey(player.getUUID())) return;
 
-                        CombatTickHandler.activeCleaveRushes.put(player.getUUID(), new CombatTickHandler.CleaveRushState());
+                        CombatTickHandler.activeRushes.put(player.getUUID(), new CombatTickHandler.RushState());
 
                         if (CombatTickHandler.cooldownsEnabled) {
-                            CombatTickHandler.abilityCooldowns.put(player.getUUID(), 300); // 15 seconds
+                            CombatTickHandler.abilityCooldowns.put(player.getUUID(), 160); // 8 seconds
                         }
 
                         player.level().playSound(null, player.blockPosition(),
